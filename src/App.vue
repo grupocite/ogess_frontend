@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
+
+const isAuthenticated = computed(() => route.meta.requireAuth)
+
+onMounted(() => {})
 </script>
-<script>
 
-
-</script>
 <template>
- 
-
-  <RouterView />
+  <RouterView v-if="!isAuthenticated" />
 </template>
 
 <style scoped>
