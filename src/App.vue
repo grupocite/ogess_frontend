@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import Navbar from './views/layouts/NavbarView.vue';
+import SideBar from './views/layouts/AsideView.vue';
 
 const route = useRoute()
 
@@ -10,9 +12,18 @@ onMounted(() => {})
 </script>
 
 <template>
+  <div class="nk-app-root">
+    <SideBar v-if="!!isAuthenticated"></SideBar>
+    <div class="nk-main">
+      <div class="nk-wrap" v-if="!!isAuthenticated">
+        <Navbar></Navbar>
+        <RouterView />
+      </div>
+    </div>
+  </div>
+
   <RouterView v-if="!isAuthenticated" />
 </template>
-
 <style scoped>
 header {
   line-height: 1.5;

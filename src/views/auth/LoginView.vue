@@ -36,27 +36,64 @@ export default defineComponent({
     const passwordInput = ref()
 
     const handleSubmit = async () => {
+
       const email = emailInput.value.value
       const password = passwordInput.value.value
-
-      console.log(password)
 
       if (!email || !password) {
         ElMessage.warning('Ingrese sus credenciales')
         return
       }
 
-      if (password === 'ogess2023') {
-        // Muestra el modal de cambio de contraseña
-        openModal()
-      } else {
-        try {
+      try {
           await login(email, password)
           router.push('/')
         } catch (error) {
           console.log(error)
         }
-      }
+
+        /*
+      if (password === 'ogess2023') {
+        try {
+          // Realiza una solicitud al servidor para obtener el token
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/login`,
+            {
+              email,
+              password
+            },
+            {
+              ...headers
+            }
+          )
+
+          if (response.status === 200 && response.data.access_token) {
+            // Guarda el token en una variable
+            const token = response.data.access_token
+
+            console.log(token);
+            
+
+            // Muestra el modal de cambio de contraseña y pasa el token
+            openModal()
+            showModal.value = true
+            newPassword.value = ''
+            confirmPassword.value = ''
+
+            // Pasa el token al modal
+            // Por ejemplo, puedes agregar una propiedad en tu componente modal
+            // para almacenar el token y acceder a él dentro del modal.
+          } else {
+            console.error('No se recibió un token en la respuesta.')
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      } else {
+        // Llama a la función de inicio de sesión normal si la contraseña no es "ogess2023"
+
+      } */
+    
     }
 
     const savePassword = async () => {
@@ -64,6 +101,7 @@ export default defineComponent({
 
       if (newPassword === confirmPassword) {
         try {
+          // Realiza la solicitud al servidor para restablecer la contraseña
           const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/auth/actualizar-contrasena`,
             {
@@ -73,9 +111,13 @@ export default defineComponent({
               ...headers
             }
           )
+
           if (response.status === 200) {
-            // Realizar alguna acción después de cambiar la contraseña, si es necesario
+            // Cierra el modal y permite al usuario redirigir al área segura
             showModal.value = false
+            router.push('/')
+          } else {
+            console.error('Error al cambiar la contraseña.')
           }
         } catch (error) {
           console.error('Error al cambiar la contraseña:', error)
@@ -126,7 +168,7 @@ export default defineComponent({
               <i class="fas fa-user"></i>
             </div>
             <div class="div">
-              <input type="text" class="input" id="emailRef" ref="emailInput" placeholder="user"/>
+              <input type="text" class="input" id="emailRef" ref="emailInput" placeholder="user" />
             </div>
           </div>
           <div class="input-div pass">
@@ -134,7 +176,13 @@ export default defineComponent({
               <i class="fas fa-lock"></i>
             </div>
             <div class="div">
-              <input type="password" class="input" id="passwordRef" ref="passwordInput" placeholder="password" />
+              <input
+                type="password"
+                class="input"
+                id="passwordRef"
+                ref="passwordInput"
+                placeholder="password"
+              />
             </div>
           </div>
           <button class="btn" value="Login">Iniciar</button>
@@ -166,19 +214,28 @@ export default defineComponent({
         <div class="modal-body" style="padding: 20px">
           <form>
             <div class="mb-3">
-  <label for="new-password" class="col-form-label">Nueva Contraseña:</label>
-  <input type="password" class="form-control" id="new-password" v-model="state.newPassword" />
-</div>
-<div class="mb-3">
-  <label for="confirm-password" class="col-form-label">Confirmar Contraseña:</label>
-  <input type="password" class="form-control" id="confirm-password" v-model="state.confirmPassword" />
-</div>
-<div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="savePassword">Cambiar</button>
-        </div>
+              <label for="new-password" class="col-form-label">Nueva Contraseña:</label>
+              <input
+                type="password"
+                class="form-control"
+                id="new-password"
+                v-model="state.newPassword"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="confirm-password" class="col-form-label">Confirmar Contraseña:</label>
+              <input
+                type="password"
+                class="form-control"
+                id="confirm-password"
+                v-model="state.confirmPassword"
+              />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" @click="savePassword">Cambiar</button>
+            </div>
           </form>
         </div>
-       
       </div>
     </div>
   </div>
