@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import type { RouteLocationNormalized, NavigationGuardNext } from "vue-router";
-import AboutView from '../views/AboutView.vue'
-import LoginView from '../views/auth/LoginView.vue'
+import AboutView from '../views/AboutView.vue';
+import LoginView from '../views/auth/LoginView.vue';
+import RoleView from "../views/role/RoleView.vue";
+import EditRoleView2 from "../views/role/EditRoleView2.vue"
+import ErrorPage from "@/views/error/Error.vue";
+
 import { useAuth } from '@/stores/auth';
+import EquipoView from '@/views/equipo/EquipoView.vue';
 
 import { usePermissionsStore } from '@/stores/permissions'
 
@@ -27,6 +32,33 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: AboutView,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/equipo',
+      name: 'equipo',
+      component: EquipoView,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+
+    {
+      path: '/role',
+      name: 'role',
+      component: RoleView,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/edit-role/:id', 
+      component: EditRoleView2,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/error/', 
+      component: ErrorPage,
       meta: { requireAuth: true },
       beforeEnter: requireAuth
     },
