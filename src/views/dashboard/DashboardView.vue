@@ -257,9 +257,7 @@ export default defineComponent({
     <div class="mt-3 col-md-4">
     <label for="exampleFormControlSelect1">Ocupación</label>
     <select class="form-control" id="exampleFormControlSelect1">
-      <option>/</option>
-      <option>/</option>
-      <option>/</option>
+      <option>add</option>
     </select>
   </div>
 
@@ -293,20 +291,57 @@ export default defineComponent({
     </select>
   </div>
 
+  <button class="btn btn-primary mt-5">
+  <i class="fa fa-plus"></i> Nuevo registro
+</button>
+
             </form>
             
         </div>
     </div>
 
+    <table class="table mt-5">
+  <thead>
+    <tr>
+      <th scope="col">Nombre</th>
+      <th scope="col">Apellido</th>
+      <th scope="col">DNI</th>
+      <th scope="col">Acción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Aquí puedes agregar las filas con los datos que quieras -->
+    <tr>
+      <td>Juan</td>
+      <td>Pérez</td>
+      <td>12345678</td>
+      <td>EDITAR ELIMINAR</td>
+    </tr>
+  </tbody>
+</table>
+
+
   </div>
+
+
+
   <div class="tab-pane" id="familia">
      <!-- Contenido de la pestaña Familia -->
-
      <div class="card mt-5">
         <div class="card-body">
           <div class="alert alert-success" role="alert">
   <h4 class="alert-heading">Datos de la Familia</h4>
 </div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group mt-3">
+      <label for="nombreFamilia">Nombre de familia</label>
+      <input type="text" class="form-control" id="nombreFamilia" placeholder="Ejemplo Mori">
+    </div>
+  </div>
+</div>
+
 
             <form>
                 <div class="row mt-4">
@@ -607,12 +642,119 @@ conservación, manipulación y consumo de alimentos</label>
     </select>
   </div>
 
+
+  <button class="btn btn-success mt-5">
+  <i class="fa fa-save"></i> Guardar
+</button>
         </div>
     </div>
 
   </div>
   <div class="tab-pane" id="riesgo">
     <!-- Contenido de la pestaña Riesgo -->
+
+    <div class="card">
+  <div class="card-body">
+
+
+    <div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">IDENTIFICACION DE LOS RIESGOS DE LA FAMILIA SEGÚN ETAPA</h4>
+  <hr>
+  <p class="mb-0">EN LA ETAPA 0-11 AÑOS</p>
+</div>
+
+    
+<form>
+  <p class="mb-0">Tiene su niño/s que nació con bajo peso?</p>
+  <div class="row mt-2">
+    <div class="col-md-1">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" id="checkSi" name="opcion" value="si">
+        <label class="form-check-label" for="checkSi">Si</label> 
+      </div>
+    </div>
+    <div class="col-md-1">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" id="checkNo" name="opcion" value="no">
+        <label class="form-check-label" for="checkNo">No</label>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Nombre completo">
+    </div>
+    <div class="col-md-3">
+      <input type="number" class="form-control" placeholder="Edad">
+    </div>
+    <div class="col-md-3">
+      <input type="number" class="form-control" placeholder="DNI">
+    </div>
+  </div>
+</form>
+
+
+
+
+<form>
+  <p class="mb-0">Su Niño/a nació antes de la fecha de Probable Parto</p>
+  <div class="row mt-2">
+    <div class="col-md-1">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" id="checkSi" name="opcion" value="si">
+        <label class="form-check-label" for="checkSi">Si</label> 
+      </div>
+    </div>
+    <div class="col-md-1">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" id="checkNo" name="opcion" value="no">
+        <label class="form-check-label" for="checkNo">No</label>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Nombre completo">
+    </div>
+    <div class="col-md-3">
+      <input type="number" class="form-control" placeholder="Edad">
+    </div>
+    <div class="col-md-3">
+      <input type="number" class="form-control" placeholder="DNI">
+    </div>
+  </div>
+</form>
+
+
+<form>
+  <p class="mb-0">Donde Nacio</p>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" id="checkSi" name="opcion" value="si">
+        <label class="form-check-label" for="checkSi">Domicilio del Sector</label> 
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" id="checkNo" name="opcion" value="no">
+        <label class="form-check-label" for="checkNo">Centro de Salud</label>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-check">
+        <input type="radio" class="form-check-input" id="checkNo" name="opcion" value="no">
+        <label class="form-check-label" for="checkNo">Hospital</label>
+      </div>
+    </div>
+
+  </div>
+</form>
+
+
+
+
+    
+  </div>
+</div>
+
+
   </div>
   <div class="tab-pane" id="dimension">
     <!-- Contenido de la pestaña Dimensión -->
