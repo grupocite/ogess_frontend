@@ -145,20 +145,483 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="nk-content">
-    <div class="container-fluid">
-      <div class="nk-content-inner">
-        <div class="nk-content-body">
-          <div class="nk-block">
-            <div class="d-flex justify-content-center flex-responsive-sup">
-ROBERTOOOOOOOOOOOOOO
+  <div class="container-fluid mt-5">
 
+    
+    <div class="card mt-5">
+        <div class="card-body">
+          
+            <form>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Encuestador">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="Fecha">
+                    </div>
+                </div>
+            </form>
 
-            </div>
-      
-          </div>
+            <form>
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Unidad Ejecutora">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Red Salud">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Micro redes">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Establecimiento de Salud">
+                    </div>
+                </div>
+            </form>
+             
+             
         </div>
-      </div>
+    </div>
+  </div>
+
+    <div class="card mt-5">
+        <div class="card-body"> 
+          <ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#persona">Persona</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#familia">Familia</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#riesgo">Riesgo</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#dimension">Dimensión</a>
+  </li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="persona">
+    <!-- Contenido de la pestaña Persona -->
+
+    <div class="card mt-5">
+        <div class="card-body">
+          
+            <form>
+                <div class="row">
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="DNI">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="Fecha de nacimiento">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="Edad">
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="gridCheck">
+      <label class="form-check-label" for="gridCheck">
+        Jefe de familia
+      </label>
+    </div>
+                    </div>
+                </div>
+            </form>
+
+            <form>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Nombres">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Apellidos">
+                    </div>
+                </div>
+            </form>
+
+
+            <form>
+              <div class="form-group col-md-2 mt-3">
+    <label for="exampleFormControlSelect1">Grado de instrucción</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Primaria</option>
+      <option>Segundaria</option>
+      <option>Universidad</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    
+    <div class="mt-3 col-md-4">
+    <label for="exampleFormControlSelect1">Ocupación</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>/</option>
+      <option>/</option>
+      <option>/</option>
+    </select>
+  </div>
+
+  </div>
+
+  <div class="mt-3 col-md-4">
+    <label for="exampleFormControlSelect1">Estado</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Soltero</option>
+      <option>Casado</option>
+      <option>Conviviente</option>
+      <option>Divorciado</option>
+    </select>
+  </div>
+  <div class="mt-3 col-md-4">
+    <label for="exampleFormControlSelect1">Religión</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Católico</option>
+      <option>Evangelio</option>
+      <option>Adventista</option>
+      <option>Otro</option>
+    </select>
+  </div>
+  <div class="mt-3 col-md-4">
+    <label for="exampleFormControlSelect1">Seguro</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Essalud</option>
+      <option>SIS</option>
+      <option>Sin seguro</option>
+      <option>Otro</option>
+    </select>
+  </div>
+
+            </form>
+            
+        </div>
+    </div>
+
+  </div>
+  <div class="tab-pane" id="familia">
+     <!-- Contenido de la pestaña Familia -->
+
+     <div class="card mt-5">
+        <div class="card-body">
+          <div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Datos de la Familia</h4>
+</div>
+
+            <form>
+                <div class="row mt-4">
+                    <div class="col-md-2">
+                      <label for="exampleFormControlSelect1">Niños(as) O a 11 años</label>
+                        <input type="int" class="form-control" placeholder="Número">
+                    </div>
+                    <div class="col-md-2">
+                      <label for="exampleFormControlSelect1">Adolecentes 12 a 17 años</label>
+                        <input type="text" class="form-control" placeholder="Número">
+                    </div>
+                    <div class="col-md-2">
+                      <label for="exampleFormControlSelect1">Jóvenes 18 a 29 años</label>
+                        <input type="text" class="form-control" placeholder="Número">
+                    </div>
+                    <div class="col-md-2">
+                      <label for="exampleFormControlSelect1">Adulto 30 a 59 años</label>
+                        <input type="text" class="form-control" placeholder="Número">
+                    </div>
+                    <div class="col-md-2">
+                      <label for="exampleFormControlSelect1">Adulto mayor a 60 años</label>
+                        <input type="text" class="form-control" placeholder="Número">
+                    </div>
+                </div>
+                <div class="form-group mt-3">
+    <label for="exampleFormControlTextarea1">Nombres, Apellidos de las Personas que viven en casa y sexo, que parentesco tiene con el jefe del hogar?</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
+            </form>
+             
+
+            <div class="alert alert-success mt-5" role="alert">
+  <h4 class="alert-heading">CARACTERÍSTICAS</h4>
+</div>
+          
+<div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">EI tipo de vivienda esta construida con:</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Material Rústico (Pared de madera, Piso tierra, techo calamina)</option>
+      <option>Material Noble (Ladrillo y Cemento, ceramica)</option>
+      <option>Material Chosa (paredes cañabra, etc)</option>    
+    </select>
+  </div>
+
+
+  <form>
+    <div class="row mt-4">
+      <div class="col-md-3">
+                      <label for="exampleFormControlSelect1">Cuantas Habitaciones tiene en su vivienda</label>
+                        <input type="text" class="form-control" placeholder="Número">
+                    </div>
+    </div>
+  </form>
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Las habitaciones son compartidas, es decir duermen mas de 1 persona</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option> 
+    </select>
+  </div>
+
+
+  <div class="form-group mt-3">
+    <label for="exampleFormControlTextarea1">Describe</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Tiene destinado alguna habitacion para alamacenamiento,
+conservación, manipulación y consumo de alimentos</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option> 
+    </select>
+  </div>
+
+  <div class="form-group mt-3">
+    <label for="exampleFormControlTextarea1">Detalle</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
+
+
+  
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Usted visualiza algun daño en su vivienda que tiene algun riesgo que podria afectar a su familia</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option> 
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">La eliminacion de Excrementos o deposiciones 10 hace en :</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Aire libre</option>
+      <option>Letrina</option>
+      <option>Acequia y/o Canal</option> 
+      <option>Red publica(desague)</option> 
+      <option>Pozo Septico</option> 
+      <option>Otros</option>   
+    </select>
+  </div>
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">La eliminacion de los desechos y/o basura 10 hace en :</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Carro recolectos</option>
+      <option>Campo Abierto</option>
+      <option>AI rio y/o canal</option> 
+      <option>Se entirra y quema</option> 
+      <option>Pozo</option> 
+      <option>Otros</option>   
+    </select>
+  </div>
+      
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Que servicios basicos, tiene instalado en su vivienda :</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Teléfono</option>
+      <option>Internet</option>
+      <option>Cable</option> 
+      <option>Electricidad</option> 
+      <option>Agua y Desague</option> 
+      <option>Otros</option>   
+    </select>
+  </div>
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cómo se abastece de agua para su consumo</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>1.-Agua con Tratamiento(Potable, reservorio, etc), dentro de la vivienda</option>
+      <option>2.-Agua con Tratamiento(Potable, reservorio, etc), fuera de la vivienda</option>
+      <option>3.-Agua sin tramiento(Tanque, canal, Cisterna, rio, etc)</option> 
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Para preparar sus alimentos usted usa :</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Cocina a gas</option>
+      <option>Cocina mejorada</option>
+      <option>Cocina a Corriente</option> 
+      <option>Tushpa, leña</option> 
+      <option>Otros</option>   
+    </select>
+  </div>
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cuál es el medio de conexión del fluido eléctrico</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Instalado por electrooriente</option>
+      <option>Bateria</option>
+      <option>panel solar</option> 
+      <option>conexión clandestina</option> 
+    </select>
+  </div>
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Para el traslado interno o fuera de su sector, usted tiene una movilidad motorizada</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Motocicleta</option>
+      <option>Mototaxi</option>
+      <option>Carro</option> 
+      <option>Otro</option> 
+    </select>
+  </div>
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Tienen algún tipo de Animal domestico en su vivienda</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Perro</option>
+      <option>Gato</option>
+      <option>Otro</option> 
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cuenta con las vacunas respectivas</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cria algun tipo de animal que contribuya con un ingreso adicional en su familia</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Cuyes</option>
+      <option>Cerdos</option>
+      <option>Aves de corral</option>
+      <option>Vacas</option>
+      <option>Solo tengo para mi consumo como parte de mis alimentos</option>
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cuenta con Botiquin o mochila de emergencia en caso de algun accidente leve</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Existen Parques de sector</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Existen areas verdes dentro de su sector</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+  
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cree usted que en su localidad existe contaminación al aire</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">En su sector percibe malos olores</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Participa usted en faenas comunales de limpieza de su sector</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cree usted que en sus actividades rutinaria contribuye a la contaminación y degradación ambiental</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+
+  
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Para el traslado interno o fuera de su sector, usted tiene una movilidad motorizada</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Deforestación</option>
+      <option>Contaminación del rio</option>
+    </select>
+  </div>
+
+  <div class="form-group mt-3">
+    <label for="exampleFormControlTextarea1">Describa</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">usted estaría dispuesto a pagar una tarifa para ayudar a conservar el medio ambiente</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Cree usted que en su sector la población tiene conciencia ambiental</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+  <div class="mt-3 col-md-5">
+    <label for="exampleFormControlSelect1">Si en su sector se difundiera sobre actividades de reforestacion, Usted participaría activamente</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>Si</option>
+      <option>No</option>
+    </select>
+  </div>
+
+        </div>
+    </div>
+
+  </div>
+  <div class="tab-pane" id="riesgo">
+    <!-- Contenido de la pestaña Riesgo -->
+  </div>
+  <div class="tab-pane" id="dimension">
+    <!-- Contenido de la pestaña Dimensión -->
+  </div>
+</div>
+
+            
+             
+        
     </div>
   </div>
 
