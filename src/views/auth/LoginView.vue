@@ -28,15 +28,16 @@ export default defineComponent({
     const newPassword = ref('')
     const confirmPassword = ref('')
     const headers = useAuth().headers()
+    const tokens = ref('')
 
     const { login } = useAuth()
     const router = useRouter()
 
     const emailInput = ref()
     const passwordInput = ref()
+    const passwordInputChange = ref()
 
     const handleSubmit = async () => {
-
       const email = emailInput.value.value
       const password = passwordInput.value.value
 
@@ -45,17 +46,8 @@ export default defineComponent({
         return
       }
 
-      try {
-          await login(email, password)
-          router.push('/')
-        } catch (error) {
-          console.log(error)
-        }
-
-        /*
       if (password === 'ogess2023') {
         try {
-          // Realiza una solicitud al servidor para obtener el token
           const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/login`,
             {
@@ -68,21 +60,15 @@ export default defineComponent({
           )
 
           if (response.status === 200 && response.data.access_token) {
-            // Guarda el token en una variable
             const token = response.data.access_token
+            tokens.value = token
 
-            console.log(token);
-            
+            console.log(token)
 
-            // Muestra el modal de cambio de contraseña y pasa el token
             openModal()
             showModal.value = true
             newPassword.value = ''
             confirmPassword.value = ''
-
-            // Pasa el token al modal
-            // Por ejemplo, puedes agregar una propiedad en tu componente modal
-            // para almacenar el token y acceder a él dentro del modal.
           } else {
             console.error('No se recibió un token en la respuesta.')
           }
@@ -90,44 +76,52 @@ export default defineComponent({
           console.error(error)
         }
       } else {
-        // Llama a la función de inicio de sesión normal si la contraseña no es "ogess2023"
-
-      } */
-    
-    }
-
-    const savePassword = async () => {
-      const { newPassword, confirmPassword } = state
-
-      if (newPassword === confirmPassword) {
         try {
-          // Realiza la solicitud al servidor para restablecer la contraseña
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/auth/actualizar-contrasena`,
-            {
-              newPassword
-            },
-            {
-              ...headers
-            }
-          )
-
-          if (response.status === 200) {
-            // Cierra el modal y permite al usuario redirigir al área segura
-            showModal.value = false
-            router.push('/')
-          } else {
-            console.error('Error al cambiar la contraseña.')
-          }
+          await login(email, password)
+          router.push('/')
         } catch (error) {
-          console.error('Error al cambiar la contraseña:', error)
+          console.log(error)
         }
-      } else {
-        console.error('Las contraseñas no coinciden')
       }
     }
 
-    // Function password
+    const savePassword = async () => {
+      const newPassword = state.newPassword
+      const confirmPassword = state.confirmPassword
+
+      console.log(newPassword)
+
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/actualizar-contrasena`,
+          {
+            password: newPassword,
+            password_confirmation: confirmPassword
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + tokens.value
+            }
+          }
+        )
+
+        if (response.status === 200) {
+
+          
+          if (response.data && response.data.message) {
+            ElMessage.success(response.data.message)
+          }
+          
+          router.push('/')
+        } else {
+          console.error('Error al cambiar la contraseña.')
+        }
+      } catch (error) {
+        console.error('Error al cambiar la contraseña:', error)
+      }
+    }
+
     const showPassword = ref(false)
 
     const passwordVisibility = () => {
@@ -139,10 +133,12 @@ export default defineComponent({
       password: state.password,
       handleSubmit,
       emailInput,
+      tokens,
       passwordInput,
       showPassword,
       state,
       headers,
+      passwordInputChange,
       passwordVisibility,
       showModal,
       newPassword,
@@ -219,6 +215,7 @@ export default defineComponent({
                 type="password"
                 class="form-control"
                 id="new-password"
+                ref="passwordInputChange"
                 v-model="state.newPassword"
               />
             </div>
@@ -232,7 +229,7 @@ export default defineComponent({
               />
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" @click="savePassword">Cambiar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="savePassword">Cambiar</button>
             </div>
           </form>
         </div>
