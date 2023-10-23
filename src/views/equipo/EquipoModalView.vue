@@ -94,7 +94,7 @@ export default defineComponent({
             <div class="d-flex justify-content-between align-items-center">
               <h4 class="modal-title w-100 border-bottom me-2 fw-semibold color-w font-family f-18" id="myModalLabel2">
                 <span v-if="formData.id">Editar Asesor</span>
-                <span v-else>Agregar Asesor</span>
+                <span v-else>Agregar User</span>
               </h4>
               <div @click.prevent="closeModal" class="color-y fs-1 poe" aria-label="Cerrar"><em class="icon ni ni-cross-sm"></em>
               </div>

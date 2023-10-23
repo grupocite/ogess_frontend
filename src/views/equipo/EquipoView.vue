@@ -9,26 +9,13 @@
                 <!-- Primera columna con el campo de búsqueda -->
                 <div class="form-group has-search">
                   <span class="fa fa-search form-control-feedback"></span>
-                  <input type="text" class="form-control" placeholder="Buscar asesor" v-model="searchText" />
+                  <input type="text" class="form-control" placeholder="Buscar user" v-model="searchText" />
                 </div>
               </div>
 
               <div class="col-12 col-md-2 mb-2 mb-md-0"></div>
 
-              <div class="col-12 col-md-6">
-                <div style="text-align: end" id="custom-button-group">
-                  <button type="button" class="btn btn-outline-warning mr-1 mb-1 mb-md-0" data-bs-toggle="modal"
-                    data-bs-target="#modalAnswerFast">
-                    <i class="fas fa-trash mr-1"></i> Respuestas rápidas del equipo
-                  </button>
-                  <button @click.prevent="openModal" type="button" class="btn btn-outline-yellow mr-1 mb-1 mb-md-0">
-                    <i class="fas fa-plus mr-1"></i> Agregar Asesor
-                  </button>
-                  <button type="button" class="btn mb-1 mb-md-0">
-                    <i class="fas fa-trash mr-1 font-base"></i>
-                  </button>
-                </div>
-              </div>
+
             </div>
 
             <div class="container-table">
