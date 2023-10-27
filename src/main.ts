@@ -3,11 +3,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { useAuth } from '@/stores/auth'
 
 import App from './App.vue'
 import router from './router'
-import bcrypt from 'bcryptjs'; // Importa la biblioteca de bcrypt que estés utilizando
 
 
 
