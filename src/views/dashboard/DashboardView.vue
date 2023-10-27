@@ -108,10 +108,22 @@ export default defineComponent({
 
     const messageContent = ref("");
     const formattedLastActivity = ref("");
+    const hasStorageRoom = ref(null);
 
     const tableData = ref([]);
 
+ // Define la lógica para ocultar el campo DNI aquí
+ const opcion = ref("si"); // Valor por defecto "Si"
 
+const toggleDniField = (value: string) => {
+  if (value === "no") {
+    // Ocultar el campo DNI
+    // Puedes hacerlo manipulando la variable chartOptions u otras referencias necesarias
+  } else {
+    // Mostrar el campo DNI
+    // Puedes hacerlo manipulando la variable chartOptions u otras referencias necesarias
+  }
+};
     const headers = useAuth().headers();
     const selectMes = ref(null);
     const selectAnio = ref(null);
@@ -139,6 +151,9 @@ export default defineComponent({
       selectMes,
       selectAnio,
       headers,
+      opcion, // La referencia para el radio button
+      // ... (Resto de tus referencias)
+      toggleDniField, // La función para cambiar la visibilidad del campo DNI
     };
   },
 });
@@ -239,56 +254,53 @@ export default defineComponent({
                         <input type="text" class="form-control" placeholder="Apellidos">
                     </div>
                 </div>
-            </form>
-
-
-            <form>
-              <div class="form-group col-md-2 mt-3">
-    <label for="exampleFormControlSelect1">Grado de instrucción</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Primaria</option>
-      <option>Segundaria</option>
-      <option>Universidad</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    
-    <div class="mt-3 col-md-4">
-    <label for="exampleFormControlSelect1">Ocupación</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>add</option>
-    </select>
-  </div>
-
-  </div>
-
-  <div class="mt-3 col-md-4">
-    <label for="exampleFormControlSelect1">Estado</label>
+            
+              
+                <div class="row mt-3">
+                    <div class="mt-3 col-md-4">
+                      <label for="exampleFormControlSelect1">Ocupación</label>
+                   <select class="form-control" id="exampleFormControlSelect1">
+                     <option>add</option>
+                    </select>
+                    </div>
+                    <div class="mt-3 col-md-4">
+                      <label for="exampleFormControlSelect1">Estado</label>
     <select class="form-control" id="exampleFormControlSelect1">
       <option>Soltero</option>
       <option>Casado</option>
       <option>Conviviente</option>
       <option>Divorciado</option>
     </select>
+                    </div>
+                </div>
+                
+  <div class="form-group">
+
   </div>
-  <div class="mt-3 col-md-4">
-    <label for="exampleFormControlSelect1">Religión</label>
+  <div class="row mt-3">
+                    <div class="mt-3 col-md-4">
+                      <label for="exampleFormControlSelect1">Religión</label>
     <select class="form-control" id="exampleFormControlSelect1">
       <option>Católico</option>
       <option>Evangelio</option>
       <option>Adventista</option>
       <option>Otro</option>
     </select>
-  </div>
-  <div class="mt-3 col-md-4">
-    <label for="exampleFormControlSelect1">Seguro</label>
+                    </div>
+                    <div class="mt-3 col-md-4">
+                      <label for="exampleFormControlSelect1">Seguro</label>
     <select class="form-control" id="exampleFormControlSelect1">
       <option>Essalud</option>
       <option>SIS</option>
       <option>Sin seguro</option>
       <option>Otro</option>
     </select>
+                    </div>
+                </div>
+
+
+  <div class="mt-3 col-md-4">
+   
   </div>
 
   <button class="btn btn-primary mt-5">
@@ -367,8 +379,6 @@ export default defineComponent({
                     </div>
                 </div>
                 <div class="form-group mt-3">
-    <label for="exampleFormControlTextarea1">Nombres, Apellidos de las Personas que viven en casa y sexo, que parentesco tiene con el jefe del hogar?</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
   </div>
             </form>
              
@@ -376,49 +386,64 @@ export default defineComponent({
             <div class="alert alert-success mt-5" role="alert">
   <h4 class="alert-heading">CARACTERÍSTICAS</h4>
 </div>
+
+
           
-<div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">EI tipo de vivienda esta construida con:</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Material Rústico (Pared de madera, Piso tierra, techo calamina)</option>
-      <option>Material Noble (Ladrillo y Cemento, ceramica)</option>
-      <option>Material Chosa (paredes cañabra, etc)</option>    
-    </select>
+<div class="mt-4 col-md-12">
+  <label>El tipo de vivienda está construida con:</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="form-checky">
+      <input type="radio" name="tipoVivienda" id="radioMaterialRustico" value="Material Rústico"> Material Rústico (Pared de madera, Piso tierra, techo calamina)
+    </label>
+    <label class="form-check">
+      <input type="radio" name="tipoVivienda" id="radioMaterialNoble" value="Material Noble"> Material Noble (Ladrillo y Cemento, cerámica)
+    </label>
+    <label class="form-check">
+      <input type="radio" name="tipoVivienda" id="radioMaterialChosa" value="Material Chosa"> Material Chosa (paredes cañabrava, etc)
+    </label>
   </div>
+</div>
 
 
-  <form>
-    <div class="row mt-4">
-      <div class="col-md-3">
-                      <label for="exampleFormControlSelect1">Cuantas Habitaciones tiene en su vivienda</label>
-                        <input type="text" class="form-control" placeholder="Número">
-                    </div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+      <label for="exampleFormControlSelect1">Cuantas Habitaciones tiene en su vivienda</label>
+      <input type="text" class="form-control" placeholder="Número">
     </div>
-  </form>
 
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Las habitaciones son compartidas, es decir duermen mas de 1 persona</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option> 
-    </select>
+    <div class="col-md-6">
+      <label>Las habitaciones son compartidas, es decir duermen más de 1 persona</label>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="form-check">
+          <input type="radio" name="compartidas" value="Si"> Si
+        </label>
+        <label class="form-check">
+          <input type="radio" name="compartidas" value="No"> No
+        </label>
+      </div>
+    </div>
   </div>
 
 
   <div class="form-group mt-3">
-    <label for="exampleFormControlTextarea1">Describe</label>
+    <label for="exampleFormControlTextarea1">Describe como son compartidas</label>
     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
   </div>
 
 
   <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Tiene destinado alguna habitacion para alamacenamiento,
-conservación, manipulación y consumo de alimentos</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option> 
-    </select>
+  <label>Tiene destinado alguna habitación para almacenamiento, conservación, manipulación y consumo de alimentos</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="form-check">
+      <input type="radio" name="tieneHabitacionAlmacenamiento" value="Si"> Si
+    </label>
+    <label class="form-check">
+      <input type="radio" name="tieneHabitacionAlmacenamiento" value="No"> No
+    </label>
   </div>
+</div>
+
 
   <div class="form-group mt-3">
     <label for="exampleFormControlTextarea1">Detalle</label>
@@ -426,221 +451,400 @@ conservación, manipulación y consumo de alimentos</label>
   </div>
 
 
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <label>Usted visualiza algún daño en su vivienda que tiene algún riesgo que podría afectar a su familia</label>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn form-check">
+            <input type="radio" name="visualizaDanio" value="Si"> Si
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="visualizaDanio" value="No"> No
+          </label>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+      <label>La eliminación de Excrementos o deposiciones se hace en:</label>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionExcrementos" value="Aire libre"> Aire libre
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionExcrementos" value="Letrina"> Letrina
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionExcrementos" value="Acequia y/o Canal"> Acequia y/o Canal
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionExcrementos" value="Red pública (desagüe)"> Red pública (desagüe)
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionExcrementos" value="Pozo Séptico"> Pozo Séptico
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionExcrementos" value="Otros"> Otros
+          </label>
+        </div>
+    </div>
+  </div>
   
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Usted visualiza algun daño en su vivienda que tiene algun riesgo que podria afectar a su familia</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option> 
-    </select>
+
+  <div class="mt-3 col-md-10">
+    <label>La eliminación de los desechos y/o basura se hace en:</label>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionDesechos" value="Carro recolector"> Carro recolector
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionDesechos" value="Campo Abierto"> Campo Abierto
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionDesechos" value="Al río y/o canal"> Al río y/o canal
+          </label>
+          <label class="btn form-checky">
+            <input type="radio" name="eliminacionDesechos" value="Se entierra y quema"> Se entierra y quema
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionDesechos" value="Pozo"> Pozo
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="eliminacionDesechos" value="Otros"> Otros
+          </label>
+          </div>
   </div>
 
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">La eliminacion de Excrementos o deposiciones 10 hace en :</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Aire libre</option>
-      <option>Letrina</option>
-      <option>Acequia y/o Canal</option> 
-      <option>Red publica(desague)</option> 
-      <option>Pozo Septico</option> 
-      <option>Otros</option>   
-    </select>
-  </div>
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">La eliminacion de los desechos y/o basura 10 hace en :</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Carro recolectos</option>
-      <option>Campo Abierto</option>
-      <option>AI rio y/o canal</option> 
-      <option>Se entirra y quema</option> 
-      <option>Pozo</option> 
-      <option>Otros</option>   
-    </select>
+  <div class="mt-3 col-md-10">
+  
   </div>
       
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Que servicios basicos, tiene instalado en su vivienda :</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Teléfono</option>
-      <option>Internet</option>
-      <option>Cable</option> 
-      <option>Electricidad</option> 
-      <option>Agua y Desague</option> 
-      <option>Otros</option>   
-    </select>
+  <div class="mt-3 col-md-13">
+  <label>¿Qué servicios básicos tiene instalados en su vivienda?</label>
+  <p></p>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="telefonoCheckbox" value="Teléfono" name="serviciosBasicos">
+    <label class="form-check-label" for="telefonoCheckbox">Teléfono</label>
   </div>
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cómo se abastece de agua para su consumo</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>1.-Agua con Tratamiento(Potable, reservorio, etc), dentro de la vivienda</option>
-      <option>2.-Agua con Tratamiento(Potable, reservorio, etc), fuera de la vivienda</option>
-      <option>3.-Agua sin tramiento(Tanque, canal, Cisterna, rio, etc)</option> 
-    </select>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="internetCheckbox" value="Internet" name="serviciosBasicos">
+    <label class="form-check-label" for="internetCheckbox">Internet</label>
   </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="cableCheckbox" value="Cable" name="serviciosBasicos">
+    <label class="form-check-label" for="cableCheckbox">Cable</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="electricidadCheckbox" value="Electricidad" name="serviciosBasicos">
+    <label class="form-check-label" for="electricidadCheckbox">Electricidad</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="aguaDesagueCheckbox" value="Agua y Desagüe" name="serviciosBasicos">
+    <label class="form-check-label" for="aguaDesagueCheckbox">Agua y Desagüe</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="otrosCheckbox" value="Otros" name="serviciosBasicos">
+    <label class="form-check-label" for="otrosCheckbox">Otros</label>
+  </div>
+</div>
+
+<div class="mt-3 col-md-10">
+    <label>La eliminación de los desechos y/o basura se hace en:</label>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="cocina"> Cocina a gas
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="cocinam"> Cocina mejorada
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="cocinaC"> Cocina a Corriente
+          </label>
+          <label class="btn form-checky">
+            <input type="radio" name="cocinaGas" value="ushpa"> Tushpa, leña
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="otros"> Otros
+          </label>
+          </div>
+
+          
+          <div class="mt-3 col-md-10">
+  <label>Estado</label>
+  <p></p>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="estadoCivil" value="soltero"> Soltero
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="estadoCivil" value="casado"> Casado
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="estadoCivil" value="conviviente"> Conviviente
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="estadoCivil" value="divorciado"> Divorciado
+    </label>
+  </div>
+</div>
+</div>
 
 
-  <div class="mt-3 col-md-5">
+
+  <div class="mt-3 col-md-10">
+    
     <label for="exampleFormControlSelect1">Para preparar sus alimentos usted usa :</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Cocina a gas</option>
-      <option>Cocina mejorada</option>
-      <option>Cocina a Corriente</option> 
-      <option>Tushpa, leña</option> 
-      <option>Otros</option>   
-    </select>
+    <p>  </p>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="cocina"> Cocina a gas
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="cocinam"> Cocina mejorada
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="cocinaC"> Cocina a Corriente
+          </label>
+          <label class="btn form-checky">
+            <input type="radio" name="cocinaGas" value="ushpa"> Tushpa, leña
+          </label>
+          <label class="btn form-check">
+            <input type="radio" name="cocinaGas" value="otros"> Otros
+          </label>
+          </div>
   </div>
+  <div class="mt-3 col-md-10">
+  <label>Cuál es el medio de conexión del fluido eléctrico</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="conexionElectrica" value="instaladoPorElectrooriente"> Instalado por Electrooriente
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="conexionElectrica" value="bateria"> Batería
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="conexionElectrica" value="panelSolar"> Panel Solar
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="conexionElectrica" value="conexionClandestina"> Conexión Clandestina
+    </label>
+  </div>
+</div>
 
+<div class="row mt-3">
+  <div class="mt-3 col-md-7">
+    <label>Para el traslado interno o fuera de su sector, usted tiene una movilidad motorizada</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="movilidadMotorizada" value="motocicleta"> Motocicleta
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="movilidadMotorizada" value="mototaxi"> Mototaxi
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="movilidadMotorizada" value="carro"> Carro
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="movilidadMotorizada" value="otro"> Otro
+    </label>
+    </div>
+  </div>
+      <div class="mt-3 col-md-4">
+        <label>Tienen algún tipo de Animal doméstico en su vivienda</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="animalDomestico" value="perro"> Perro
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="animalDomestico" value="gato"> Gato
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="animalDomestico" value="otro"> Otro
+    </label>
+  </div>
+    </div>
+    </div>
+
+    <div class="mt-3 col-md-5">
+  <label>Cuenta con las vacunas respectivas</label>
+  <p></p>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="vacunas" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="vacunas" value="no"> No
+    </label>
+  </div>
+</div>
+
+
+
+<div class="mt-3 col-md-9">
+  <label>Cria algún tipo de animal que contribuya con un ingreso adicional en su familia</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="criaAnimal" value="cuyes"> Cuyes
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="criaAnimal" value="cerdos"> Cerdos
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="criaAnimal" value="avesDeCorral"> Aves de corral
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="criaAnimal" value="vacas"> Vacas
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="criaAnimal" value="soloConsumo"> Solo tengo para mi consumo como parte de mis alimentos
+    </label>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="mt-3 col-md-4">
+    <label>Cuenta con Botiquín o mochila de emergencia en caso de algún accidente leve</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="botiquinEmergencia" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="botiquinEmergencia" value="no"> No
+    </label>
+  </div>
+      </div>
+      <div class="mt-3 col-md-4">
+        <label>Existen Parques en el sector</label>
+        <p></p>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="parquesSector" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="parquesSector" value="no"> No
+    </label>
+  </div>
+    </div>
+    <div class="mt-3 col-md-4">
+    <label>Existen áreas verdes dentro de su sector</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="areasVerdesSector" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="areasVerdesSector" value="no"> No
+    </label>
+    <p></p>
+  </div>
+  </div>
+    </div>
+
+    <div class="row mt-3">
   <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cuál es el medio de conexión del fluido eléctrico</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Instalado por electrooriente</option>
-      <option>Bateria</option>
-      <option>panel solar</option> 
-      <option>conexión clandestina</option> 
-    </select>
+    <label>Cree usted que en su localidad existe contaminación al aire</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="contaminacionAire" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="contaminacionAire" value="no"> No
+    </label>
   </div>
+      </div>
+      <div class="mt-3 col-md-7">
+        <label>En su sector percibe malos olores</label>
+        <p></p>
 
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Para el traslado interno o fuera de su sector, usted tiene una movilidad motorizada</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Motocicleta</option>
-      <option>Mototaxi</option>
-      <option>Carro</option> 
-      <option>Otro</option> 
-    </select>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="malosOlores" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="malosOlores" value="no"> No
+    </label>
   </div>
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Tienen algún tipo de Animal domestico en su vivienda</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Perro</option>
-      <option>Gato</option>
-      <option>Otro</option> 
-    </select>
   </div>
-
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cuenta con las vacunas respectivas</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
-  </div>
-
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cria algun tipo de animal que contribuya con un ingreso adicional en su familia</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Cuyes</option>
-      <option>Cerdos</option>
-      <option>Aves de corral</option>
-      <option>Vacas</option>
-      <option>Solo tengo para mi consumo como parte de mis alimentos</option>
-    </select>
-  </div>
-
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cuenta con Botiquin o mochila de emergencia en caso de algun accidente leve</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
-  </div>
-
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Existen Parques de sector</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
-  </div>
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Existen areas verdes dentro de su sector</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
-  </div>
+    </div>
   
+    <div class="row mt-3">
   <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cree usted que en su localidad existe contaminación al aire</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
+    <label>Participa usted en faenas comunales de limpieza de su sector</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="faenasComunales" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="faenasComunales" value="no"> No
+    </label>
   </div>
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">En su sector percibe malos olores</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
+      </div>
+      <div class="mt-3 col-md-7">
+        <label>Cree usted que en sus actividades rutinarias contribuye a la contaminación y degradación ambiental</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="contaminacionAmbiental" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="contaminacionAmbiental" value="no"> No
+    </label>
   </div>
-
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Participa usted en faenas comunales de limpieza de su sector</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
-  </div>
-
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cree usted que en sus actividades rutinaria contribuye a la contaminación y degradación ambiental</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
-  </div>
-
-
+    </div>
+    </div>
   
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Para el traslado interno o fuera de su sector, usted tiene una movilidad motorizada</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Deforestación</option>
-      <option>Contaminación del rio</option>
-    </select>
+    <div class="mt-3 col-md-5">
+  <label>Para el traslado interno o fuera de su sector, usted tiene una movilidad motorizada</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="movilidadMotorizada" value="deforestacion"> Deforestación
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="movilidadMotorizada" value="contaminacionRio"> Contaminación del río
+    </label>
   </div>
+</div>
 
-  <div class="form-group mt-3">
+
+  <div class="form-group mt-">
     <label for="exampleFormControlTextarea1">Describa</label>
     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
   </div>
 
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">usted estaría dispuesto a pagar una tarifa para ayudar a conservar el medio ambiente</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
+  <div class="row mt-3">
+  <div class="mt-3 col-md-7">
+    <label>¿Usted estaría dispuesto a pagar una tarifa para ayudar a conservar el medio ambiente?</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="pagarPorMedioAmbiente" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="pagarPorMedioAmbiente" value="no"> No
+    </label>
   </div>
-
-
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Cree usted que en su sector la población tiene conciencia ambiental</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
+      </div>
+      <div class="mt-3 col-md-5">
+        <label>Cree usted que en su sector la población tiene conciencia ambiental</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="concienciaAmbiental" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="concienciaAmbiental" value="no"> No
+    </label>
   </div>
-  <div class="mt-3 col-md-5">
-    <label for="exampleFormControlSelect1">Si en su sector se difundiera sobre actividades de reforestacion, Usted participaría activamente</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>Si</option>
-      <option>No</option>
-    </select>
+    </div>
+    </div>
+  
+    <div class="mt-3 col-md-5">
+  <label>Si en su sector se difundiera sobre actividades de reforestación, ¿Usted participaría activamente?</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn form-check">
+      <input type="radio" name="participacionReforestacion" value="si"> Si
+    </label>
+    <label class="btn form-check">
+      <input type="radio" name="participacionReforestacion" value="no"> No
+    </label>
   </div>
+</div>
+
 
 
   <button class="btn btn-success mt-5">
@@ -747,12 +951,54 @@ conservación, manipulación y consumo de alimentos</label>
   </div>
 </form>
 
-
-
-
-    
+<form>
+    <p class="mb-0">Su Niño ya Cuenta con DNI</p>
+    <div class="row mt-2">
+      <div class="col-md-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="checkSi" name="opcion" value="si" v-model="opcion">
+          <label class="form-check-label" for="checkSi">Si</label>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="checkNo" name="opcion" value="no" v-model="opcion">
+          <label class="form-check-label" for="checkNo">No</label>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <input type="text" class="form-control" placeholder="Nombre completo">
+      </div>
+      <div class="col-md-3">
+        <input type="number" class="form-control" placeholder="Edad">
+      </div>
+      <div class="col-md-3">
+        <input type="number" class="form-control" placeholder="DNI" v-if="opcion === 'si'">
+      </div>
+    </div>
+  </form>
   </div>
+  <form>
+    <p class="mb-0">Su Niño ya Cuenta con DNI</p>
+    <div class="row mt-2">
+      <div class="col-md-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="checkSi" name="opcion" value="si" v-model="opcion">
+          <label class="form-check-label" for="checkSi">Si</label>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="checkNo" name="opcion" value="no" v-model="opcion">
+          <label class="form-check-label" for="checkNo">No</label>
+        </div>
+      </div>
+      </div>
+  </form>
 </div>
+
+
 
 
   </div>
@@ -769,6 +1015,7 @@ conservación, manipulación y consumo de alimentos</label>
 
 
 </template>
+
 
 <style scoped>
 .color-y {
