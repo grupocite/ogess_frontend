@@ -203,33 +203,32 @@ export default defineComponent({
   <div class="container-fluid mt-5">
     <div class="card mt-5">
       <div class="card-body">
-          <div class="row">
-            <div class="col-md-6">
-              <input type="text" class="form-control" placeholder="Encuestador" />
-            </div>
-            <div class="col-md-2">
-              <input type="text" class="form-control" placeholder="Fecha" />
-            </div>
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Encuestador" />
           </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Fecha" />
+          </div>
+        </div>
 
-          <div class="row mt-4">
-            <div class="col-md-3">
-              <input type="text" class="form-control" placeholder="Unidad Ejecutora" />
-            </div>
-            <div class="col-md-3">
-              <input type="text" class="form-control" placeholder="Red Salud" />
-            </div>
-            <div class="col-md-3">
-              <input type="text" class="form-control" placeholder="Micro redes" />
-            </div>
-            <div class="col-md-3">
-              <input type="text" class="form-control" placeholder="Establecimiento de Salud" />
-            </div>
+        <div class="row mt-4">
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Unidad Ejecutora" />
           </div>
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Red Salud" />
+          </div>
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Micro redes" />
+          </div>
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Establecimiento de Salud" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
   <div class="card mt-5">
     <div class="card-body">
       <ul class="nav nav-tabs">
@@ -253,145 +252,117 @@ export default defineComponent({
 
           <div class="card mt-5">
             <div class="card-body">
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="DNI" v-model="searchDNI" />
+                    <div class="input-group-append">
+                      <button class="btn btn-primary" @click.prevent="searchByDNI">
+                        <i class="fas fa-search"></i>
+                        <!-- Usando FontAwesome como ejemplo -->
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <input type="date" class="form-control" placeholder="Fecha de nacimiento" v-model="fechaNacimiento"
+                    @input="calcularEdad" />
+                </div>
+                <div class="col-md-2">
+                  <input type="number" class="form-control" placeholder="Edad" v-model="edad" />
+                </div>
+                <div class="col-md-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck" />
+                    <label class="form-check-label" for="gridCheck"> Jefe de familia </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Nombres" v-model="nombres" />
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Apellidos" v-model="apellidos" />
+                </div>
+              </div>
+
+              <div class="row mt-3">
                 <div class="row">
-                  <div class="col-md-2">
+                  <div class="form-group col-md-6 mt-3">
+                    <label for="exampleFormControlSelect1">Ocupación</label>
                     <div class="input-group">
-                      <input
-                        type="text"
-                        class="form-control"
-                        placeholder="DNI"
-                        v-model="searchDNI"
-                      />
-                      <div class="input-group-append">
-                        <button class="btn btn-primary" @click.prevent="searchByDNI">
-                          <i class="fas fa-search"></i>
-                          <!-- Usando FontAwesome como ejemplo -->
-                        </button>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fa fa-search"></i>
+                        </span>
                       </div>
+                      <input v-model="searchTerm" class="form-control" placeholder="Buscar ocupación" />
                     </div>
-                  </div>
-                  <div class="col-md-2">
-                    <input
-                      type="date"
-                      class="form-control"
-                      placeholder="Fecha de nacimiento"
-                      v-model="fechaNacimiento"
-                      @input="calcularEdad"
-                    />
-                  </div>
-                  <div class="col-md-2">
-                    <input type="number" class="form-control" placeholder="Edad" v-model="edad" />
-                  </div>
-                  <div class="col-md-2">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="gridCheck" />
-                      <label class="form-check-label" for="gridCheck"> Jefe de familia </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row mt-3">
-                  <div class="col-md-6">
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Nombres"
-                      v-model="nombres"
-                    />
-                  </div>
-                  <div class="col-md-6">
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Apellidos"
-                      v-model="apellidos"
-                    />
-                  </div>
-                </div>
-
-                <div class="row mt-3">
-                  <div class="row">
-                    <div class="form-group col-md-6 mt-3">
-                      <label for="exampleFormControlSelect1">Ocupación</label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="fa fa-search"></i>
-                          </span>
-                        </div>
-                        <input
-                          v-model="searchTerm"
-                          class="form-control"
-                          placeholder="Buscar ocupación"
-                        />
-                      </div>
-                      <select class="form-control mt-3">
-                        <option value="">Selecciona una ocupación</option>
-                        <option
-                          v-for="occupation in filteredOccupations"
-                          :key="occupation.id"
-                          :value="occupation.id"
-                        >
-                          {{ occupation.ocup_nombre }}
-                        </option>
-                      </select>
-                    </div>
-
-                    <div class="form-group col-md-4 mt-3">
-                      <div class="d-flex align-items-center mt-3">
-                        <span class="mr-2 ml-3">Crear nuevo</span>
-                        <!-- Agregamos ml-3 para margen izquierdo -->
-                        <button class="btn btn-primary" @click.prevent="openAddOccupationModal">
-                          <i class="fa fa-plus"></i>
-                          <!-- Puedes cambiar el icono si lo deseas -->
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mt-3 col-md-4">
-                    <label for="exampleFormControlSelect1">Estado</label>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                      <option v-for="estado in estadoCivil.data" :key="estado.id">
-                        {{ estado.esci_nombre }}
+                    <select class="form-control mt-3">
+                      <option value="">Selecciona una ocupación</option>
+                      <option v-for="occupation in filteredOccupations" :key="occupation.id" :value="occupation.id">
+                        {{ occupation.ocup_nombre }}
                       </option>
                     </select>
                   </div>
 
-                  <div class="mt-3 col-md-4">
-                    <label for="exampleFormControlSelect1">Grado de instrucción</label>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                      <option v-for="grado in gradoInstruccion.data" :key="grado.id">
-                        {{ grado.grain_nombre }}
-                      </option>
-                    </select>
+                  <div class="form-group col-md-4 mt-3">
+                    <div class="d-flex align-items-center mt-3">
+                      <span class="mr-2 ml-3">Crear nuevo</span>
+                      <!-- Agregamos ml-3 para margen izquierdo -->
+                      <button class="btn btn-primary" @click.prevent="openAddOccupationModal">
+                        <i class="fa fa-plus"></i>
+                        <!-- Puedes cambiar el icono si lo deseas -->
+                      </button>
+                    </div>
                   </div>
                 </div>
-
-                <div class="form-group"></div>
-                <div class="row mt-3">
-                  <div class="mt-3 col-md-4">
-                    <label for="exampleFormControlSelect1">Religion</label>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                      <option v-for="religion2 in religion.data" :key="religion.id">
-                        {{ religion2.reli_nombre }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="mt-3 col-md-4">
-                    <label for="exampleFormControlSelect1">Seguro</label>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                      <option v-for="estado in seguroSalud.data" :key="estado.id">
-                        {{ estado.sesa_nombre }}
-                      </option>
-                    </select>
-                  </div>
+                <div class="mt-3 col-md-4">
+                  <label for="exampleFormControlSelect1">Estado</label>
+                  <select class="form-control" id="exampleFormControlSelect1">
+                    <option v-for="estado in estadoCivil.data" :key="estado.id">
+                      {{ estado.esci_nombre }}
+                    </option>
+                  </select>
                 </div>
 
-                <div class="mt-3 col-md-4"></div>
+                <div class="mt-3 col-md-4">
+                  <label for="exampleFormControlSelect1">Grado de instrucción</label>
+                  <select class="form-control" id="exampleFormControlSelect1">
+                    <option v-for="grado in gradoInstruccion.data" :key="grado.id">
+                      {{ grado.grain_nombre }}
+                    </option>
+                  </select>
+                </div>
+              </div>
 
-                <button class="btn btn-primary mt-5">
-                  <i class="fa fa-plus"></i> Nuevo registro
-                </button>
+              <div class="form-group"></div>
+              <div class="row mt-3">
+                <div class="mt-3 col-md-4">
+                  <label for="exampleFormControlSelect1">Religion</label>
+                  <select class="form-control" id="exampleFormControlSelect1">
+                    <option v-for="religion2 in religion.data" :key="religion.id">
+                      {{ religion2.reli_nombre }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mt-3 col-md-4">
+                  <label for="exampleFormControlSelect1">Seguro</label>
+                  <select class="form-control" id="exampleFormControlSelect1">
+                    <option v-for="estado in seguroSalud.data" :key="estado.id">
+                      {{ estado.sesa_nombre }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-4"></div>
+
+              <button class="btn btn-primary mt-5">
+                <i class="fa fa-plus"></i> Nuevo registro
+              </button>
             </div>
           </div>
 
@@ -428,39 +399,34 @@ export default defineComponent({
                 <div class="col-md-6">
                   <div class="form-group mt-3">
                     <label for="nombreFamilia">Nombre de familia</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="nombreFamilia"
-                      placeholder="Ejemplo Mori"
-                    />
+                    <input type="text" class="form-control" id="nombreFamilia" placeholder="Ejemplo Mori" />
                   </div>
                 </div>
               </div>
 
-                <div class="row mt-4">
-                  <div class="col-md-2">
-                    <label for="exampleFormControlSelect1">Niños(as) O a 11 años</label>
-                    <input type="int" class="form-control" placeholder="Número" />
-                  </div>
-                  <div class="col-md-2">
-                    <label for="exampleFormControlSelect1">Adolecentes 12 a 17 años</label>
-                    <input type="text" class="form-control" placeholder="Número" />
-                  </div>
-                  <div class="col-md-2">
-                    <label for="exampleFormControlSelect1">Jóvenes 18 a 29 años</label>
-                    <input type="text" class="form-control" placeholder="Número" />
-                  </div>
-                  <div class="col-md-2">
-                    <label for="exampleFormControlSelect1">Adulto 30 a 59 años</label>
-                    <input type="text" class="form-control" placeholder="Número" />
-                  </div>
-                  <div class="col-md-2">
-                    <label for="exampleFormControlSelect1">Adulto mayor a 60 años</label>
-                    <input type="text" class="form-control" placeholder="Número" />
-                  </div>
+              <div class="row mt-4">
+                <div class="col-md-2">
+                  <label for="exampleFormControlSelect1">Niños(as) O a 11 años</label>
+                  <input type="int" class="form-control" placeholder="Número" />
                 </div>
-                <div class="form-group mt-3"></div>
+                <div class="col-md-2">
+                  <label for="exampleFormControlSelect1">Adolecentes 12 a 17 años</label>
+                  <input type="text" class="form-control" placeholder="Número" />
+                </div>
+                <div class="col-md-2">
+                  <label for="exampleFormControlSelect1">Jóvenes 18 a 29 años</label>
+                  <input type="text" class="form-control" placeholder="Número" />
+                </div>
+                <div class="col-md-2">
+                  <label for="exampleFormControlSelect1">Adulto 30 a 59 años</label>
+                  <input type="text" class="form-control" placeholder="Número" />
+                </div>
+                <div class="col-md-2">
+                  <label for="exampleFormControlSelect1">Adulto mayor a 60 años</label>
+                  <input type="text" class="form-control" placeholder="Número" />
+                </div>
+              </div>
+              <div class="form-group mt-3"></div>
 
               <div class="alert alert-success mt-5" role="alert">
                 <h4 class="alert-heading">CARACTERÍSTICAS</h4>
@@ -470,30 +436,15 @@ export default defineComponent({
                 <label>El tipo de vivienda está construida con:</label>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="form-checky">
-                    <input
-                      type="radio"
-                      name="tipoVivienda"
-                      id="radioMaterialRustico"
-                      value="Material Rústico"
-                    />
+                    <input type="radio" name="tipoVivienda" id="radioMaterialRustico" value="Material Rústico" />
                     Material Rústico (Pared de madera, Piso tierra, techo calamina)
                   </label>
                   <label class="form-check">
-                    <input
-                      type="radio"
-                      name="tipoVivienda"
-                      id="radioMaterialNoble"
-                      value="Material Noble"
-                    />
+                    <input type="radio" name="tipoVivienda" id="radioMaterialNoble" value="Material Noble" />
                     Material Noble (Ladrillo y Cemento, cerámica)
                   </label>
                   <label class="form-check">
-                    <input
-                      type="radio"
-                      name="tipoVivienda"
-                      id="radioMaterialChosa"
-                      value="Material Chosa"
-                    />
+                    <input type="radio" name="tipoVivienda" id="radioMaterialChosa" value="Material Chosa" />
                     Material Chosa (paredes cañabrava, etc)
                   </label>
                 </div>
@@ -501,9 +452,7 @@ export default defineComponent({
 
               <div class="row mt-4">
                 <div class="col-md-4">
-                  <label for="exampleFormControlSelect1"
-                    >Cuantas Habitaciones tiene en su vivienda</label
-                  >
+                  <label for="exampleFormControlSelect1">Cuantas Habitaciones tiene en su vivienda</label>
                   <input type="text" class="form-control" placeholder="Número" />
                 </div>
 
@@ -526,10 +475,8 @@ export default defineComponent({
               </div>
 
               <div class="mt-3 col-md-5">
-                <label
-                  >Tiene destinado alguna habitación para almacenamiento, conservación, manipulación
-                  y consumo de alimentos</label
-                >
+                <label>Tiene destinado alguna habitación para almacenamiento, conservación, manipulación
+                  y consumo de alimentos</label>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="form-check">
                     <input type="radio" name="tieneHabitacionAlmacenamiento" value="Si" /> Si
@@ -547,10 +494,8 @@ export default defineComponent({
 
               <div class="row mt-4">
                 <div class="col-md-4">
-                  <label
-                    >Usted visualiza algún daño en su vivienda que tiene algún riesgo que podría
-                    afectar a su familia</label
-                  >
+                  <label>Usted visualiza algún daño en su vivienda que tiene algún riesgo que podría
+                    afectar a su familia</label>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
                       <input type="radio" name="visualizaDanio" value="Si" /> Si
@@ -576,11 +521,7 @@ export default defineComponent({
                       Acequia y/o Canal
                     </label>
                     <label class="btn form-check">
-                      <input
-                        type="radio"
-                        name="eliminacionExcrementos"
-                        value="Red pública (desagüe)"
-                      />
+                      <input type="radio" name="eliminacionExcrementos" value="Red pública (desagüe)" />
                       Red pública (desagüe)
                     </label>
                     <label class="btn form-check">
@@ -628,63 +569,33 @@ export default defineComponent({
                 <label>¿Qué servicios básicos tiene instalados en su vivienda?</label>
                 <p></p>
                 <div class="form-check form-check-inline">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="telefonoCheckbox"
-                    value="Teléfono"
-                    name="serviciosBasicos"
-                  />
+                  <input type="checkbox" class="form-check-input" id="telefonoCheckbox" value="Teléfono"
+                    name="serviciosBasicos" />
                   <label class="form-check-label" for="telefonoCheckbox">Teléfono</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="internetCheckbox"
-                    value="Internet"
-                    name="serviciosBasicos"
-                  />
+                  <input type="checkbox" class="form-check-input" id="internetCheckbox" value="Internet"
+                    name="serviciosBasicos" />
                   <label class="form-check-label" for="internetCheckbox">Internet</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="cableCheckbox"
-                    value="Cable"
-                    name="serviciosBasicos"
-                  />
+                  <input type="checkbox" class="form-check-input" id="cableCheckbox" value="Cable"
+                    name="serviciosBasicos" />
                   <label class="form-check-label" for="cableCheckbox">Cable</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="electricidadCheckbox"
-                    value="Electricidad"
-                    name="serviciosBasicos"
-                  />
+                  <input type="checkbox" class="form-check-input" id="electricidadCheckbox" value="Electricidad"
+                    name="serviciosBasicos" />
                   <label class="form-check-label" for="electricidadCheckbox">Electricidad</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="aguaDesagueCheckbox"
-                    value="Agua y Desagüe"
-                    name="serviciosBasicos"
-                  />
+                  <input type="checkbox" class="form-check-input" id="aguaDesagueCheckbox" value="Agua y Desagüe"
+                    name="serviciosBasicos" />
                   <label class="form-check-label" for="aguaDesagueCheckbox">Agua y Desagüe</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="otrosCheckbox"
-                    value="Otros"
-                    name="serviciosBasicos"
-                  />
+                  <input type="checkbox" class="form-check-input" id="otrosCheckbox" value="Otros"
+                    name="serviciosBasicos" />
                   <label class="form-check-label" for="otrosCheckbox">Otros</label>
                 </div>
               </div>
@@ -730,9 +641,7 @@ export default defineComponent({
               </div>
 
               <div class="mt-3 col-md-10">
-                <label for="exampleFormControlSelect1"
-                  >Para preparar sus alimentos usted usa :</label
-                >
+                <label for="exampleFormControlSelect1">Para preparar sus alimentos usted usa :</label>
                 <p></p>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn form-check">
@@ -756,11 +665,7 @@ export default defineComponent({
                 <label>Cuál es el medio de conexión del fluido eléctrico</label>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn form-check">
-                    <input
-                      type="radio"
-                      name="conexionElectrica"
-                      value="instaladoPorElectrooriente"
-                    />
+                    <input type="radio" name="conexionElectrica" value="instaladoPorElectrooriente" />
                     Instalado por Electrooriente
                   </label>
                   <label class="btn form-check">
@@ -778,10 +683,8 @@ export default defineComponent({
 
               <div class="row mt-3">
                 <div class="mt-3 col-md-7">
-                  <label
-                    >Para el traslado interno o fuera de su sector, usted tiene una movilidad
-                    motorizada</label
-                  >
+                  <label>Para el traslado interno o fuera de su sector, usted tiene una movilidad
+                    motorizada</label>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
                       <input type="radio" name="movilidadMotorizada" value="motocicleta" />
@@ -828,10 +731,8 @@ export default defineComponent({
               </div>
 
               <div class="mt-3 col-md-9">
-                <label
-                  >Cria algún tipo de animal que contribuya con un ingreso adicional en su
-                  familia</label
-                >
+                <label>Cria algún tipo de animal que contribuya con un ingreso adicional en su
+                  familia</label>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn form-check">
                     <input type="radio" name="criaAnimal" value="cuyes" /> Cuyes
@@ -854,10 +755,8 @@ export default defineComponent({
 
               <div class="row mt-3">
                 <div class="mt-3 col-md-4">
-                  <label
-                    >Cuenta con Botiquín o mochila de emergencia en caso de algún accidente
-                    leve</label
-                  >
+                  <label>Cuenta con Botiquín o mochila de emergencia en caso de algún accidente
+                    leve</label>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
                       <input type="radio" name="botiquinEmergencia" value="si" /> Si
@@ -933,10 +832,8 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="mt-3 col-md-7">
-                  <label
-                    >Cree usted que en sus actividades rutinarias contribuye a la contaminación y
-                    degradación ambiental</label
-                  >
+                  <label>Cree usted que en sus actividades rutinarias contribuye a la contaminación y
+                    degradación ambiental</label>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
                       <input type="radio" name="contaminacionAmbiental" value="si" /> Si
@@ -949,10 +846,8 @@ export default defineComponent({
               </div>
 
               <div class="mt-3 col-md-5">
-                <label
-                  >Para el traslado interno o fuera de su sector, usted tiene una movilidad
-                  motorizada</label
-                >
+                <label>Para el traslado interno o fuera de su sector, usted tiene una movilidad
+                  motorizada</label>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn form-check">
                     <input type="radio" name="movilidadMotorizada" value="deforestacion" />
@@ -972,10 +867,8 @@ export default defineComponent({
 
               <div class="row mt-3">
                 <div class="mt-3 col-md-7">
-                  <label
-                    >¿Usted estaría dispuesto a pagar una tarifa para ayudar a conservar el medio
-                    ambiente?</label
-                  >
+                  <label>¿Usted estaría dispuesto a pagar una tarifa para ayudar a conservar el medio
+                    ambiente?</label>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
                       <input type="radio" name="pagarPorMedioAmbiente" value="si" /> Si
@@ -999,10 +892,8 @@ export default defineComponent({
               </div>
 
               <div class="mt-3 col-md-5">
-                <label
-                  >Si en su sector se difundiera sobre actividades de reforestación, ¿Usted
-                  participaría activamente?</label
-                >
+                <label>Si en su sector se difundiera sobre actividades de reforestación, ¿Usted
+                  participaría activamente?</label>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn form-check">
                     <input type="radio" name="participacionReforestacion" value="si" /> Si
@@ -1021,255 +912,133 @@ export default defineComponent({
           <!-- Contenido de la pestaña Riesgo -->
 
           <div class="card">
-            <div class="card-body">
-              <div class="alert alert-success" role="alert">
-                <h4 class="alert-heading">
-                  IDENTIFICACION DE LOS RIESGOS DE LA FAMILIA SEGÚN ETAPA
-                </h4>
-                <hr />
-                <p class="mb-0">EN LA ETAPA 0-11 AÑOS</p>
-              </div>
-
-              <form>
-                <p class="mb-0">Tiene su niño/s que nació con bajo peso?</p>
-                <div class="row mt-2">
-                  <div class="col-md-1">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkSi"
-                        name="opcion"
-                        value="si"
-                      />
-                      <label class="form-check-label" for="checkSi">Si</label>
-                    </div>
-                  </div>
-                  <div class="col-md-1">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkNo"
-                        name="opcion"
-                        value="no"
-                      />
-                      <label class="form-check-label" for="checkNo">No</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <input type="text" class="form-control" placeholder="Nombre completo" />
-                  </div>
-                  <div class="col-md-3">
-                    <input type="number" class="form-control" placeholder="Edad" />
-                  </div>
-                  <div class="col-md-3">
-                    <input type="number" class="form-control" placeholder="DNI" />
-                  </div>
-                </div>
-              </form>
-
-              <form>
-                <p class="mb-0">Su Niño/a nació antes de la fecha de Probable Parto</p>
-                <div class="row mt-2">
-                  <div class="col-md-1">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkSi"
-                        name="opcion"
-                        value="si"
-                      />
-                      <label class="form-check-label" for="checkSi">Si</label>
-                    </div>
-                  </div>
-                  <div class="col-md-1">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkNo"
-                        name="opcion"
-                        value="no"
-                      />
-                      <label class="form-check-label" for="checkNo">No</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <input type="text" class="form-control" placeholder="Nombre completo" />
-                  </div>
-                  <div class="col-md-3">
-                    <input type="number" class="form-control" placeholder="Edad" />
-                  </div>
-                  <div class="col-md-3">
-                    <input type="number" class="form-control" placeholder="DNI" />
-                  </div>
-                </div>
-              </form>
-
-              <form>
-                <p class="mb-0">Donde Nacio</p>
-                <div class="row mt-4">
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkSi"
-                        name="opcion"
-                        value="si"
-                      />
-                      <label class="form-check-label" for="checkSi">Domicilio del Sector</label>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkNo"
-                        name="opcion"
-                        value="no"
-                      />
-                      <label class="form-check-label" for="checkNo">Centro de Salud</label>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkNo"
-                        name="opcion"
-                        value="no"
-                      />
-                      <label class="form-check-label" for="checkNo">Hospital</label>
-                    </div>
-                  </div>
-                </div>
-              </form>
-
-              <form>
-                <p class="mb-0">Su Niño ya Cuenta con DNI</p>
-                <div class="row mt-2">
-                  <div class="col-md-1">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkSi"
-                        name="opcion"
-                        value="si"
-                        v-model="opcion"
-                      />
-                      <label class="form-check-label" for="checkSi">Si</label>
-                    </div>
-                  </div>
-                  <div class="col-md-1">
-                    <div class="form-check">
-                      <input
-                        type="radio"
-                        class="form-check-input"
-                        id="checkNo"
-                        name="opcion"
-                        value="no"
-                        v-model="opcion"
-                      />
-                      <label class="form-check-label" for="checkNo">No</label>
-                    </div>
-                  </div>
-
-                  <div class="col-md-3">
-                    <input type="text" class="form-control" placeholder="Nombre completo" />
-                  </div>
-                  <div class="col-md-3">
-                    <input type="number" class="form-control" placeholder="Edad" />
-                  </div>
-                  <div class="col-md-3">
-                    <input
-                      type="number"
-                      class="form-control"
-                      placeholder="DNI"
-                      v-if="opcion === 'si'"
-                    />
-                  </div>
-                </div>
-              </form>
+            <div class="card-header">
             </div>
-            <form>
-              <p class="mb-0">Su Niño ya Cuenta con DNI</p>
-              <div class="row mt-2">
-                <div class="col-md-1">
-                  <div class="form-check">
-                    <input
-                      type="radio"
-                      class="form-check-input"
-                      id="checkSi"
-                      name="opcion"
-                      value="si"
-                      v-model="opcion"
-                    />
-                    <label class="form-check-label" for="checkSi">Si</label>
+            <div class="card-body">
+              <h5 class="card-title text-center">IDENTIFICACION DE LOS RIESGOS DE LA FAMILIA</h5>
+              <p class="card-text">EN LA ETAPA NIÑO 0-11 AÑOS</p>
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="form-group col-4">
+                    <select id="inputState" class="form-control">
+                      <option selected>Niño 1</option>
+                      <option>Niño 2</option>
+                      <option>Niño 3</option>
+                      <option>Niño 4</option>
+                    </select>
+                  </div>
+                  <div class="col-7">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos" />
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="nombreFamilia" placeholder="Edad" />
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-1">
-                  <div class="form-check">
-                    <input
-                      type="radio"
-                      class="form-check-input"
-                      id="checkNo"
-                      name="opcion"
-                      value="no"
-                      v-model="opcion"
-                    />
-                    <label class="form-check-label" for="checkNo">No</label>
+
+                <div class="row mt-3">
+                  <div class="col-sm-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">Su niño/a nació con bajo peso?</h5>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                            value="option1">
+                          <label class="form-check-label" for="inlineRadio1">Si</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                            value="option2">
+                          <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+
+                        <h5 class="card-title mt-3">Lugar de nacimiento</h5>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          <label class="btn form-check">
+                            <input type="radio" name="#" value="domicilio" /> Domicilio del Sector
+                          </label>
+                          <label class="btn form-check">
+                            <input type="radio" name="#" value="centro" /> Centro de Salud
+                          </label>
+                          <label class="btn form-check">
+                            <input type="radio" name="#" value="hospital" /> Hospital
+                          </label>
+                        </div>
+
+
+
+                      </div>
+                    </div>
                   </div>
+                  <div class="col-sm-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">Su Niña/o nació antes de la fecha de Probable Parto</h5>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          <label class="btn form-check">
+                            <input type="radio" name="2" value="domicilio" /> Si
+                          </label>
+                          <label class="btn form-check">
+                            <input type="radio" name="2" value="centro" /> No
+                          </label>
+                        </div>
+                        <div>
+                          <h5 class="card-title mt-3">Niño ya Cuenta con DNI</h5>
+                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn form-check">
+                              <input type="radio" name="1" value="domicilio" /> Si
+                            </label>
+                            <label class="btn form-check">
+                              <input type="radio" name="1" value="centro" /> No
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
                 </div>
+
+                <a href="#" class="btn btn-success mt-4">Siguiente</a>
               </div>
-            </form>
+            </div>
+
+
+            <div class="tab-pane" id="dimension">
+              <!-- Contenido de la pestaña Dimensión -->
+            </div>
           </div>
         </div>
-        <div class="tab-pane" id="dimension">
-          <!-- Contenido de la pestaña Dimensión -->
-        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Modal Personalizado -->
-  <div
-    class="modal fade custom-modal custom-backdrop-modal"
-    id="personalizado"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered" style="margin: 0 auto">
-      <div class="modal-content">
-        <br />
-        <div class="modal-header">
-          <h5 class="modal-title custom-title" id="exampleModalLabel">Registrar Ocupación</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body" style="padding: 20px">
-          <form>
-            <div class="mb-3">
-              <label for="ocup_nombre" class="col-form-label">Ocupación:</label>
-              <input type="text" class="form-control" id="ocup_nombre" />
+      <!-- Modal Personalizado -->
+      <div class="modal fade custom-modal custom-backdrop-modal" id="personalizado" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="margin: 0 auto">
+          <div class="modal-content">
+            <br />
+            <div class="modal-header">
+              <h5 class="modal-title custom-title" id="exampleModalLabel">Registrar Ocupación</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Cancelar
-              </button>
-              <button type="button" class="btn btn-primary" @click="addOccupation">Guardar</button>
+            <div class="modal-body" style="padding: 20px">
+              <form>
+                <div class="mb-3">
+                  <label for="ocup_nombre" class="col-form-label">Ocupación:</label>
+                  <input type="text" class="form-control" id="ocup_nombre" />
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -1639,6 +1408,7 @@ export default defineComponent({
 .modal-b {
   padding-left: 24px;
 }
+
 .select-perso {
   width: 199px;
   height: 42px;
