@@ -12,12 +12,10 @@ import type {
 import { useAuth } from '../../stores/auth'
 import { Modal } from 'bootstrap'
 import { ElMessage } from 'element-plus'
-import { useRoute } from 'vue-router'
-
 import { format } from 'date-fns'
+import { useRoute } from 'vue-router'
 import { useCensoDetails } from '../composables'
 import Swal from 'sweetalert2'
-
 
 export default defineComponent({
   setup() {
@@ -27,17 +25,577 @@ export default defineComponent({
     const seguroSalud = ref<Array<SeguroSalud>>([])
     const ocupaciones = ref<Array<Ocupacion>>([])
 
-    const personas = ref([])
-    const familias = ref([])
 
-    
 
-    const jefeFamilia = ref(false);
+    const porcentajeAvance = ref(null);
+    const totalPreguntasRespondidas = ref(null);
 
+
+    const form = reactive({
+      id: null,
+      fpre_respuesta: [],
+      fpre_respuesta2: [],
+      fpre_respuesta4: [],
+      fpre_respuesta5: [],
+      fpre_respuesta6: [],
+      fpre_respuesta7: [],
+      fpre_respuesta9: [],
+      fpre_respuesta11: [],
+      fpre_respuesta12: [],
+
+      fpre_detalle: ''
+    })
+
+    const selectedRedSalud = ref('');
+    const selectedMicroRed = ref('');
+    const selectedEstablecimiento = ref('');
+    const selectedSector = ref('');
+    const redesSalud = ref([]);
+    const microRedes = ref([]);
+    const establecimientos = ref([]);
+    const sectores = ref([]);
+
+    const uuidCenso = ref(null); // Variable reactiva para almacenar el UUID del censo
+
+    const opcionesDisponibles = ref([])
+    const opcionesMarcadas = reactive([])
 
     const route = useRoute()
-    const { uuid } = route.params
+    const { id } = route.params
 
+    const fetchUniqueRoleData = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas`,
+          headers
+        )
+
+        const respuestasPreguntaEspecifica1 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 1
+        );
+
+        const respuestasPreguntaEspecifica2 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 2)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica3 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 3)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionPreguntaEspecifica3 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 3)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica4 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 4)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const descripcionPreguntaEspecifica4 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 4)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica5 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 5)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const descripcionPreguntaEspecifica5 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 5)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+
+        const descripcionPreguntaEspecifica23 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 23)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica6 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 6)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica7 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 7)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const respuestasPreguntaEspecifica8 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 8
+        );
+
+        const respuestasPreguntaEspecifica9 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 9)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+
+        const respuestasPreguntaEspecifica10 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 10
+        );
+
+
+        const respuestasPreguntaEspecifica11 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 11
+        );
+
+
+        const respuestasPreguntaEspecifica12 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 12
+        );
+
+
+        const respuestasPreguntaEspecifica13 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 13
+        );
+
+
+
+
+        const respuestasPreguntaEspecifica14 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 14)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica15 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 15
+        );
+
+
+
+        const respuestasPreguntaEspecifica16 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 16)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const respuestasPreguntaEspecifica17 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 17
+        );
+
+        const respuestasPreguntaEspecifica18 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 18)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica19 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 19)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica20 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 20)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const respuestasPreguntaEspecifica21 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 21)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica22 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 22)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica23 = response.data.respuestas_familia.filter(
+          (respuesta: any) => respuesta.pregunta_id === 23
+        );
+
+        const respuestasPreguntaEspecifica24 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 24)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const respuestasPreguntaEspecifica26 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 26)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const respuestasPreguntaEspecifica27 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 27)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const respuestasPreguntaEspecifica77 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 77)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const respuestasPreguntaEspecifica78 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 78)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica79 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 79)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica80 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 80)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica81 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 81)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica82 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 82)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica83 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 83)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica84 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 84)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica85 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 85)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta85 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 85)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica86 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 86)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta86 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 86)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica87 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 87)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta87 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 87)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica88 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 88)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica89 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 89)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica90 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 90)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica91 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 91)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta91 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 91)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica92 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 92)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta92 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 92)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+
+        const respuestasPreguntaEspecifica93 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 93)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica94 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 94)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica95 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 95)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica96 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 96)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica97 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 97)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica98 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 98)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica99 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 99)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica100 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 100)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica101 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 101)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica102 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 102)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+
+        const descripcionRespuesta102 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 102)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica103 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 103)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica104 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 104)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica105 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 105)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta105 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 105)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+
+        const respuestasPreguntaEspecifica106 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 106)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta106 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 106)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica107 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 107)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta107 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 107)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+        const respuestasPreguntaEspecifica108 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 108)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const respuestasPreguntaEspecifica109 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 109)
+          .map((respuesta: any) => respuesta.fpre_respuesta);
+
+        const descripcionRespuesta109 = response.data.respuestas_familia
+          .filter((respuesta: any) => respuesta.pregunta_id === 109)
+          .map((respuesta: any) => respuesta.fpre_detalle);
+
+
+        [valorInput.value] = respuestasPreguntaEspecifica2;
+        descripcionCompartidas.value = descripcionPreguntaEspecifica3[0];
+        descripcionQuestion4.value = descripcionPreguntaEspecifica4[0];
+        descripcionQuestion5.value = descripcionPreguntaEspecifica5[0];
+        descripcionQuestion23.value = descripcionPreguntaEspecifica23[0];
+
+
+        [respuestaPregunta3.value] = respuestasPreguntaEspecifica3;
+        [respuestaPregunta4.value] = respuestasPreguntaEspecifica4;
+        [respuestaPregunta5.value] = respuestasPreguntaEspecifica5;
+        [respuestaSeleccionada2.value] = respuestasPreguntaEspecifica6;
+        [respuestaSeleccionada3.value] = respuestasPreguntaEspecifica7;
+        [respuestaSeleccionada4.value] = respuestasPreguntaEspecifica9;
+
+
+        [respuestaPregunta14.value] = respuestasPreguntaEspecifica14;
+        [respuestaPregunta16.value] = respuestasPreguntaEspecifica16;
+        [respuestaPregunta18.value] = respuestasPreguntaEspecifica18;
+        [respuestaPregunta19.value] = respuestasPreguntaEspecifica19;
+        [respuestaPregunta20.value] = respuestasPreguntaEspecifica20;
+        [respuestaPregunta21.value] = respuestasPreguntaEspecifica21;
+        [respuestaPregunta22.value] = respuestasPreguntaEspecifica22;
+
+        [respuestaPregunta24.value] = respuestasPreguntaEspecifica24;
+
+        [respuestaPregunta25.value] = respuestasPreguntaEspecifica26;
+
+        [respuestaPregunta26.value] = respuestasPreguntaEspecifica27;
+
+        respuestaPregunta76.value = respuestasPreguntaEspecifica77;
+        [respuestaPregunta77.value] = respuestasPreguntaEspecifica78;
+        [respuestaPregunta78.value] = respuestasPreguntaEspecifica79;
+        [respuestaPregunta79.value] = respuestasPreguntaEspecifica80;
+        [respuestaPregunta80.value] = respuestasPreguntaEspecifica81;
+        [respuestaPregunta81.value] = respuestasPreguntaEspecifica82;
+        [respuestaPregunta82.value] = respuestasPreguntaEspecifica83;
+        [respuestaPregunta83.value] = respuestasPreguntaEspecifica84;
+
+        [respuestaPregunta84.value] = respuestasPreguntaEspecifica85;
+        descripcionPreguntaTexto84.value = descripcionRespuesta85[0];
+
+
+        respuestaPregunta85.value = respuestasPreguntaEspecifica86;
+
+        descripcionpreguntaTexto85.value = descripcionRespuesta86[0];
+
+
+        [respuestaPregunta86.value] = respuestasPreguntaEspecifica87;
+
+        descripcionpreguntaTexto86.value = descripcionRespuesta87[0];
+
+        [respuestaPregunta87.value] = respuestasPreguntaEspecifica88;
+        [respuestaPregunta88.value] = respuestasPreguntaEspecifica89;
+        [respuestaPregunta89.value] = respuestasPreguntaEspecifica90;
+        [respuestaPregunta90.value] = respuestasPreguntaEspecifica91;
+
+        descripcionpreguntaTexto90.value = descripcionRespuesta91[0];
+        [respuestaPregunta91.value] = respuestasPreguntaEspecifica92;
+
+        descripcionpreguntaTexto91.value = descripcionRespuesta92[0];
+
+        respuestaPregunta92.value = respuestasPreguntaEspecifica93;
+        respuestaPregunta93.value = respuestasPreguntaEspecifica94;
+        [respuestaPregunta94.value] = respuestasPreguntaEspecifica95;
+        [respuestaPregunta95.value] = respuestasPreguntaEspecifica96;
+        [respuestaPregunta96.value] = respuestasPreguntaEspecifica97;
+        [respuestaPregunta97.value] = respuestasPreguntaEspecifica98;
+        [respuestaPregunta98.value] = respuestasPreguntaEspecifica99;
+        [respuestaPregunta99.value] = respuestasPreguntaEspecifica100;
+        [respuestaPregunta100.value] = respuestasPreguntaEspecifica101;
+        [respuestaPregunta101.value] = respuestasPreguntaEspecifica102;
+
+        descripcionpreguntaTexto101.value = descripcionRespuesta102[0];
+        [respuestaPregunta102.value] = respuestasPreguntaEspecifica103;
+        [respuestaPregunta103.value] = respuestasPreguntaEspecifica104;
+        [respuestaPregunta104.value] = respuestasPreguntaEspecifica105;
+
+        descripcionpreguntaTexto104.value = descripcionRespuesta105[0];
+        [respuestaPregunta105.value] = respuestasPreguntaEspecifica106;
+
+        descripcionpreguntaTexto105.value = descripcionRespuesta106[0];
+
+        [respuestaPregunta106.value] = respuestasPreguntaEspecifica107;
+
+        descripcionpreguntaTexto106.value = descripcionRespuesta107[0];
+
+        [respuestaPregunta107.value] = respuestasPreguntaEspecifica108;
+        [respuestaPregunta108.value] = respuestasPreguntaEspecifica109;
+
+        descripcionpreguntaTexto108.value = descripcionRespuesta109[0];
+
+        const opcionesDisponibles = respuestas.value;
+        const opcionesDisponible4 = respuestas4.value;
+        const opcionesDisponible10 = respuestas6.value;
+        const opcionesDisponible11 = respuestas7.value;
+        const opcionesDisponible12 = respuestas8.value;
+        const opcionesDisponible13 = respuestas9.value;
+        const opcionesDisponible15 = respuestas15.value;
+        const opcionesDisponible17 = respuestas17.value;
+        const opcionesDisponible23 = respuestas23.value;
+
+
+        opcionesDisponibles.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica1.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+        })
+
+        opcionesDisponible4.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica8.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+        opcionesDisponible10.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica10.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+        opcionesDisponible11.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica11.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+
+        opcionesDisponible12.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica12.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+        opcionesDisponible13.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica13.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+        opcionesDisponible15.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica15.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+        opcionesDisponible17.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica17.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+        opcionesDisponible23.forEach((opcion: any) => {
+          const coincideConBackend = respuestasPreguntaEspecifica23.some(
+            (respuesta: any) => respuesta.fpre_respuesta === opcion.rc_respuesta_comun
+          )
+
+          opcion.isChecked = coincideConBackend
+
+        })
+
+
+        form.fpre_respuesta = opcionesDisponibles
+
+        form.fpre_respuesta2 = opcionesDisponible4
+
+        form.fpre_respuesta4 = opcionesDisponible10
+
+        form.fpre_respuesta5 = opcionesDisponible11
+
+        form.fpre_respuesta6 = opcionesDisponible12
+
+        form.fpre_respuesta7 = opcionesDisponible13
+
+        form.fpre_respuesta9 = opcionesDisponible15
+
+        form.fpre_respuesta11 = opcionesDisponible17
+
+        form.fpre_respuesta12 = opcionesDisponible23
+
+
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    const personas = ref([])
+    const familias = ref([])
 
     const searchTerm = ref('')
     const searchTerm2 = ref('')
@@ -201,7 +759,6 @@ export default defineComponent({
     const ocupacion = ref('')
     const familia = ref('')
     const idFamilia = ref(null)
-    const idFamiliaAsignacion = ref(null)
     const idDistrito = ref(null)
 
     const idPersonaRiesgoNino = ref(null)
@@ -219,9 +776,9 @@ export default defineComponent({
     const selectedJoven = ref('')
     const selectedAdulto = ref('')
     const selectedAdultoMayor = ref('')
-    const selectedDiscapacidad = ref('');
-    const selectedGestante = ref('');
-    const selectedPuerpera = ref('');
+    const selectedDiscapacidad = ref('')
+    const selectedGestante = ref('')
+    const selectedPuerpera = ref('')
 
     const selectedPersonaNinos = reactive({ nombre: '', edad: null })
     const selectedPersonaAdolescentes = reactive({ nombre: '', edad: null })
@@ -241,25 +798,12 @@ export default defineComponent({
     const personasGestanteOfTheFamily = ref([])
     const personasPuerperaOfTheFamily = ref([])
 
-
     const nombreFamilia = ref('')
     const niños_0_11 = ref(0)
     const adolescentes_12_17 = ref(0)
     const jovenes_18_29 = ref(0)
     const adultos_30_59 = ref(0)
     const adultos_mayores_60 = ref(0)
-
-    const selectedSexo = ref('');
-
-    const selectedRedSalud = ref('');
-    const selectedMicroRed = ref('');
-    const selectedEstablecimiento = ref('');
-    const selectedSector = ref('');
-
-    const redesSalud = ref([]);
-    const microRedes = ref([]);
-    const establecimientos = ref([]);
-    const sectores = ref([]);
 
     const respuestaPregunta3 = ref('') // Para capturar la respuesta "Si" o "No"
     const respuestaPregunta4 = ref('') // Para capturar la respuesta "Si" o "No"
@@ -285,6 +829,88 @@ export default defineComponent({
     const respuestaPregunta24 = ref('')
     const respuestaPregunta25 = ref('')
     const respuestaPregunta26 = ref('')
+    const respuestaPregunta27 = ref('')
+    const respuestaPregunta28 = ref('')
+    const respuestaPregunta29 = ref('')
+    const respuestaPregunta30 = ref('')
+    const respuestaPregunta31 = ref('')
+    const respuestaPregunta32 = ref('')
+    const respuestaPregunta33 = ref('')
+    const respuestaPregunta34 = ref('')
+    const respuestaPregunta35 = ref('')
+    const respuestaPregunta36 = ref('')
+    const respuestaPregunta37 = ref('')
+    const respuestaPregunta38 = ref('')
+    const respuestaPregunta39 = ref([]);
+    const respuestaPregunta40 = ref([]);
+    const respuestaPregunta41 = ref([]);
+    const respuestaPregunta42 = ref([]);
+    const respuestaPregunta43 = ref([]);
+    const respuestaPregunta44 = ref([]);
+    const respuestaPregunta45 = ref([]);
+    const respuestaPregunta46 = ref([]);
+    const respuestaPregunta47 = ref([]);
+    const respuestaPregunta48 = ref([]);
+    const respuestaPregunta49 = ref([]);
+    const respuestaPregunta50 = ref([]);
+    const respuestaPregunta51 = ref([]);
+    const respuestaPregunta52 = ref([]);
+    const respuestaPregunta53 = ref([]);
+    const respuestaPregunta54 = ref([]);
+    const respuestaPregunta55 = ref([]);
+    const respuestaPregunta56 = ref([]);
+    const respuestaPregunta57 = ref([]);
+    const respuestaPregunta58 = ref([]);
+    const respuestaPregunta59 = ref([]);
+    const respuestaPregunta60 = ref([]);
+    const respuestaPregunta61 = ref([]);
+    const respuestaPregunta62 = ref([]);
+    const respuestaPregunta63 = ref([]);
+    const respuestaPregunta64 = ref([]);
+    const respuestaPregunta65 = ref([]);
+    const respuestaPregunta66 = ref([]);
+    const respuestaPregunta67 = ref([]);
+    const respuestaPregunta68 = ref([]);
+    const respuestaPregunta69 = ref([]);
+    const respuestaPregunta70 = ref([]);
+    const respuestaPregunta71 = ref([]);
+    const respuestaPregunta72 = ref([]);
+    const respuestaPregunta73 = ref([]);
+    const respuestaPregunta74 = ref([]);
+    const respuestaPregunta75 = ref([]);
+    const respuestaPregunta76 = ref([]);
+    const respuestaPregunta77 = ref([]);
+    const respuestaPregunta78 = ref([]);
+    const respuestaPregunta79 = ref([]);
+    const respuestaPregunta80 = ref([]);
+    const respuestaPregunta81 = ref([]);
+    const respuestaPregunta82 = ref([]);
+    const respuestaPregunta83 = ref([]);
+    const respuestaPregunta84 = ref([]);
+    const respuestaPregunta85 = ref([]);
+    const respuestaPregunta86 = ref([]);
+    const respuestaPregunta87 = ref([]);
+    const respuestaPregunta88 = ref([]);
+    const respuestaPregunta89 = ref([]);
+    const respuestaPregunta90 = ref([]);
+    const respuestaPregunta91 = ref([]);
+    const respuestaPregunta92 = ref([]);
+    const respuestaPregunta93 = ref([]);
+    const respuestaPregunta94 = ref([]);
+    const respuestaPregunta95 = ref([]);
+    const respuestaPregunta96 = ref([]);
+    const respuestaPregunta97 = ref([]);
+    const respuestaPregunta98 = ref([]);
+    const respuestaPregunta99 = ref([]);
+    const respuestaPregunta100 = ref([]);
+    const respuestaPregunta101 = ref([]);
+    const respuestaPregunta102 = ref([]);
+    const respuestaPregunta103 = ref([]);
+    const respuestaPregunta104 = ref([]);
+    const respuestaPregunta105 = ref([]);
+    const respuestaPregunta106 = ref([]);
+    const respuestaPregunta107 = ref([]);
+    const respuestaPregunta108 = ref([]);
 
     const descripcionCompartidas = ref('') // Para capturar la descripción
     const descripcionQuestion4 = ref('') // Para capturar la descripción
@@ -315,13 +941,11 @@ export default defineComponent({
     const descripcionpreguntaTexto65 = ref('') // Para capturar la descripción
     const descripcionpreguntaTexto66 = ref('') // Para capturar la descripción
     const descripcionpreguntaTexto68 = ref('') // Para capturar la descripción
-    const descripcionPreguntaTexto84 = ref('') // Para capturar la descripción
+    const descripcionPreguntaTexto84 = ref(null); // Para capturar la descripción
 
     const showBlock = ref(1)
     const valorInput = ref('') // Inicializar la variable con un valor por defecto
 
-    const porcentajeAvance = ref(null);
-    const totalPreguntasRespondidas = ref(null);
 
     const getRedesSalud = async () => {
       try {
@@ -330,11 +954,11 @@ export default defineComponent({
           id: red.id,
           name: red.rsa_red_salud
         }));
-        console.log(redesSalud.value)
       } catch (error) {
         console.error(error);
       }
     };
+
 
     const getMicroRedes = async () => {
       try {
@@ -348,23 +972,30 @@ export default defineComponent({
       }
     };
 
+    
+
     const getEstablecimientosSalud = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/establecimientos_salud/${selectedMicroRed.value}`, headers);
         establecimientos.value = response.data.map((establecimiento: any) => ({
           id: establecimiento.id,
           name: establecimiento.esa_establecimiento_salud
+
+
         }));
 
         const distritoId = response.data.length > 0 ? response.data[0].distrito_id : null;
 
-        idDistrito.value = distritoId;
+idDistrito.value = distritoId;
+
+        console.log(selectedMicroRed.value);
 
       } catch (error) {
         console.error(error);
       }
     };
 
+    
     const getSectores = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/establecimientos_salud22/${idDistrito.value}/sectores`, headers);
@@ -377,12 +1008,10 @@ export default defineComponent({
         console.log(idDistrito.value);
         console.log(selectedEstablecimiento.value);
 
-
       } catch (error) {
         console.error(error);
       }
     };
-
 
     const capturarRespuesta = (respuesta: any) => {
       respuestaSeleccionada.value = respuesta
@@ -475,6 +1104,37 @@ export default defineComponent({
         showBlock.value += 1
       }
     }
+
+
+
+    const guardarDetalle = async () => {
+      try {
+        const response = await axios.put(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/actualizar-micro-red22/${selectedEstablecimiento.value}`,
+          null,
+          {
+            ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
+          }
+        );
+
+        if (response.data && response.data.message) {
+          const messageFromBackend = response.data.message;
+
+          // Muestra el mensaje usando ElMessage
+          ElMessage.success(messageFromBackend); // Muestra un mensaje de éxito
+        }
+        // Manejar la respuesta según sea necesario
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          // Mostrar un mensaje de error por defecto para el código de estado 404
+          ElMessage.error('No se encontró el recurso solicitado');
+        } else {
+          // Mostrar un mensaje de error genérico para otros errores
+          ElMessage.error('Error al actualizar el censo');
+        }
+      }
+    };
+
 
     const mostrarCampoEntrada = ref(false)
     const nuevoNombreFamilia = ref('')
@@ -657,6 +1317,8 @@ export default defineComponent({
         )
         const respuestasSeleccionadas0 = Array.from(checkboxes0).map((checkbox) => checkbox.value)
         const selectedValues = respuestasSeleccionadas0
+
+        console.log(selectedValues)
 
         const selectedQuestion1 = [valorInput.value]
         const selectedQuestion2 = [respuestaPregunta3.value]
@@ -846,7 +1508,7 @@ export default defineComponent({
             }
           },
           familia_id: idFamilia.value,
-          censo_uuid: uuid
+          censo_uuid: uuidCenso.value
         }
 
         console.log(data)
@@ -859,7 +1521,7 @@ export default defineComponent({
           }
         )
 
-        console.log(response.data.id)
+        console.log(response)
 
         if (response.status === 201) {
           ElMessage.success(response.data.message)
@@ -1083,7 +1745,7 @@ export default defineComponent({
             }
           },
           familia_id: idFamilia.value,
-          censo_uuid: uuid
+          censo_uuid: uuidCenso.value
         }
 
         console.log(data)
@@ -1195,116 +1857,116 @@ export default defineComponent({
 
         console.log(selectedValues)
 
-        const algunaPreguntaRespondida =
-          selectedValues.length > 0 ||
-          selectedQuestion1.length > 0 ||
-          selectedQuestion2.length > 0 ||
-          selectedQuestion3.length > 0 ||
-          selectedQuestion4.length > 0 ||
-          selectedQuestion5.length > 0 ||
-          selectedQuestion6.length > 0 ||
-          selectedQuestion7.length > 0 ||
-          selectedQuestion8.length > 0 ||
-          selectedQuestion9.length > 0 ||
-          selectedQuestion10.length > 0 ||
-          selectedQuestion11.length > 0;
+        if (
+          selectedValues.length === 0 ||
+          selectedQuestion1.length === 0 ||
+          selectedQuestion2.length === 0 ||
+          selectedQuestion3.length === 0 ||
+          selectedQuestion4.length === 0 ||
+          selectedQuestion5.length === 0 ||
+          selectedQuestion6.length === 0 ||
+          selectedQuestion7.length === 0 ||
+          selectedQuestion8.length === 0 ||
+          selectedQuestion9.length === 0 ||
+          selectedQuestion10.length === 0 ||
+          selectedQuestion11.length === 0
+        ) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 28,
-                respuesta: selectedValues,
-                detalle: ''
-              },
-              {
-                pregunta_id: 29,
-                respuesta: selectedQuestion1,
-                detalle: ''
-              },
-              {
-                pregunta_id: 30,
-                respuesta: selectedQuestion2,
-                detalle: ''
-              },
-              {
-                pregunta_id: 31,
-                respuesta: selectedQuestion3,
-                detalle: ''
-              },
-              {
-                pregunta_id: 32,
-                respuesta: selectedQuestion4,
-                detalle: ''
-              },
-              {
-                pregunta_id: 33,
-                respuesta: selectedQuestion5,
-                detalle: ''
-              },
-              {
-                pregunta_id: 34,
-                respuesta: selectedQuestion6,
-                detalle: ''
-              },
-              {
-                pregunta_id: 35,
-                respuesta: selectedQuestion7,
-                detalle: ''
-              },
-              {
-                pregunta_id: 36,
-                respuesta: selectedQuestion8,
-                detalle: ''
-              },
-              {
-                pregunta_id: 37,
-                respuesta: selectedQuestion9,
-                detalle: ''
-              },
-              {
-                pregunta_id: 38,
-                respuesta: selectedQuestion10,
-                detalle: ''
-              },
-              {
-                pregunta_id: 39,
-                respuesta: selectedQuestion11,
-                detalle: ''
-              }
-            ],
-            persona_id: idPersonaRiesgoNino.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 28,
+              respuesta: selectedValues,
+              detalle: ''
+            },
+            {
+              pregunta_id: 29,
+              respuesta: selectedQuestion1,
+              detalle: ''
+            },
+            {
+              pregunta_id: 30,
+              respuesta: selectedQuestion2,
+              detalle: ''
+            },
+            {
+              pregunta_id: 31,
+              respuesta: selectedQuestion3,
+              detalle: ''
+            },
+            {
+              pregunta_id: 32,
+              respuesta: selectedQuestion4,
+              detalle: ''
+            },
+            {
+              pregunta_id: 33,
+              respuesta: selectedQuestion5,
+              detalle: ''
+            },
+            {
+              pregunta_id: 34,
+              respuesta: selectedQuestion6,
+              detalle: ''
+            },
+            {
+              pregunta_id: 35,
+              respuesta: selectedQuestion7,
+              detalle: ''
+            },
+            {
+              pregunta_id: 36,
+              respuesta: selectedQuestion8,
+              detalle: ''
+            },
+            {
+              pregunta_id: 37,
+              respuesta: selectedQuestion9,
+              detalle: ''
+            },
+            {
+              pregunta_id: 38,
+              respuesta: selectedQuestion10,
+              detalle: ''
+            },
+            {
+              pregunta_id: 39,
+              respuesta: selectedQuestion11,
+              detalle: ''
             }
-          )
+          ],
+          persona_id: idPersonaRiesgoNino.value,
+          censo_uuid: uuidCenso.value
+        }
 
-          console.log(response)
-
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -1341,6 +2003,7 @@ export default defineComponent({
           document.querySelectorAll('input[name="preguntaTexto39"]:checked')
         ).map((input: any) => input.value)
 
+
         const selectedQuestion1 = Array.from(
           document.querySelectorAll('input[name="preguntaTexto40"]:checked')
         ).map((input: any) => input.value)
@@ -1375,98 +2038,98 @@ export default defineComponent({
 
         console.log(selectedValues)
 
-        const algunaPreguntaRespondida =
-          selectedValues.length > 0 ||
-          selectedQuestion1.length > 0 ||
-          selectedQuestion2.length > 0 ||
-          selectedQuestion3.length > 0 ||
-          selectedQuestion4.length > 0 ||
-          selectedQuestion5.length > 0 ||
-          selectedQuestion6.length > 0 ||
-          selectedQuestion7.length > 0 ||
-          selectedQuestion8.length > 0;
+        if (
+          selectedValues.length === 0 ||
+          selectedQuestion1.length === 0 ||
+          selectedQuestion2.length === 0 ||
+          selectedQuestion3.length === 0 ||
+          selectedQuestion4.length === 0 ||
+          selectedQuestion5.length === 0 ||
+          selectedQuestion6.length === 0 ||
+          selectedQuestion7.length === 0 ||
+          selectedQuestion8.length === 0
+        ) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 40,
-                respuesta: selectedValues,
-                detalle: ''
-              },
-              {
-                pregunta_id: 41,
-                respuesta: selectedQuestion1,
-                detalle: ''
-              },
-              {
-                pregunta_id: 42,
-                respuesta: selectedQuestion2,
-                detalle: descripcionPregunta41.value
-              },
-              {
-                pregunta_id: 43,
-                respuesta: selectedQuestion3,
-                detalle: ''
-              },
-              {
-                pregunta_id: 44,
-                respuesta: selectedQuestion4,
-                detalle: descripcionpreguntaTexto43.value
-              },
-              {
-                pregunta_id: 45,
-                respuesta: selectedQuestion5,
-                detalle: descripcionpreguntaTexto44.value
-              },
-              {
-                pregunta_id: 46,
-                respuesta: selectedQuestion6,
-                detalle: ''
-              },
-              {
-                pregunta_id: 47,
-                respuesta: selectedQuestion7,
-                detalle: ''
-              },
-              {
-                pregunta_id: 48,
-                respuesta: selectedQuestion8,
-                detalle: ''
-              }
-            ],
-            persona_id: idPersonaRiesgoAdolescente.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 40,
+              respuesta: selectedValues,
+              detalle: ''
+            },
+            {
+              pregunta_id: 41,
+              respuesta: selectedQuestion1,
+              detalle: ''
+            },
+            {
+              pregunta_id: 42,
+              respuesta: selectedQuestion2,
+              detalle: descripcionPregunta41.value
+            },
+            {
+              pregunta_id: 43,
+              respuesta: selectedQuestion3,
+              detalle: ''
+            },
+            {
+              pregunta_id: 44,
+              respuesta: selectedQuestion4,
+              detalle: descripcionpreguntaTexto43.value
+            },
+            {
+              pregunta_id: 45,
+              respuesta: selectedQuestion5,
+              detalle: descripcionpreguntaTexto44.value
+            },
+            {
+              pregunta_id: 46,
+              respuesta: selectedQuestion6,
+              detalle: ''
+            },
+            {
+              pregunta_id: 47,
+              respuesta: selectedQuestion7,
+              detalle: ''
+            },
+            {
+              pregunta_id: 48,
+              respuesta: selectedQuestion8,
+              detalle: ''
             }
-          )
+          ],
+          persona_id: idPersonaRiesgoAdolescente.value,
+          censo_uuid: uuidCenso.value
+        }
 
-          console.log(response)
-
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -1519,74 +2182,74 @@ export default defineComponent({
           document.querySelectorAll('input[name="preguntaTexto52"]:checked')
         ).map((input: any) => input.value)
 
-        const algunaPreguntaRespondida =
-          selectedValues.length > 0 ||
-          selectedQuestion1.length > 0 ||
-          selectedQuestion2.length > 0 ||
-          selectedQuestion3.length > 0 ||
-          selectedQuestion4.length > 0;
+        if (
+          selectedValues.length === 0 ||
+          selectedQuestion1.length === 0 ||
+          selectedQuestion2.length === 0 ||
+          selectedQuestion3.length === 0 ||
+          selectedQuestion4.length === 0
+        ) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 49,
-                respuesta: selectedValues,
-                detalle: ''
-              },
-              {
-                pregunta_id: 50,
-                respuesta: selectedQuestion1,
-                detalle: ''
-              },
-              {
-                pregunta_id: 51,
-                respuesta: selectedQuestion2,
-                detalle: ''
-              },
-              {
-                pregunta_id: 52,
-                respuesta: selectedQuestion3,
-                detalle: ''
-              },
-              {
-                pregunta_id: 53,
-                respuesta: selectedQuestion4,
-                detalle: ''
-              }
-            ],
-            persona_id: idPersonaRiesgoJoven.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 49,
+              respuesta: selectedValues,
+              detalle: ''
+            },
+            {
+              pregunta_id: 50,
+              respuesta: selectedQuestion1,
+              detalle: ''
+            },
+            {
+              pregunta_id: 51,
+              respuesta: selectedQuestion2,
+              detalle: ''
+            },
+            {
+              pregunta_id: 52,
+              respuesta: selectedQuestion3,
+              detalle: ''
+            },
+            {
+              pregunta_id: 53,
+              respuesta: selectedQuestion4,
+              detalle: ''
             }
-          )
+          ],
+          persona_id: idPersonaRiesgoJoven.value,
+          censo_uuid: uuidCenso.value
+        }
 
-          console.log(response)
-
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -1661,104 +2324,105 @@ export default defineComponent({
 
         console.log(selectedValues)
 
-        const algunaPreguntaRespondida =
-          selectedValues.length > 0 ||
-          selectedQuestion1.length > 0 ||
-          selectedQuestion2.length > 0 ||
-          selectedQuestion3.length > 0 ||
-          selectedQuestion4.length > 0 ||
-          selectedQuestion5.length > 0 ||
-          selectedQuestion6.length > 0 ||
-          selectedQuestion7.length > 0 ||
-          selectedQuestion8.length > 0 ||
-          selectedQuestion9.length > 0;
+        if (
+          selectedValues.length === 0 ||
+          selectedQuestion1.length === 0 ||
+          selectedQuestion2.length === 0 ||
+          selectedQuestion3.length === 0 ||
+          selectedQuestion4.length === 0 ||
+          selectedQuestion5.length === 0 ||
+          selectedQuestion6.length === 0 ||
+          selectedQuestion7.length === 0 ||
+          selectedQuestion8.length === 0 ||
+          selectedQuestion9.length === 0
+        ) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 54,
-                respuesta: selectedValues,
-                detalle: ''
-              },
-              {
-                pregunta_id: 55,
-                respuesta: selectedQuestion1,
-                detalle: descicripcionpreguntaTexto54.value
-              },
-              {
-                pregunta_id: 56,
-                respuesta: selectedQuestion2,
-                detalle: descicripcionpreguntaTexto55.value
-              },
-              {
-                pregunta_id: 57,
-                respuesta: selectedQuestion3,
-                detalle: descicripcionpreguntaTexto56.value
-              },
-              {
-                pregunta_id: 58,
-                respuesta: selectedQuestion4,
-                detalle: ''
-              },
-              {
-                pregunta_id: 59,
-                respuesta: selectedQuestion5,
-                detalle: ''
-              },
-              {
-                pregunta_id: 60,
-                respuesta: selectedQuestion6,
-                detalle: ''
-              },
-              {
-                pregunta_id: 61,
-                respuesta: selectedQuestion7,
-                detalle: descripcionpreguntaTexto60.value
-              },
-              {
-                pregunta_id: 62,
-                respuesta: selectedQuestion8,
-                detalle: descripcionpreguntaTexto61.value
-              },
-              {
-                pregunta_id: 63,
-                respuesta: selectedQuestion9,
-                detalle: descripcionpreguntaTexto62.value
-              }
-            ],
-            persona_id: idPersonaRiesgoAdulto.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 54,
+              respuesta: selectedValues,
+              detalle: ''
+            },
+            {
+              pregunta_id: 55,
+              respuesta: selectedQuestion1,
+              detalle: descicripcionpreguntaTexto54.value
+            },
+            {
+              pregunta_id: 56,
+              respuesta: selectedQuestion2,
+              detalle: descicripcionpreguntaTexto55.value
+            },
+            {
+              pregunta_id: 57,
+              respuesta: selectedQuestion3,
+              detalle: descicripcionpreguntaTexto56.value
+            },
+            {
+              pregunta_id: 58,
+              respuesta: selectedQuestion4,
+              detalle: ''
+            },
+            {
+              pregunta_id: 59,
+              respuesta: selectedQuestion5,
+              detalle: ''
+            },
+            {
+              pregunta_id: 60,
+              respuesta: selectedQuestion6,
+              detalle: ''
+            },
+            {
+              pregunta_id: 61,
+              respuesta: selectedQuestion7,
+              detalle: descripcionpreguntaTexto60.value
+            },
+            {
+              pregunta_id: 62,
+              respuesta: selectedQuestion8,
+              detalle: descripcionpreguntaTexto61.value
+            },
+            {
+              pregunta_id: 63,
+              respuesta: selectedQuestion9,
+              detalle: descripcionpreguntaTexto62.value
             }
-          )
+          ],
+          persona_id: idPersonaRiesgoAdulto.value,
+          censo_uuid: uuidCenso.value
 
-          console.log(response)
+        }
 
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -1821,87 +2485,87 @@ export default defineComponent({
 
         console.log(selectedValues)
 
-        // Verificar si al menos una pregunta está respondida
-        const algunaPreguntaRespondida =
-          selectedValues.length > 0 ||
-          selectedQuestion1.length > 0 ||
-          selectedQuestion2.length > 0 ||
-          selectedQuestion3.length > 0 ||
-          selectedQuestion4.length > 0 ||
-          selectedQuestion5.length > 0 ||
-          selectedQuestion6.length > 0;
+        if (
+          selectedValues.length === 0 ||
+          selectedQuestion1.length === 0 ||
+          selectedQuestion2.length === 0 ||
+          selectedQuestion3.length === 0 ||
+          selectedQuestion4.length === 0 ||
+          selectedQuestion5.length === 0 ||
+          selectedQuestion6.length === 0
+        ) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 64,
-                respuesta: selectedValues,
-                detalle: ''
-              },
-              {
-                pregunta_id: 65,
-                respuesta: selectedQuestion1,
-                detalle: descripcionpreguntaTexto64.value
-              },
-              {
-                pregunta_id: 66,
-                respuesta: selectedQuestion2,
-                detalle: descripcionpreguntaTexto65.value
-              },
-              {
-                pregunta_id: 67,
-                respuesta: selectedQuestion3,
-                detalle: descripcionpreguntaTexto66.value
-              },
-              {
-                pregunta_id: 68,
-                respuesta: selectedQuestion4,
-                detalle: ''
-              },
-              {
-                pregunta_id: 69,
-                respuesta: selectedQuestion5,
-                detalle: descripcionpreguntaTexto68.value
-              },
-              {
-                pregunta_id: 70,
-                respuesta: selectedQuestion6,
-                detalle: ''
-              }
-            ],
-            persona_id: idPersonaRiesgoAdultoMayor.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 64,
+              respuesta: selectedValues,
+              detalle: ''
+            },
+            {
+              pregunta_id: 65,
+              respuesta: selectedQuestion1,
+              detalle: descripcionpreguntaTexto64.value
+            },
+            {
+              pregunta_id: 66,
+              respuesta: selectedQuestion2,
+              detalle: descripcionpreguntaTexto65.value
+            },
+            {
+              pregunta_id: 67,
+              respuesta: selectedQuestion3,
+              detalle: descripcionpreguntaTexto66.value
+            },
+            {
+              pregunta_id: 68,
+              respuesta: selectedQuestion4,
+              detalle: ''
+            },
+            {
+              pregunta_id: 69,
+              respuesta: selectedQuestion5,
+              detalle: descripcionpreguntaTexto68.value
+            },
+            {
+              pregunta_id: 70,
+              respuesta: selectedQuestion6,
+              detalle: ''
             }
-          )
+          ],
+          persona_id: idPersonaRiesgoAdultoMayor.value,
+          censo_uuid: uuidCenso.value
 
-          console.log(response)
+        }
 
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -1944,55 +2608,54 @@ export default defineComponent({
 
         console.log(selectedValues70)
 
-        // Verificar si al menos una pregunta está respondida
-        const algunaPreguntaRespondida = selectedValues70.length > 0 || selectedQuestion71.length > 0;
+        if (selectedValues70.length === 0 || selectedQuestion71.length === 0) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 71,
-                respuesta: selectedValues70,
-                detalle: ''
-              },
-              {
-                pregunta_id: 72,
-                respuesta: selectedQuestion71,
-                detalle: ''
-              }
-            ],
-            persona_id: idPersonaDiscapacidad.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 71,
+              respuesta: selectedValues70,
+              detalle: ''
+            },
+            {
+              pregunta_id: 72,
+              respuesta: selectedQuestion71,
+              detalle: ''
             }
-          )
+          ],
+          persona_id: idPersonaDiscapacidad.value,
+          censo_uuid: uuidCenso.value
 
-          console.log(response)
+        }
 
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -2035,55 +2698,54 @@ export default defineComponent({
 
         console.log(selectedValues72)
 
-        // Verificar si al menos una pregunta está respondida
-        const algunaPreguntaRespondida = selectedValues72.length > 0 || selectedQuestion73.length > 0;
+        if (selectedValues72.length === 0 || selectedQuestion73.length === 0) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 73,
-                respuesta: selectedValues72,
-                detalle: ''
-              },
-              {
-                pregunta_id: 74,
-                respuesta: selectedQuestion73,
-                detalle: ''
-              }
-            ],
-            persona_id: idPersonaGestante.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 73,
+              respuesta: selectedValues72,
+              detalle: ''
+            },
+            {
+              pregunta_id: 74,
+              respuesta: selectedQuestion73,
+              detalle: ''
             }
-          )
+          ],
+          persona_id: idPersonaGestante.value,
+          censo_uuid: uuidCenso.value
 
-          console.log(response)
+        }
 
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -2126,55 +2788,54 @@ export default defineComponent({
 
         console.log(selectedValues74)
 
-        // Verificar si al menos una pregunta está respondida
-        const algunaPreguntaRespondida = selectedValues74.length > 0 || selectedQuestion75.length > 0;
+        if (selectedValues74.length === 0 || selectedQuestion75.length === 0) {
+          ElMessage.error('Por favor, completa todas las preguntas.')
+          return
+        }
 
-        if (algunaPreguntaRespondida) {
-          const data = {
-            respuestas: [
-              {
-                pregunta_id: 75,
-                respuesta: selectedValues74,
-                detalle: ''
-              },
-              {
-                pregunta_id: 76,
-                respuesta: selectedQuestion75,
-                detalle: ''
-              }
-            ],
-            persona_id: idPersonaPuerpera.value,
-            censo_uuid: uuid
-          }
-
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-            data,
+        const data = {
+          respuestas: [
             {
-              ...headers
+              pregunta_id: 75,
+              respuesta: selectedValues74,
+              detalle: ''
+            },
+            {
+              pregunta_id: 76,
+              respuesta: selectedQuestion75,
+              detalle: ''
             }
-          )
+          ],
+          persona_id: idPersonaPuerpera.value,
+          censo_uuid: uuidCenso.value
 
-          console.log(response)
+        }
 
-          if (response.status === 201) {
-            ElMessage.success(response.data.message)
-            const resetAllCheckboxesAndRadios = () => {
-              const inputsToReset = document.querySelectorAll(
-                'input[type="checkbox"], input[type="radio"]'
-              )
-
-              inputsToReset.forEach((input: any) => {
-                input.checked = false
-              })
-            }
-
-            resetAllCheckboxesAndRadios()
-          } else {
-            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+          data,
+          {
+            ...headers
           }
+        )
+
+        console.log(response)
+
+        if (response.status === 201) {
+          ElMessage.success(response.data.message)
+          const resetAllCheckboxesAndRadios = () => {
+            const inputsToReset = document.querySelectorAll(
+              'input[type="checkbox"], input[type="radio"]'
+            )
+
+            inputsToReset.forEach((input: any) => {
+              input.checked = false
+            })
+          }
+
+          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Por favor, completa al menos una pregunta.');
+          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
       } catch (error: any) {
         if (error.response) {
@@ -2206,6 +2867,8 @@ export default defineComponent({
     }
 
     const saveOtrosRiesgos = async () => {
+
+
 
     }
 
@@ -2240,6 +2903,7 @@ export default defineComponent({
         ).map((checkbox) => checkbox.value)
 
         const selectedValuesArray = [
+          selectedValues76,
           selectedValues77,
           selectedValues78,
           selectedValues79,
@@ -2296,7 +2960,7 @@ export default defineComponent({
               }
             },
             familia_id: idFamilia.value,
-            censo_uuid: uuid
+            censo_uuid: uuidCenso.value
           }
 
           console.log(data)
@@ -2434,24 +3098,6 @@ export default defineComponent({
       }
     }
 
-
-    function capturarValor() {
-      // Obtener todos los elementos de radio con el nombre 'selectedSexo'
-      const radios = document.getElementsByName('selectedSexo');
-
-      // Iterar sobre los radio buttons para verificar cuál está seleccionado
-      let selectedValue = '';
-      radios.forEach(radio => {
-        if (radio.checked) {
-          selectedValue = radio.value;
-        }
-      });
-
-      // Mostrar el valor seleccionado en la consola
-      console.log('Seleccionaste:', selectedValue);
-    }
-
-
     const guardarDatos = async () => {
       try {
         const ocupacionSelectElement = document.querySelector(
@@ -2474,24 +3120,18 @@ export default defineComponent({
           'select.gradoInstruccion-select'
         ) as HTMLSelectElement
 
-        const selectedSexo = document.querySelector('input[name="selectedSexo"]:checked');
-
-        const selectedSexoValue = selectedSexo.value;
-
-
         console.log(ocupacionSelectElement)
         console.log(estadoCivilSelectElemente)
         console.log(seguroSaludSelectElement)
         console.log(religionSelectElement)
         console.log(gradoInstruccionSelectElement)
-        console.log(selectedSexoValue)
 
         if (
           ocupacionSelectElement &&
           estadoCivilSelectElemente &&
           seguroSaludSelectElement &&
           religionSelectElement &&
-          gradoInstruccionSelectElement && selectedSexo
+          gradoInstruccionSelectElement
         ) {
           const selectedOcupacionId = ocupacionSelectElement.value
           const selectedEstadoCivilId = estadoCivilSelectElemente.value
@@ -2502,7 +3142,6 @@ export default defineComponent({
           const formData = {
             pers_nombres: nombres.value,
             pers_apellidos: apellidos.value,
-            sexo: selectedSexoValue,
             pers_fecha_nacimiento: fechaNacimiento.value,
             edad: edad.value,
             religion_id: selectedReligionId,
@@ -2511,8 +3150,7 @@ export default defineComponent({
             estado_civil_id: selectedEstadoCivilId,
             ocupacion_id: selectedOcupacionId,
             pers_numero_documento_identidad: searchDNI.value,
-            documento_identidad_id: 1,
-            jefe_familia: jefeFamilia.value, // Agrega el valor del checkbox al objeto formData
+            documento_identidad_id: 1
           }
 
           const response = await axios.post(
@@ -2533,8 +3171,8 @@ export default defineComponent({
             edad.value = null
             limpiarCamposPersona()
 
-
-            const personaId = response.data.data.id
+            // Llamar a asignarPersonaAFamilia
+            const personaId = response.data.data.id // Asegúrate de obtener el ID de la persona creada
 
             const asignarPersonaAFamiliaResponse = await axios.post(
               `${import.meta.env.VITE_API_URL}/familia/asignar-persona-a-familia`,
@@ -2873,25 +3511,20 @@ export default defineComponent({
           `${import.meta.env.VITE_API_URL}/familia/create`,
           {
             fam_nombre_familia: familia.value,
-            censo_uuid: uuid
+            censo_uuid: uuidCenso.value
           },
           {
             ...headers
           }
         )
 
-        const id = response.data.data.id;
-
-        idFamiliaAsignacion.value =id;
-
-        console.log("El ID de la familia creada es:", id);
-
+        console.log(response)
 
         if (response.status === 201) {
           ElMessage.success(response.data.message)
-          setTimeout(() => {
-        window.location.reload();
-      }, 4000);
+          fetchFamilies()
+          familia.value = ''
+
         } else {
           ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
@@ -2979,7 +3612,6 @@ export default defineComponent({
         )
 
         familias.value = response.data.data
-
       } catch (error) {
         console.error('Error al obtener datos:', error)
       }
@@ -3049,33 +3681,31 @@ export default defineComponent({
 
     const obtenerInformacionEdad = async () => {
       try {
-        if (idFamilia.value) {
-          const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/familia/${idFamilia.value}/informacion-edad`,
-            headers
-          )
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/familia/${idFamilia.value}/informacion-edad`,
+          headers
+        )
 
-          if (response.status === 200) {
-            const data = response.data.data
 
-            nombreFamilia.value = data.nombre_familia
-            niños_0_11.value = data['0_a_11años']
-            adolescentes_12_17.value = data['12_a_17años']
-            jovenes_18_29.value = data['18_a_29años']
-            adultos_30_59.value = data['30_a_59años']
-            adultos_mayores_60.value = data['mayor_60+']
-          } else {
-            console.error('Error al obtener la información de edad.')
-          }
+        if (response.status === 200) {
+          const data = response.data.data
+
+          nombreFamilia.value = data.nombre_familia
+          niños_0_11.value = data['0_a_11años']
+          adolescentes_12_17.value = data['12_a_17años']
+          jovenes_18_29.value = data['18_a_29años']
+          adultos_30_59.value = data['30_a_59años']
+          adultos_mayores_60.value = data['mayor_60+']
         } else {
-          console.error('ID de familia no válido.')
+          console.error('Error al obtener la información de edad.')
         }
+
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
     }
 
-    const updateFields = () => {
+    const updateFields = async () => {
       const selectedId = selectedPersona.value
 
       const selected: any = personasEnRangoNinos.value.find(
@@ -3092,15 +3722,98 @@ export default defineComponent({
 
         console.log(id)
 
+
         selectedPersonaNinos.nombre = nombre
         selectedPersonaNinos.edad = edad
       } else {
         selectedPersonaNinos.nombre = ''
         selectedPersonaNinos.edad = null
       }
+
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaRiesgoNino.value}`,
+          headers
+        )
+
+
+
+        const respuestasPreguntaEspecifica28 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 28)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        console.log(respuestasPreguntaEspecifica28);
+
+
+        const respuestasPreguntaEspecifica29 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 29)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica30 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 30)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica31 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 31)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica32 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 32)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica33 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 33)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica34 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 34)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica35 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 35)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica36 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 36)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica37 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 37)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica38 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 38)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica39 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 39)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        [respuestaPregunta27.value] = respuestasPreguntaEspecifica28;
+        [respuestaPregunta28.value] = respuestasPreguntaEspecifica29;
+        [respuestaPregunta29.value] = respuestasPreguntaEspecifica30;
+        [respuestaPregunta30.value] = respuestasPreguntaEspecifica31;
+        [respuestaPregunta31.value] = respuestasPreguntaEspecifica32;
+        [respuestaPregunta32.value] = respuestasPreguntaEspecifica33;
+        [respuestaPregunta33.value] = respuestasPreguntaEspecifica34;
+        [respuestaPregunta34.value] = respuestasPreguntaEspecifica35;
+        [respuestaPregunta35.value] = respuestasPreguntaEspecifica36;
+        [respuestaPregunta36.value] = respuestasPreguntaEspecifica37;
+        [respuestaPregunta37.value] = respuestasPreguntaEspecifica38;
+        [respuestaPregunta38.value] = respuestasPreguntaEspecifica39;
+
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    const updateFields2 = () => {
+    const updateFields2 = async () => {
       const selectedId = selectedAdolescente.value
 
       const selected: any = personasEnRangoAdolescentes.value.find(
@@ -3123,9 +3836,102 @@ export default defineComponent({
         selectedPersonaAdolescentes.nombre = ''
         selectedPersonaAdolescentes.edad = null
       }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaRiesgoAdolescente.value}`,
+          headers
+        )
+
+
+
+        const respuestasPreguntaEspecifica40 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 40)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        console.log(respuestasPreguntaEspecifica40);
+
+
+        const respuestasPreguntaEspecifica41 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 41)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        console.log(respuestasPreguntaEspecifica41);
+
+
+
+        const respuestasPreguntaEspecifica42 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 42)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta42 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 42)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+
+        const respuestasPreguntaEspecifica43 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 43)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+
+        const respuestasPreguntaEspecifica44 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 44)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta44 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 44)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+
+        const respuestasPreguntaEspecifica45 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 45)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const descripcionRespuesta45 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 45)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+
+        const respuestasPreguntaEspecifica46 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 46)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica47 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 47)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica48 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 48)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        respuestaPregunta39.value = respuestasPreguntaEspecifica40;
+        [respuestaPregunta40.value] = respuestasPreguntaEspecifica41;
+        [respuestaPregunta41.value] = respuestasPreguntaEspecifica42;
+        descripcionPregunta41.value = descripcionRespuesta42[0];
+
+        [respuestaPregunta42.value] = respuestasPreguntaEspecifica43;
+        [respuestaPregunta43.value] = respuestasPreguntaEspecifica44;
+        descripcionpreguntaTexto43.value = descripcionRespuesta44[0];
+
+        [respuestaPregunta44.value] = respuestasPreguntaEspecifica45;
+
+        descripcionpreguntaTexto44.value = descripcionRespuesta45[0];
+        [respuestaPregunta45.value] = respuestasPreguntaEspecifica46;
+        [respuestaPregunta46.value] = respuestasPreguntaEspecifica47;
+        [respuestaPregunta47.value] = respuestasPreguntaEspecifica48;
+
+        console.log(respuestaPregunta40.value);
+
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    const updateFields3 = () => {
+    const updateFields3 = async () => {
       const selectedId = selectedJoven.value
 
       const selected: any = personasEnRangoJovenes.value.find(
@@ -3148,9 +3954,50 @@ export default defineComponent({
         selectedPersonaJovenes.nombre = ''
         selectedPersonaJovenes.edad = null
       }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaRiesgoJoven.value}`,
+          headers
+        )
+
+        const respuestasPreguntaEspecifica49 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 49)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica50 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 50)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica51 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 51)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica52 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 52)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const respuestasPreguntaEspecifica53 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 53)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        [respuestaPregunta48.value] = respuestasPreguntaEspecifica49;
+        [respuestaPregunta49.value] = respuestasPreguntaEspecifica50;
+        [respuestaPregunta50.value] = respuestasPreguntaEspecifica51;
+        [respuestaPregunta51.value] = respuestasPreguntaEspecifica52;
+        [respuestaPregunta52.value] = respuestasPreguntaEspecifica53;
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    const updateFields4 = () => {
+    const updateFields4 = async () => {
       const selectedId = selectedAdulto.value
 
       const selected: any = personasEnRangoAdultos.value.find(
@@ -3173,9 +4020,107 @@ export default defineComponent({
         selectedPersonaAdultos.nombre = ''
         selectedPersonaAdultos.edad = null
       }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaRiesgoAdulto.value}`,
+          headers
+        )
+
+        const respuestasPreguntaEspecifica54 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 54)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica55 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 55)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta55 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 55)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        const respuestasPreguntaEspecifica56 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 56)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta56 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 56)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        const respuestasPreguntaEspecifica57 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 57)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta57 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 57)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        const respuestasPreguntaEspecifica58 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 58)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica59 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 59)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica60 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 60)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica61 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 61)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta61 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 61)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        const respuestasPreguntaEspecifica62 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 62)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta62 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 62)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        const respuestasPreguntaEspecifica63 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 63)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta63 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 63)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        [respuestaPregunta53.value] = respuestasPreguntaEspecifica54;
+        [respuestaPregunta54.value] = respuestasPreguntaEspecifica55;
+
+        descicripcionpreguntaTexto54.value = descripcionRespuesta55[0];
+        [respuestaPregunta55.value] = respuestasPreguntaEspecifica56;
+
+        descicripcionpreguntaTexto55.value = descripcionRespuesta56[0];
+        [respuestaPregunta56.value] = respuestasPreguntaEspecifica57;
+
+        descicripcionpreguntaTexto56.value = descripcionRespuesta57[0];
+        [respuestaPregunta57.value] = respuestasPreguntaEspecifica58;
+        [respuestaPregunta58.value] = respuestasPreguntaEspecifica59;
+        respuestaPregunta59.value = respuestasPreguntaEspecifica60;
+        [respuestaPregunta60.value] = respuestasPreguntaEspecifica61;
+
+        descripcionpreguntaTexto60.value = descripcionRespuesta61[0];
+        [respuestaPregunta61.value] = respuestasPreguntaEspecifica62;
+        descripcionpreguntaTexto61.value = descripcionRespuesta62[0];
+
+        [respuestaPregunta62.value] = respuestasPreguntaEspecifica63;
+
+        descripcionpreguntaTexto62.value = descripcionRespuesta63[0];
+
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    const updateFields5 = () => {
+    const updateFields5 = async () => {
       const selectedId = selectedAdultoMayor.value
 
       const selected: any = personasEnRangoAdultosMayores.value.find(
@@ -3197,9 +4142,85 @@ export default defineComponent({
         selectedPersonaAdultosMayores.nombre = ''
         selectedPersonaAdultosMayores.edad = null
       }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaRiesgoAdultoMayor.value}`,
+          headers
+        )
+
+        const respuestasPreguntaEspecifica64 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 64)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica65 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 65)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta65 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 65)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        const respuestasPreguntaEspecifica66 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 66)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const descripcionRespuesta66 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 66)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+
+        const respuestasPreguntaEspecifica67 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 67)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+
+        const descripcionRespuesta67 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 67)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+
+        const respuestasPreguntaEspecifica68 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 68)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica69 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 69)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const descripcionRespuesta69 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 69)
+          .map((respuesta: any) => respuesta.ppre_detalle);
+
+        const respuestasPreguntaEspecifica70 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 70)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        [respuestaPregunta63.value] = respuestasPreguntaEspecifica64;
+        [respuestaPregunta64.value] = respuestasPreguntaEspecifica65;
+
+        descripcionpreguntaTexto64.value = descripcionRespuesta65[0];
+        [respuestaPregunta65.value] = respuestasPreguntaEspecifica66;
+
+        descripcionpreguntaTexto65.value = descripcionRespuesta66[0];
+
+        [respuestaPregunta66.value] = respuestasPreguntaEspecifica67;
+
+        descripcionpreguntaTexto66.value = descripcionRespuesta67[0];
+
+        respuestaPregunta67.value = respuestasPreguntaEspecifica68;
+        respuestaPregunta68.value = respuestasPreguntaEspecifica69;
+
+        descripcionpreguntaTexto68.value = descripcionRespuesta69[0];
+        respuestaPregunta69.value = respuestasPreguntaEspecifica70;
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    const updateFields6 = () => {
+    const updateFields6 = async () => {
       const selectedId = selectedDiscapacidad.value
 
       const selected: any = personasIntegrantesOfTheFamily.value.find(
@@ -3221,9 +4242,30 @@ export default defineComponent({
         selectedPersonaIntegranteFamilia.nombreCompleto = ''
         selectedPersonaIntegranteFamilia.edad = null
       }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaDiscapacidad.value}`,
+          headers
+        )
+
+        const respuestasPreguntaEspecifica71 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 71)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica72 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 72)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        [respuestaPregunta70.value] = respuestasPreguntaEspecifica71;
+        [respuestaPregunta71.value] = respuestasPreguntaEspecifica72;
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    const updateFields7 = () => {
+    const updateFields7 = async () => {
       const selectedId = selectedGestante.value
 
       const selected: any = personasGestanteOfTheFamily.value.find(
@@ -3245,10 +4287,30 @@ export default defineComponent({
         selectedPersonaGestanteFamily.nombreCompleto = ''
         selectedPersonaGestanteFamily.edad = null
       }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaGestante.value}`,
+          headers
+        )
+
+        const respuestasPreguntaEspecifica73 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 73)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica74 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 74)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        [respuestaPregunta72.value] = respuestasPreguntaEspecifica73;
+        respuestaPregunta73.value = respuestasPreguntaEspecifica74;
+
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-
-    const updateFields8 = () => {
+    const updateFields8 = async () => {
       const selectedId = selectedPuerpera.value
 
       const selected: any = personasPuerperaOfTheFamily.value.find(
@@ -3270,8 +4332,28 @@ export default defineComponent({
         selectedPersonaPuerperaFamily.nombreCompleto = ''
         selectedPersonaPuerperaFamily.edad = null
       }
-    }
 
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/censo/${id}/respuestas/persona/${idPersonaPuerpera.value}`,
+          headers
+        )
+
+        const respuestasPreguntaEspecifica75 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 75)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        const respuestasPreguntaEspecifica76 = response.data.respuestas_persona
+          .filter((respuesta: any) => respuesta.pregunta_id === 76)
+          .map((respuesta: any) => respuesta.ppre_respuesta);
+
+        [respuestaPregunta74.value] = respuestasPreguntaEspecifica75;
+        respuestaPregunta75.value = respuestasPreguntaEspecifica76;
+
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
     const obtenerNinos = async () => {
       try {
@@ -3359,51 +4441,19 @@ export default defineComponent({
         personasGestanteOfTheFamily.value = response.data.data
         personasPuerperaOfTheFamily.value = response.data.data
 
-
         console.log(personasIntegrantesOfTheFamily.value)
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
     }
 
-
-
-    const guardarDetalle = async () => {
+    const obtenerFamiliaPorId = async () => {
       try {
-        const response = await axios.put(
-          `${import.meta.env.VITE_API_URL}/censo/${uuid}/actualizar-micro-red/${selectedEstablecimiento.value}`,
-          null,
-          {
-            ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
-          }
-        );
-
-        if (response.data && response.data.message) {
-          const messageFromBackend = response.data.message;
-
-          // Muestra el mensaje usando ElMessage
-          ElMessage.success(messageFromBackend); // Muestra un mensaje de éxito
-        }
-        // Manejar la respuesta según sea necesario
-      }  catch (error) {
-        if (error.response && error.response.status === 404) {
-          // Mostrar un mensaje de error por defecto para el código de estado 404
-          ElMessage.error('No se encontró el recurso solicitado');
-        } else {
-          // Mostrar un mensaje de error genérico para otros errores
-          ElMessage.error('Error al actualizar el censo');
-        }
-      }
-    };
-
-
-    const obtenerFamiliaPorUuid = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/familias`, { params: { uuid }, ...headers }); // Realiza una solicitud GET con el uuid en los parámetros
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/${id}/familias`, headers); // Realiza una solicitud GET con el uuid en los parámetros
 
         if (response.status === 200) {
           idFamilia.value = response.data.id_familia;
-          console.log('ID de la familia:', idFamilia.value );
+          obtenerInformacionEdad()
         }
       } catch (error) {
         console.error('Error al obtener la familia por UUID:', error);
@@ -3411,9 +4461,24 @@ export default defineComponent({
       }
     };
 
+
+    const obtenerUUIDCenso = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/obtener-uuid-censo-por-id-censo/${id}`, headers); // Realiza una solicitud GET con el uuid en los parámetros
+
+        if (response.status === 200) {
+          uuidCenso.value = response.data.uuid_censo; // Asignar el UUID obtenido a la variable reactiva
+        }
+      } catch (error) {
+        console.error('Error al obtener la familia por UUID:', error);
+        // Manejar el error según sea necesario
+      }
+    };
+
+
     const calcularPorcentajeAvance = async () => {
       try {
-        const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${uuid}/calcular-porcentaje-avance`,
+        const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${id}/calcular-porcentaje-avance22`,
           null,
           {
             ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
@@ -3422,6 +4487,7 @@ export default defineComponent({
         const data = response.data;
         porcentajeAvance.value = data.porcentaje_avance;
         totalPreguntasRespondidas.value = data.totalPreguntasRespondidas;
+
 
         ElMessage.success('Cálculo del porcentaje de avance exitoso');
 
@@ -3433,9 +4499,6 @@ export default defineComponent({
       }
     };
 
-    const onCheckboxChange = () => {
-      console.log('Jefe de familia:', jefeFamilia.value);
-    };
 
     watch([searchTerm, searchTerm2, searchTerm3], () => {
       fetchData()
@@ -3444,24 +4507,27 @@ export default defineComponent({
     })
 
     onMounted(async () => {
-      capturarValor();
-      getRedesSalud();
+      obtenerFamiliaPorId()
+      obtenerUUIDCenso()
       fetchEstadoCivil()
       fetchGradoInstruccion()
       fetchReligion()
+      getRedesSalud();
       fetchPreguntas()
+      fetchUniqueRoleData()
       fetchSeguroSalud()
       fetchData()
       fetchPersons()
       fetchFamilies()
-      obtenerFamiliaPorUuid()
+
     })
+
 
     const terminarCenso = async () => {
   // ... (código para la solicitud axios)
 
   try {
-    const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${uuid}/actualizarFechaFinuuid`,
+    const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${id}/actualizarFechaFin`,
           null,
           {
             ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
@@ -3481,9 +4547,19 @@ export default defineComponent({
   }
 };
 
+
     return {
       calcularPorcentajeAvance,
-      guardarDetalle,
+      selectedRedSalud,
+      selectedMicroRed,
+      selectedEstablecimiento,
+      selectedSector,
+      redesSalud,
+      microRedes,
+      establecimientos,
+      sectores,
+      getMicroRedes,
+      getEstablecimientosSalud,
       tableData,
       gradoInstruccion,
       estadoCivil,
@@ -3498,13 +4574,8 @@ export default defineComponent({
       opcion,
       ocupacion,
       idFamilia,
-      idFamiliaAsignacion,
-      idDistrito,
-      selectedSexo,
       saveRiesgosAdultos,
       familia,
-      jefeFamilia,
-      onCheckboxChange,
       obtenerIntegrantesFamily,
       saveRiesgosJovenes,
       saveOccupation,
@@ -3548,10 +4619,11 @@ export default defineComponent({
       respuestas17,
       mostrarCampoEntrada,
       nuevoNombreFamilia,
-      obtenerInformacionEdad,
       showInputField,
       assignPersonToFamily,
       respuestas23,
+      guardarDetalle,
+      idDistrito,
       preguntaTexto2,
       preguntaTexto3,
       preguntaTexto4,
@@ -3634,12 +4706,99 @@ export default defineComponent({
       respuestaPregunta23,
       respuestaPregunta24,
       respuestaPregunta25,
+      respuestaSeleccionada2,
+      respuestaSeleccionada3,
+      respuestaSeleccionada4,
       respuestaPregunta26,
+      respuestaPregunta27,
+      respuestaPregunta28,
+      respuestaPregunta29,
+      respuestaPregunta30,
+      respuestaPregunta31,
+      respuestaPregunta32,
+      respuestaPregunta33,
+      respuestaPregunta34,
+      respuestaPregunta35,
+      respuestaPregunta36,
+      respuestaPregunta37,
+      respuestaPregunta38,
+      respuestaPregunta39,
+      respuestaPregunta40,
+      respuestaPregunta41,
+      respuestaPregunta42,
+      respuestaPregunta43,
+      respuestaPregunta44,
+      respuestaPregunta45,
+      respuestaPregunta46,
+      respuestaPregunta47,
+      respuestaPregunta48,
+      respuestaPregunta49,
+      respuestaPregunta50,
+      respuestaPregunta51,
+      respuestaPregunta52,
+      respuestaPregunta53,
+      respuestaPregunta54,
+      respuestaPregunta55,
+      respuestaPregunta56,
+      respuestaPregunta57,
+      respuestaPregunta58,
+      respuestaPregunta59,
+      respuestaPregunta60,
+      respuestaPregunta61,
+      respuestaPregunta62,
+      respuestaPregunta63,
+      respuestaPregunta64,
+      respuestaPregunta65,
+      respuestaPregunta66,
+      respuestaPregunta67,
+      respuestaPregunta68,
+      respuestaPregunta69,
+      respuestaPregunta70,
+      respuestaPregunta71,
+      respuestaPregunta72,
+      respuestaPregunta73,
+      respuestaPregunta74,
+      respuestaPregunta75,
+      respuestaPregunta76,
+      respuestaPregunta77,
+      respuestaPregunta78,
+      respuestaPregunta79,
+      respuestaPregunta80,
+      respuestaPregunta81,
+      respuestaPregunta82,
+      respuestaPregunta83,
+      respuestaPregunta84,
+      respuestaPregunta85,
+      respuestaPregunta86,
+      respuestaPregunta87,
+      respuestaPregunta88,
+      respuestaPregunta89,
+      respuestaPregunta90,
+      respuestaPregunta91,
+      respuestaPregunta92,
+      respuestaPregunta93,
+      respuestaPregunta94,
+      respuestaPregunta95,
+      respuestaPregunta96,
+      respuestaPregunta97,
+      respuestaPregunta98,
+      respuestaPregunta99,
+      respuestaPregunta100,
+      respuestaPregunta101,
+      respuestaPregunta102,
+      respuestaPregunta103,
+      respuestaPregunta104,
+      respuestaPregunta105,
+      respuestaPregunta106,
+      respuestaPregunta107,
+      respuestaPregunta108,
       descripcionCompartidas,
       descripcionQuestion4,
       descripcionQuestion5,
       descripcionQuestion23,
       saveFamilyCaracteristicas,
+      getSectores,
+      form,
       idPersonaRiesgoNino,
       idPersonaRiesgoAdolescente,
       idPersonaRiesgoJoven,
@@ -3661,17 +4820,6 @@ export default defineComponent({
       descripcionpreguntaTexto104,
       descripcionpreguntaTexto105,
       descripcionpreguntaTexto106,
-      selectedRedSalud,
-      selectedMicroRed,
-      selectedEstablecimiento,
-      selectedSector,
-      redesSalud,
-      microRedes,
-      establecimientos,
-      sectores,
-      getMicroRedes,
-      getEstablecimientosSalud,
-      getSectores,
       preguntaTexto62,
       preguntaTexto63,
       preguntaTexto64,
@@ -3790,6 +4938,8 @@ export default defineComponent({
       openAddOccupationModal,
       openAsignmentPersonAtFamily,
       apellidos,
+      opcionesDisponibles,
+      opcionesMarcadas,
       headers,
       user,
       todayFormatted,
@@ -3878,10 +5028,10 @@ export default defineComponent({
     <div class="card-body">
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#persona">Persona</a>
+          <a class="nav-link " data-bs-toggle="tab" data-bs-target="#persona" disabled>Persona</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#familia" @click="obtenerInformacionEdad">Familia</a>
+          <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#familia">Familia</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="tab" data-bs-target="#riesgo" @click="obtenerNinos">Riesgo</a>
@@ -3892,10 +5042,10 @@ export default defineComponent({
       </ul>
 
       <div class="tab-content">
-        <div class="tab-pane active" id="persona">
+        <div class="tab-pane " id="persona">
           <!-- Contenido de la pestaña Persona -->
 
-          <div class="card border-dark mt-5">
+          <div class="card mt-5">
             <div class="card-body">
               <div class="row">
                 <div class="col-md-3">
@@ -3926,17 +5076,11 @@ export default defineComponent({
                   <input disabled type="number" class="form-control" placeholder="Edad" v-model="edad" />
                 </div>
                 <div class="col-md-2">
-    <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="gridCheck"
-        v-model="jefeFamilia"
-        @change="onCheckboxChange"
-      />
-      <label class="form-check-label" for="gridCheck">Jefe de familia</label>
-    </div>
-  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck" />
+                    <label class="form-check-label" for="gridCheck"> Jefe de familia </label>
+                  </div>
+                </div>
               </div>
 
               <div class="row mt-3">
@@ -3946,22 +5090,6 @@ export default defineComponent({
                 <div class="col-md-6">
                   <input type="text" class="form-control" placeholder="Apellidos" v-model="apellidos" />
                 </div>
-
-                <label>Sexo</label>
-                <div class="col-md-6 mt 3">
-                  <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline1" name="selectedSexo" value="Masculino"
-                      class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline1">Masculino</label>
-                  </div>
-                  <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline2" name="selectedSexo" value="Femenino"
-                      class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline2">Femenino</label>
-                  </div>
-                </div>
-
-
               </div>
 
               <div class="row mt-3">
@@ -4045,7 +5173,7 @@ export default defineComponent({
               <div class="row" v-else>
                 <div class="col-auto">
                   <button type="button" class="btn btn-success" @click="updatePersona">
-                    Actualizar datos 
+                    Actualizar datos :)
                   </button>
                 </div>
                 <div class="col-auto">
@@ -4096,9 +5224,9 @@ export default defineComponent({
           </table>
         </div>
 
-        <div class="tab-pane" id="familia">
+        <div class="tab-pane active" id="familia">
           <!-- Contenido de la pestaña Familia -->
-          <div class="card border-dark mt-5">
+          <div class="card mt-5">
             <div class="card-body">
               <div class="alert alert-success" role="alert">
                 <h4 class="alert-heading">Datos de la Familia</h4>
@@ -4141,337 +5269,362 @@ export default defineComponent({
                 <h4 class="alert-heading">CARACTERÍSTICAS</h4>
               </div>
 
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">{{ preguntaTexto }}</h5>
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto1"
-                          @change="capturarRespuesta4(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto4 }}</h5>
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta4" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta4" value="No" /> No
-                        </label>
-                      </div>
-
-                      <div></div>
-                      <div class="form-group mt-3">
-                        <label for="exampleFormControlTextarea1">Detalle</label>
-                        <textarea v-model="descripcionQuestion4" class="form-control" id="exampleFormControlTextarea1"
-                          rows="3"></textarea>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto6 }}</h5>
-
-                      <div class="btn-group btn-group-toggle mt-3" data-toggle="buttons">
-                        <label class="form-check" v-for="(respuesta, index) in respuestas2" :key="index">
-                          <input type="radio" name="xd" :id="`radioRespuesta${index}`"
-                            :value="respuesta.rc_respuesta_comun"
-                            @change="capturarRespuesta2(respuesta.rc_respuesta_comun)" />
-                          {{ respuesta.rc_respuesta_comun }}
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto8 }}</h5>
-
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas4" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto8"
-                          @change="capturarRespuesta4(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto10 }}</h5>
-                      <p></p>
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas6" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto10"
-                          @change="capturarRespuesta6(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto12 }}</h5>
-
-                      <div class="form-check form-check-inline mt-3" v-for="(respuesta, index) in respuestas8"
-                        :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto12"
-                          @change="capturarRespuesta8(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto14 }}</h5>
-
-                      <div class="btn-group btn-group-toggle mt-3" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta14" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta14" value="No" /> No
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto16 }}</h5>
-
-                      <label class="form-check">
-                        <input type="radio" v-model="respuestaPregunta16" value="Si" /> Si
-                      </label>
-                      <label class="form-check">
-                        <input type="radio" v-model="respuestaPregunta16" value="No" /> No
-                      </label>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto18 }}</h5>
-
-                      <p></p>
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta18" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta18" value="No" /> No
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto20 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta20" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta20" value="No" /> No
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto22 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta22" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta22" value="No" /> No
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto24 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta24" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta24" value="No" /> No
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto26 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta26" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta26" value="No" /> No
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto25 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta25" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta25" value="No" /> No
-                        </label>
-                      </div>
-
-                    </div>
-                  </div>
+              <div class="mt-4 col-md-12">
+                <label>{{ preguntaTexto }}</label>
+                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta" :key="index">
+                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto1" v-model="respuesta.isChecked" />
+                  <label class="form-check-label" :for="`checkbox${index}`">{{
+                    respuesta.rc_respuesta_comun
+                  }}</label>
                 </div>
-                <div class="col-sm-6">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">{{ preguntaTexto2 }}</h5>
-                      <input type="text" class="form-control" v-model="valorInput" name="preguntaTexto2"
-                        placeholder="Número" />
+              </div>
 
-                      <h5 class="card-title mt-3">{{ preguntaTexto3 }}</h5>
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta3" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta3" value="No" /> No
-                        </label>
-                      </div>
+              <div class="row mt-4">
+                <div class="col-md-4">
+                  <label for="exampleFormControlSelect1">{{ preguntaTexto2 }}</label>
+                  <input type="text" class="form-control" v-model="valorInput" name="preguntaTexto2"
+                    placeholder="Número" />
+                </div>
 
-                      <div></div>
-                      <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Describe como son compartidas</label>
-                        <textarea v-model="descripcionCompartidas" class="form-control" id="exampleFormControlTextarea1"
-                          rows="3"></textarea>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto5 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta5" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta5" value="No" /> No
-                        </label>
-                      </div>
-                      <div></div>
-                      <div class="form-group mt-3">
-                        <label for="exampleFormControlTextarea1">Describa</label>
-                        <textarea v-model="descripcionQuestion5" class="form-control" id="exampleFormControlTextarea1"
-                          rows="3"></textarea>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto7 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check" v-for="(respuesta, index) in respuestas3" :key="index">
-                          <input type="radio" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
-                            @change="capturarRespuesta3(respuesta.rc_respuesta_comun)" />
-                          {{ respuesta.rc_respuesta_comun }}
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto9 }}</h5>
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check" v-for="(respuesta, index) in respuestas5" :key="index">
-                          <input type="radio" name="ga" :id="`radioRespuesta${index}`"
-                            :value="respuesta.rc_respuesta_comun"
-                            @change="capturarRespuesta5(respuesta.rc_respuesta_comun)" />
-                          {{ respuesta.rc_respuesta_comun }}
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto11 }}</h5>
-
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas7" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto11"
-                          @change="capturarRespuesta6(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto13 }}</h5>
-
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas9" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto13"
-                          @change="capturarRespuesta9(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto15 }}</h5>
-
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas15" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto15"
-                          @change="capturarRespuesta10(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto17 }}</h5>
-
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas17" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto17"
-                          @change="capturarRespuesta11(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto19 }}</h5>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta19" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta19" value="No" /> No
-                        </label>
-                        <p></p>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto21 }}</h5>
-
-                      <p></p>
-
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta21" value="Si" /> Si
-                        </label>
-                        <label class="form-check">
-                          <input type="radio" v-model="respuestaPregunta21" value="No" /> No
-                        </label>
-                      </div>
-
-                      <h5 class="card-title mt-3">{{ preguntaTexto23 }}</h5>
-
-                      <div class="form-check form-check-inline" v-for="(respuesta, index) in respuestas23" :key="index">
-                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto23"
-                          @change="capturarRespuesta11(respuesta.rc_respuesta_comun)" />
-                        <label class="form-check-label" :for="`checkbox${index}`">{{
-                          respuesta.rc_respuesta_comun
-                        }}</label>
-                      </div>
-                      <div></div>
-                      <div class="form-group mt-">
-                        <label for="exampleFormControlTextarea1">Describa</label>
-                        <textarea v-model="descripcionQuestion23" class="form-control" id="exampleFormControlTextarea1"
-                          rows="3"></textarea>
-                      </div>
-                    </div>
+                <div class="col-md-6">
+                  <label>{{ preguntaTexto3 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta3" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta3" value="No" /> No
+                    </label>
                   </div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="row mt-4">
-                </div>
-                <button class="btn btn-success mt-5" @click="saveFamilyCaracteristicas">
-                  <i class="fa fa-save"></i>
-                </button>
+              <div class="form-group mt-3">
+                <label for="exampleFormControlTextarea1">Describe como son compartidas</label>
+                <textarea v-model="descripcionCompartidas" class="form-control" id="exampleFormControlTextarea1"
+                  rows="3"></textarea>
               </div>
+
+              <div class="mt-3 col-md-5">
+                <label>{{ preguntaTexto4 }}</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta4" value="Si" /> Si
+                  </label>
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta4" value="No" /> No
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group mt-3">
+                <label for="exampleFormControlTextarea1">Detalle</label>
+                <textarea v-model="descripcionQuestion4" class="form-control" id="exampleFormControlTextarea1"
+                  rows="3"></textarea>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-md-4">
+                  <label>{{ preguntaTexto5 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta5" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta5" value="No" /> No
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="exampleFormControlTextarea1">Describa</label>
+                  <textarea v-model="descripcionQuestion5" class="form-control" id="exampleFormControlTextarea1"
+                    rows="3"></textarea>
+                </div>
+
+                <div class="col-md-8">
+                  <label>{{ preguntaTexto6 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check" v-for="(respuesta, index) in respuestas2" :key="index">
+                      <input type="radio" name="xd" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
+                        @change="capturarRespuesta2(respuesta.rc_respuesta_comun)" v-model=respuestaSeleccionada2 />
+                      {{ respuesta.rc_respuesta_comun }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-10">
+                <label>{{ preguntaTexto7 }}</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="form-check" v-for="(respuesta, index) in respuestas3" :key="index">
+                    <input type="radio" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
+                      @change="capturarRespuesta3(respuesta.rc_respuesta_comun)" v-model=respuestaSeleccionada3 />
+                    {{ respuesta.rc_respuesta_comun }}
+                  </label>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-10"></div>
+
+              <div class="mt-3 col-md-13">
+                <label>{{ preguntaTexto8 }}</label>
+                <p></p>
+                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta2" :key="index">
+                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto8"
+                    @change="capturarRespuesta4(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                  <label class="form-check-label" :for="`checkbox${index}`">{{
+                    respuesta.rc_respuesta_comun
+                  }}</label>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-10">
+                <label>{{ preguntaTexto9 }}</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="form-check" v-for="(respuesta, index) in respuestas5" :key="index">
+                    <input type="radio" name="ga" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
+                      @change="capturarRespuesta5(respuesta.rc_respuesta_comun)" v-model=respuestaSeleccionada4 />
+                    {{ respuesta.rc_respuesta_comun }}
+                  </label>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-10">
+                <label for="exampleFormControlSelect1">{{ preguntaTexto10 }}</label>
+                <p></p>
+                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta4" :key="index">
+                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto10"
+                    @change="capturarRespuesta6(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                  <label class="form-check-label" :for="`checkbox${index}`">{{
+                    respuesta.rc_respuesta_comun
+                  }}</label>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-10">
+                <label>{{ preguntaTexto11 }}</label>
+                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta5" :key="index">
+                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto11"
+                    @change="capturarRespuesta6(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                  <label class="form-check-label" :for="`checkbox${index}`">{{
+                    respuesta.rc_respuesta_comun
+                  }}</label>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="mt-3 col-md-7">
+                  <label>{{ preguntaTexto12 }}</label>
+                  <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta6"
+                    :key="index">
+                    <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                      :value="respuesta.rc_respuesta_comun" name="preguntaTexto12"
+                      @change="capturarRespuesta8(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                    <label class="form-check-label" :for="`checkbox${index}`">{{
+                      respuesta.rc_respuesta_comun
+                    }}</label>
+                  </div>
+                </div>
+
+                <div class="mt-3 col-md-4">
+                  <label>{{ preguntaTexto13 }}</label>
+                  <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta7"
+                    :key="index">
+                    <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                      :value="respuesta.rc_respuesta_comun" name="preguntaTexto13"
+                      @change="capturarRespuesta9(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                    <label class="form-check-label" :for="`checkbox${index}`">{{
+                      respuesta.rc_respuesta_comun
+                    }}</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-5">
+                <label>{{ preguntaTexto14 }}</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta14" value="Si" /> Si
+                  </label>
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta14" value="No" /> No
+                  </label>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-9">
+                <label>{{ preguntaTexto15 }}</label>
+                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta9" :key="index">
+                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto15"
+                    @change="capturarRespuesta10(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                  <label class="form-check-label" :for="`checkbox${index}`">{{
+                    respuesta.rc_respuesta_comun
+                  }}</label>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="mt-3 col-md-4">
+                  <label>{{ preguntaTexto16 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta16" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta16" value="No" /> No
+                    </label>
+                  </div>
+                </div>
+
+                <div class="mt-3 col-md-4">
+                  <label>{{ preguntaTexto17 }}</label>
+                  <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta11"
+                    :key="index">
+                    <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                      :value="respuesta.rc_respuesta_comun" name="preguntaTexto17"
+                      @change="capturarRespuesta11(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                    <label class="form-check-label" :for="`checkbox${index}`">{{
+                      respuesta.rc_respuesta_comun
+                    }}</label>
+                  </div>
+                </div>
+                <div class="mt-3 col-md-4">
+                  <label>{{ preguntaTexto18 }}</label>
+                  <p></p>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta18" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta18" value="No" /> No
+                    </label>
+                  </div>
+                </div>
+                <div class="mt-3 col-md-4">
+                  <label>{{ preguntaTexto19 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta19" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta19" value="No" /> No
+                    </label>
+                    <p></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="mt-3 col-md-5">
+                  <label>{{ preguntaTexto20 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta20" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta20" value="No" /> No
+                    </label>
+                  </div>
+                </div>
+                <div class="mt-3 col-md-7">
+                  <label>{{ preguntaTexto21 }}</label>
+                  <p></p>
+
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta21" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta21" value="No" /> No
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="mt-3 col-md-5">
+                  <label>{{ preguntaTexto22 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta22" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta22" value="No" /> No
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-5">
+                <label>{{ preguntaTexto23 }}</label>
+                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta12"
+                  :key="index">
+                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto23"
+                    @change="capturarRespuesta11(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                  <label class="form-check-label" :for="`checkbox${index}`">{{
+                    respuesta.rc_respuesta_comun
+                  }}</label>
+                </div>
+              </div>
+
+              <div class="form-group mt-">
+                <label for="exampleFormControlTextarea1">Describa</label>
+                <textarea v-model="descripcionQuestion23" class="form-control" id="exampleFormControlTextarea1"
+                  rows="3"></textarea>
+              </div>
+
+              <div class="row mt-3">
+                <div class="mt-3 col-md-5">
+                  <label>{{ preguntaTexto24 }}</label>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta24" value="Si" /> Si
+                    </label>
+                    <label class="form-check">
+                      <input type="radio" v-model="respuestaPregunta24" value="No" /> No
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 col-md-5">
+                <label>{{ preguntaTexto25 }}</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta25" value="Si" /> Si
+                  </label>
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta25" value="No" /> No
+                  </label>
+                </div>
+              </div>
+
+
+              <div class="mt-3 col-md-5">
+                <label>{{ preguntaTexto26 }}</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta26" value="Si" /> Si
+                  </label>
+                  <label class="form-check">
+                    <input type="radio" v-model="respuestaPregunta26" value="No" /> No
+                  </label>
+                </div>
+              </div>
+
+              <button class="btn btn-success mt-5" @click="saveFamilyCaracteristicas">
+                <i class="fa fa-save"></i>
+              </button>
             </div>
           </div>
         </div>
-
-
         <div class="tab-pane" id="riesgo">
           <!-- Contenido de la pestaña Riesgo -->
 
@@ -4512,26 +5665,30 @@ export default defineComponent({
                         <div class="card-body">
                           <h5 class="card-title">{{ preguntaTexto27 }}</h5>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1" value="Si" />
-                            <label class="form-check-label" for="inlineRadio1">Si</label>
+                            <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1" value="Si"
+                              v-model="respuestaPregunta27" />
+                            <label type="radio" class="form-check-label" for="inlineRadio1">Si</label>
                           </div>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1" value="No" />
-                            <label class="form-check-label" for="inlineRadio2">No</label>
+                            <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1" value="No"
+                              v-model="respuestaPregunta27" />
+                            <label type="radio" class="form-check-label" for="inlineRadio2">No</label>
                           </div>
 
                           <h5 class="card-title mt-4">{{ preguntaTexto29 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto29" value="Domicilio del Sector" />
+                              <input type="radio" v-model="respuestaPregunta29" name="preguntaTexto29"
+                                value="Domicilio del Sector" />
                               Domicilio del Sector
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto29" value="Centro de Salud" />
+                              <input type="radio" v-model="respuestaPregunta29" name="preguntaTexto29"
+                                value="Centro de Salud" />
                               Centro de Salud
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto29" value="Hospital" />
+                              <input type="radio" v-model="respuestaPregunta29" name="preguntaTexto29" value="Hospital" />
                               Hospital
                             </label>
                           </div>
@@ -4539,44 +5696,44 @@ export default defineComponent({
                           <h5 class="card-title mt-4">{{ preguntaTexto32 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto32" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta32" name="preguntaTexto32" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto32" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta32" name="preguntaTexto32" value="No" /> No
                             </label>
                           </div>
 
                           <h5 class="card-title mt-4">{{ preguntaTexto34 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto34" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta34" name="preguntaTexto34" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto34" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta34" name="preguntaTexto34" value="No" /> No
                             </label>
                           </div>
 
                           <h5 class="card-title mt-4">{{ preguntaTexto35 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto35" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta35" name="preguntaTexto35" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto35" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta35" name="preguntaTexto35" value="No" /> No
                             </label>
                           </div>
 
                           <h5 class="card-title mt-3">{{ preguntaTexto38 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto38" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta38" name="preguntaTexto38" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto38" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta38" name="preguntaTexto38" value="No" /> No
                             </label>
                           </div>
                         </div>
@@ -4589,11 +5746,11 @@ export default defineComponent({
                           <h5 class="card-title">{{ preguntaTexto28 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto28" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta28" name="preguntaTexto28" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto28" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta28" name="preguntaTexto28" value="No" /> No
                             </label>
                           </div>
                           <div>
@@ -4602,11 +5759,11 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto30" value="Si" />
+                                <input type="radio" v-model="respuestaPregunta30" name="preguntaTexto30" value="Si" />
                                 Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto30" value="No" />
+                                <input type="radio" v-model="respuestaPregunta30" name="preguntaTexto30" value="No" />
                                 No
                               </label>
                             </div>
@@ -4617,11 +5774,11 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto31" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta31" name="preguntaTexto31" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto31" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta31" name="preguntaTexto31" value="No" /> No
                             </label>
                           </div>
 
@@ -4630,11 +5787,11 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto33" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta33" name="preguntaTexto33" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto33" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta33" name="preguntaTexto33" value="No" /> No
                             </label>
                           </div>
 
@@ -4643,11 +5800,11 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto36" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta36" name="preguntaTexto36" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto36" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta36" name="preguntaTexto36" value="No" /> No
                             </label>
                           </div>
 
@@ -4656,11 +5813,11 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto37" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta37" name="preguntaTexto37" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto37" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta37" name="preguntaTexto37" value="No" /> No
                             </label>
                           </div>
                         </div>
@@ -4707,15 +5864,17 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto39" value="COVID" />
+                              <input type="checkbox" v-model="respuestaPregunta39" name="preguntaTexto39" value="COVID" />
                               COVID
                             </label>
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto39" value="Tetano" />
+                              <input type="checkbox" v-model="respuestaPregunta39" name="preguntaTexto39"
+                                value="Tetano" />
                               Tetano
                             </label>
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto39" value="Hepatitis B" />
+                              <input type="checkbox" v-model="respuestaPregunta39" name="preguntaTexto39"
+                                value="Hepatitis B" />
                               Hepatitis B
                             </label>
                           </div>
@@ -4725,22 +5884,25 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto40" value="Siempre" /> Siempre
+                              <input type="radio" v-model="respuestaPregunta40" name="preguntaTexto40" value="Siempre" />
+                              Siempre
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto40" value="Aveces" /> Aveces
+                              <input type="radio" v-model="respuestaPregunta40" name="preguntaTexto40" value="Aveces" />
+                              Aveces
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto40" value="Nunca" />Nunca
+                              <input type="radio" v-model="respuestaPregunta40" name="preguntaTexto40"
+                                value="Nunca" />Nunca
                             </label>
                           </div>
                           <h5 class="card-title mt-3">{{ preguntaTexto41 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto41" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta41" name="preguntaTexto41" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto41" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta41" name="preguntaTexto41" value="No" /> No
                             </label>
                           </div>
                           <textarea v-model="descripcionPregunta41" class="form-control" id="comentario" name="comentario"
@@ -4750,19 +5912,19 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto45" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta45" name="preguntaTexto45" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto45" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta45" name="preguntaTexto45" value="No" /> No
                             </label>
                           </div>
                           <h5 class="card-title mt-2">{{ preguntaTexto46 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto46" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta46" name="preguntaTexto46" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto46" value="No" />
+                              <input type="radio" v-model="respuestaPregunta46" name="preguntaTexto46" value="No" />
                               No
                             </label>
                           </div>
@@ -4777,11 +5939,11 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto43" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta43" name="preguntaTexto43" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto43" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta43" name="preguntaTexto43" value="No" /> No
                             </label>
                           </div>
                           <textarea v-model="descripcionpreguntaTexto43" class="form-control" id="ado1" name="ado1"
@@ -4793,10 +5955,10 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto44" value="Si" /> Si
+                                <input type="radio" v-model="respuestaPregunta44" name="preguntaTexto44" value="Si" /> Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto44" value="No" /> No
+                                <input type="radio" v-model="respuestaPregunta44" name="preguntaTexto44" value="No" /> No
                               </label>
                             </div>
                             <textarea v-model="descripcionpreguntaTexto44" class="form-control" id="ado3" name="ado3"
@@ -4807,11 +5969,11 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto42" value="Si" />
+                                <input type="radio" v-model="respuestaPregunta42" name="preguntaTexto42" value="Si" />
                                 Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto42" value="No" />
+                                <input type="radio" v-model="respuestaPregunta42" name="preguntaTexto42" value="No" />
                                 No
                               </label>
                             </div>
@@ -4820,11 +5982,11 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto47" value="Si" />
+                                <input type="radio" v-model="respuestaPregunta47" name="preguntaTexto47" value="Si" />
                                 Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto47" value="No" />
+                                <input type="radio" v-model="respuestaPregunta47" name="preguntaTexto47" value="No" />
                                 No
                               </label>
                             </div>
@@ -4872,24 +6034,24 @@ export default defineComponent({
                             {{ preguntaTexto48 }}
                           </h5>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="preguntaTexto48" id="inlineRadio1"
-                              value="Si" />
+                            <input class="form-check-input" type="radio" v-model="respuestaPregunta48"
+                              name="preguntaTexto48" id="inlineRadio1" value="Si" />
                             <label class="form-check-label" for="inlineRadio1">Si</label>
                           </div>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="preguntaTexto48" id="inlineRadio2"
-                              value="No" />
+                            <input class="form-check-input" v-model="respuestaPregunta48" type="radio"
+                              name="preguntaTexto48" id="inlineRadio2" value="No" />
                             <label class="form-check-label" for="inlineRadio2">No</label>
                           </div>
 
                           <h5 class="card-title mt-3">{{ preguntaTexto49 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto49" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta49" name="preguntaTexto49" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto49" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta49" name="preguntaTexto49" value="No" /> No
                             </label>
                           </div>
                           <div>
@@ -4898,11 +6060,11 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto52" value="Si" />
+                                <input type="radio" v-model="respuestaPregunta52" name="preguntaTexto52" value="Si" />
                                 Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto52" value="No" />
+                                <input type="radio" v-model="respuestaPregunta52" name="preguntaTexto52" value="No" />
                                 No
                               </label>
                             </div>
@@ -4919,11 +6081,11 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto51" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta51" name="preguntaTexto51" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto51" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta51" name="preguntaTexto51" value="No" /> No
                             </label>
                           </div>
                           <div>
@@ -4932,11 +6094,11 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto50" value="Si" />
+                                <input type="radio" v-model="respuestaPregunta50" name="preguntaTexto50" value="Si" />
                                 Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto50" value="No" />
+                                <input type="radio" v-model="respuestaPregunta50" name="preguntaTexto50" value="No" />
                                 No
                               </label>
                             </div>
@@ -4950,7 +6112,6 @@ export default defineComponent({
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
 
-                  <a href="#" class="btn btn-success mt-4">Limpiar</a>
                 </div>
               </div>
 
@@ -4987,21 +6148,23 @@ export default defineComponent({
                             {{ preguntaTexto53 }}
                           </h5>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="preguntaTexto53" id="adulto" value="Si" />
+                            <input class="form-check-input" v-model="respuestaPregunta53" type="radio"
+                              name="preguntaTexto53" id="adulto" value="Si" />
                             <label class="form-check-label" for="inlineRadio1">Si</label>
                           </div>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="preguntaTexto53" id="adulto2" value="No" />
+                            <input class="form-check-input" v-model="respuestaPregunta53" type="radio"
+                              name="preguntaTexto53" id="adulto2" value="No" />
                             <label class="form-check-label" for="inlineRadio2">No</label>
                           </div>
 
                           <h5 class="card-title mt-3">{{ preguntaTexto54 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto54" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta54" name="preguntaTexto54" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto54" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta54" name="preguntaTexto54" value="No" /> No
                             </label>
                           </div>
                           <textarea v-model="descicripcionpreguntaTexto54" class="form-control" id="comentario"
@@ -5010,10 +6173,10 @@ export default defineComponent({
                           <h5 class="card-title mt-3">{{ preguntaTexto55 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto55" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta55" name="preguntaTexto55" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto55" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta55" name="preguntaTexto55" value="No" /> No
                             </label>
                           </div>
                           <textarea v-model="descicripcionpreguntaTexto55" class="form-control" id="describe"
@@ -5022,10 +6185,10 @@ export default defineComponent({
                           <h5 class="card-title mt-3">{{ preguntaTexto56 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto56" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta56" name="preguntaTexto56" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto56" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta56" name="preguntaTexto56" value="No" /> No
                             </label>
                           </div>
                           <textarea v-model="descicripcionpreguntaTexto56" class="form-control" id="diga" name="diga"
@@ -5034,10 +6197,10 @@ export default defineComponent({
                           <h5 class="card-title mt-2">{{ preguntaTexto57 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto57" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta57" name="preguntaTexto57" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto57" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta57" name="preguntaTexto57" value="No" /> No
                             </label>
                           </div>
                         </div>
@@ -5049,10 +6212,10 @@ export default defineComponent({
                           <h5 class="card-title">{{ preguntaTexto58 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto58" value="Si" /> Si
+                              <input type="radio" v-model="respuestaPregunta58" name="preguntaTexto58" value="Si" /> Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto58" value="No" /> No
+                              <input type="radio" v-model="respuestaPregunta58" name="preguntaTexto58" value="No" /> No
                             </label>
                           </div>
 
@@ -5062,19 +6225,23 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Colesterol" />
+                                <input type="checkbox" v-model="respuestaPregunta59" name="preguntaTexto59"
+                                  value="Colesterol" />
                                 Colesterol
                               </label>
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Trigleceridos" />
+                                <input v-model="respuestaPregunta59" type="checkbox" name="preguntaTexto59"
+                                  value="Trigleceridos" />
                                 Trigleceridos
                               </label>
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Diarreas" />
+                                <input v-model="respuestaPregunta59" type="checkbox" name="preguntaTexto59"
+                                  value="Diarreas" />
                                 Diarreas
                               </label>
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Fiebres" />
+                                <input v-model="respuestaPregunta59" type="checkbox" name="preguntaTexto59"
+                                  value="Fiebres" />
                                 Fiebres
                               </label>
                             </div>
@@ -5084,11 +6251,11 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto60" value="Si" />
+                                <input type="radio" v-model="respuestaPregunta60" name="preguntaTexto60" value="Si" />
                                 Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto60" value="No" />
+                                <input type="radio" v-model="respuestaPregunta60" name="preguntaTexto60" value="No" />
                                 No
                               </label>
                             </div>
@@ -5100,10 +6267,10 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto61" value="Si" /> Si
+                                <input type="radio" v-model="respuestaPregunta61" name="preguntaTexto61" value="Si" /> Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto61" value="No" />
+                                <input type="radio" v-model="respuestaPregunta61" name="preguntaTexto61" value="No" />
                                 No
                               </label>
                             </div>
@@ -5115,10 +6282,10 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto62" value="Si" /> Si
+                                <input type="radio" v-model="respuestaPregunta62" name="preguntaTexto62" value="Si" /> Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto62" value="No" /> No
+                                <input type="radio" v-model="respuestaPregunta62" name="preguntaTexto62" value="No" /> No
                               </label>
                             </div>
                             <textarea v-model="descripcionpreguntaTexto62" class="form-control" id="diga" name="diga"
@@ -5167,29 +6334,29 @@ export default defineComponent({
                             {{ preguntaTexto63 }}
                           </h5>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="preguntaTexto63" id="preguntaTexto63"
-                              value="Pollo" />
+                            <input class="form-check-input" v-model="respuestaPregunta63" type="radio"
+                              name="preguntaTexto63" id="preguntaTexto63" value="Pollo" />
                             <label class="form-check-label" for="inlineRadio1">Pollo</label>
                           </div>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="preguntaTexto63" id="preguntaTexto63"
-                              value="Cerdo" />
+                            <input class="form-check-input" v-model="respuestaPregunta63" type="radio"
+                              name="preguntaTexto63" id="preguntaTexto63" value="Cerdo" />
                             <label class="form-check-label" for="inlineRadio2">Cerdo</label>
                           </div>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="preguntaTexto63" id="preguntaTexto63"
-                              value="Otros" />
+                            <input class="form-check-input" v-model="respuestaPregunta63" type="radio"
+                              name="preguntaTexto63" id="preguntaTexto63" value="Otros" />
                             <label class="form-check-label" for="inlineRadio2">Otros</label>
                           </div>
 
                           <h5 class="card-title mt-3">{{ preguntaTexto64 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto64" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta64" name="preguntaTexto64" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto64" value="No" />
+                              <input type="radio" v-model="respuestaPregunta64" name="preguntaTexto64" value="No" />
                               No
                             </label>
                           </div>
@@ -5199,11 +6366,11 @@ export default defineComponent({
                           <h5 class="card-title mt-3">{{ preguntaTexto65 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto65" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta65" name="preguntaTexto65" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto65" value="No" />
+                              <input type="radio" v-model="respuestaPregunta65" name="preguntaTexto65" value="No" />
                               No
                             </label>
                           </div>
@@ -5213,11 +6380,11 @@ export default defineComponent({
                           <h5 class="card-title mt-3">{{ preguntaTexto66 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto66" value="Si" />
+                              <input type="radio" v-model="respuestaPregunta66" name="preguntaTexto66" value="Si" />
                               Si
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto66" value="No" />
+                              <input type="radio" v-model="respuestaPregunta66" name="preguntaTexto66" value="No" />
                               No
                             </label>
                           </div>
@@ -5233,19 +6400,23 @@ export default defineComponent({
                           <h5 class="card-title mt-3">{{ preguntaTexto67 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Colesterol" />
+                              <input type="checkbox" v-model="respuestaPregunta67" name="preguntaTexto67"
+                                value="Colesterol" />
                               Colesterol
                             </label>
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Trigleceridos" />
+                              <input type="checkbox" v-model="respuestaPregunta67" name="preguntaTexto67"
+                                value="Trigleceridos" />
                               Trigleceridos
                             </label>
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Diarreas" />
+                              <input type="checkbox" v-model="respuestaPregunta67" name="preguntaTexto67"
+                                value="Diarreas" />
                               Diarreas
                             </label>
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Fiebres" />
+                              <input type="checkbox" v-model="respuestaPregunta67" name="preguntaTexto67"
+                                value="Fiebres" />
                               Fiebres
                             </label>
                           </div>
@@ -5255,19 +6426,23 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="COVID" />
+                                <input type="checkbox" v-model="respuestaPregunta68" name="preguntaTexto68"
+                                  value="COVID" />
                                 COVID
                               </label>
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="Influenza" />
+                                <input type="checkbox" v-model="respuestaPregunta68" name="preguntaTexto68"
+                                  value="Influenza" />
                                 Influenza
                               </label>
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="Hepatitis B" />
+                                <input type="checkbox" v-model="respuestaPregunta68" name="preguntaTexto68"
+                                  value="Hepatitis B" />
                                 Hepatitis B
                               </label>
                               <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="Tetano" />
+                                <input type="checkbox" v-model="respuestaPregunta68" name="preguntaTexto68"
+                                  value="Tetano" />
                                 Tetano
                               </label>
                             </div>
@@ -5277,15 +6452,17 @@ export default defineComponent({
                           <h5 class="card-title mt-3">{{ preguntaTexto69 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto69" value="Próstata" />
+                              <input type="checkbox" v-model="respuestaPregunta69" name="preguntaTexto69"
+                                value="Próstata" />
                               Próstata
                             </label>
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto69" value="Cáncer mama" />
+                              <input type="checkbox" v-model="respuestaPregunta69" name="preguntaTexto69"
+                                value="Cáncer mama" />
                               Cáncer mama
                             </label>
                             <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto69" value="Otro" />
+                              <input type="checkbox" v-model="respuestaPregunta69" name="preguntaTexto69" value="Otro" />
                               Otro
                             </label>
                           </div>
@@ -5309,11 +6486,8 @@ export default defineComponent({
                     </div>
                   </div>
                   <div class="row mt-3">
-
                     <div class="form-group col-4">
-
                       <select id="inputState" class="form-control" v-model="selectedDiscapacidad" @change="updateFields6">
-
                         <option selected>Seleccionar nombre</option>
                         <option v-for="(persona, index) in personasIntegrantesOfTheFamily" :key="index"
                           :value="persona.id">
@@ -5344,23 +6518,28 @@ export default defineComponent({
                                 <h5 class="card-title">{{ preguntaTexto70 }}</h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Para caminar" />
+                                    <input type="radio" v-model="respuestaPregunta70" name="preguntaTexto70"
+                                      value="Para caminar" />
                                     Para caminar
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Problemas de entendimiento" />
+                                    <input type="radio" v-model="respuestaPregunta70" name="preguntaTexto70"
+                                      value="Problemas de entendimiento" />
                                     Problemas de entendimiento
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Lenguaje" />
+                                    <input type="radio" v-model="respuestaPregunta70" name="preguntaTexto70"
+                                      value="Lenguaje" />
                                     Lenguaje
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Acidente" />
+                                    <input type="radio" v-model="respuestaPregunta70" name="preguntaTexto70"
+                                      value="Acidente" />
                                     Acidente
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Otro" /> Otro
+                                    <input type="radio" v-model="respuestaPregunta70" name="preguntaTexto70"
+                                      value="Otro" /> Otro
                                   </label>
                                 </div>
                               </div>
@@ -5372,11 +6551,13 @@ export default defineComponent({
                                 <h5 class="card-title">{{ preguntaTexto71 }}</h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto71" value="Enfermedad Laboral" />
+                                    <input type="radio" v-model="respuestaPregunta71" name="preguntaTexto71"
+                                      value="Enfermedad Laboral" />
                                     Enfermedad Laboral
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto71" value="Genetico/congenito/nacimienoto" />
+                                    <input type="radio" v-model="respuestaPregunta71" name="preguntaTexto71"
+                                      value="Genetico/congenito/nacimienoto" />
                                     Genetico/congenito/nacimienoto
                                   </label>
                                 </div>
@@ -5403,11 +6584,8 @@ export default defineComponent({
                       </div>
                     </div>
                     <div class="row mt-3">
-
                       <div class="form-group col-4">
-
                         <select id="inputState" class="form-control" v-model="selectedGestante" @change="updateFields7">
-
                           <option selected>Seleccionar nombre</option>
                           <option v-for="(persona, index) in personasGestanteOfTheFamily" :key="index"
                             :value="persona.id">
@@ -5437,10 +6615,12 @@ export default defineComponent({
                                 <h5 class="card-title">{{ preguntaTexto72 }}</h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto72" value="Si" /> Si
+                                    <input type="radio" v-model="respuestaPregunta72" name="preguntaTexto72" value="Si" />
+                                    Si
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto72" value="No" /> No
+                                    <input type="radio" v-model="respuestaPregunta72" name="preguntaTexto72" value="No" />
+                                    No
                                   </label>
                                 </div>
                               </div>
@@ -5453,19 +6633,23 @@ export default defineComponent({
                                 <h5 class="card-title">{{ preguntaTexto73 }}</h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Vacunas" />
+                                    <input type="checkbox" v-model="respuestaPregunta73" name="preguntaTexto73"
+                                      value="Vacunas" />
                                     Vacunas
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Psicoprofilaxis" />
+                                    <input type="checkbox" v-model="respuestaPregunta73" name="preguntaTexto73"
+                                      value="Psicoprofilaxis" />
                                     Psicoprofilaxis
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Vigilancia nutricional" />
+                                    <input type="checkbox" v-model="respuestaPregunta73" name="preguntaTexto73"
+                                      value="Vigilancia nutricional" />
                                     Vigilancia nutricional
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Con la evaluación bucal" />
+                                    <input type="checkbox" v-model="respuestaPregunta72" name="preguntaTexto73"
+                                      value="Con la evaluación bucal" />
                                     Con la evaluación bucal
                                   </label>
                                 </div>
@@ -5493,11 +6677,8 @@ export default defineComponent({
                     </div>
 
                     <div class="row mt-3">
-
                       <div class="form-group col-4">
-
                         <select id="inputState" class="form-control" v-model="selectedPuerpera" @change="updateFields8">
-
                           <option selected>Seleccionar nombre</option>
                           <option v-for="(persona, index) in personasPuerperaOfTheFamily" :key="index"
                             :value="persona.id">
@@ -5519,7 +6700,6 @@ export default defineComponent({
                       </div>
                     </div>
 
-
                     <div class="container-fluid">
                       <div class="container-fluid">
                         <div class="row mt-3 d-flex justify-content-center align-items-center">
@@ -5529,38 +6709,46 @@ export default defineComponent({
                                 <h5 class="card-title">{{ preguntaTexto74 }}</h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto74" value="Si" /> Si
+                                    <input type="radio" v-model="respuestaPregunta74" name="preguntaTexto74" value="Si" />
+                                    Si
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto74" value="No" /> No
+                                    <input type="radio" v-model="respuestaPregunta74" name="preguntaTexto74" value="No" />
+                                    No
                                   </label>
                                 </div>
 
                                 <h5 class="card-title">{{ preguntaTexto75 }}</h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Sangrado vaginal" />
+                                    <input type="checkbox" v-model="respuestaPregunta75" name="preguntaTexto75"
+                                      value="Sangrado vaginal" />
                                     Sangrado vaginal
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Sangrado vaginal con Olor" />
+                                    <input type="checkbox" v-model="respuestaPregunta75" name="preguntaTexto75"
+                                      value="Sangrado vaginal con Olor" />
                                     Sangrado vaginal con Olor
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Fiebres / escalofríos" />
+                                    <input type="checkbox" v-model="respuestaPregunta75" name="preguntaTexto75"
+                                      value="Fiebres / escalofríos" />
                                     Fiebres / escalofríos
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Tos y Flema más de 14 días" />
+                                    <input type="checkbox" v-model="respuestaPregunta75" name="preguntaTexto75"
+                                      value="Tos y Flema más de 14 días" />
                                     Tos y Flema más de 14 días
                                   </label>
 
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Riesgo Sedentarismo" />
+                                    <input type="checkbox" v-model="respuestaPregunta75" name="preguntaTexto75"
+                                      value="Riesgo Sedentarismo" />
                                     Riesgo Sedentarismo
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Alergia a medicamentos" />
+                                    <input type="checkbox" v-model="respuestaPregunta75" name="preguntaTexto75"
+                                      value="Alergia a medicamentos" />
                                     Alergia a medicamentos
                                   </label>
                                 </div>
@@ -5596,37 +6784,36 @@ export default defineComponent({
                                   <h5 class="card-title">{{ preguntaTexto76 }}</h5>
                                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                     <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Riesgo de exposicion" />
+                                      <input type="checkbox" v-model="respuestaPregunta76" name="preguntaTexto76"
+                                        value="Riesgo de exposicion" />
                                       Riesgo de exposicion
                                     </label>
                                     <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value=" Riesgo en el Trabajo" />
+                                      <input type="checkbox" v-model="respuestaPregunta76" name="preguntaTexto76"
+                                        value="Riesgo en el Trabajo" />
                                       Riesgo en el Trabajo
                                     </label>
                                     <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Riesgo del consumo tabaco" />
+                                      <input type="checkbox" v-model="respuestaPregunta76" name="preguntaTexto76"
+                                        value="Riesgo del consumo tabaco" />
                                       Riesgo del consumo tabaco
                                     </label>
                                     <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Otro" />
+                                      <input type="checkbox" v-model="respuestaPregunta76" name="preguntaTexto76"
+                                        value="Otro" />
                                       Otro
                                     </label>
 
                                     <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Riesgo Sedentarismo" />
+                                      <input type="checkbox" v-model="respuestaPregunta76" name="preguntaTexto76"
+                                        value="Riesgo Sedentarismo" />
                                       Riesgo Sedentarismo
                                     </label>
                                     <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Alergia a medicamentos" />
+                                      <input type="checkbox" v-model="respuestaPregunta76" name="preguntaTexto76"
+                                        value="Alergia a medicamentos" />
                                       Alergia a medicamentos
                                     </label>
-                                  </div>
-                                  <div class="row justify-content-end mt-3">
-                                    <div class="col-1">
-                                      <button type="button" @click="saveOtrosRiesgos" class="btn btn-success">
-                                        Guardar
-                                      </button>
-                                    </div>
                                   </div>
                                   <p></p>
 
@@ -5645,22 +6832,26 @@ export default defineComponent({
                                               <h6 class="card-title">{{ preguntaTexto77 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto77" value="Si" />
+                                                  <input type="radio" v-model="respuestaPregunta77" name="preguntaTexto77"
+                                                    value="Si" />
                                                   Si
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto77" value="No" />
+                                                  <input type="radio" v-model="respuestaPregunta77" name="preguntaTexto77"
+                                                    value="No" />
                                                   No
                                                 </label>
                                               </div>
                                               <h6 class="card-title">{{ preguntaTexto79 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto79" value="Si" />
+                                                  <input type="radio" v-model="respuestaPregunta79" name="preguntaTexto79"
+                                                    value="Si" />
                                                   Si
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto79" value="No" />
+                                                  <input type="radio" v-model="respuestaPregunta79" name="preguntaTexto79"
+                                                    value="No" />
                                                   No
                                                 </label>
                                               </div>
@@ -5668,11 +6859,13 @@ export default defineComponent({
                                               <h6 class="card-title">{{ preguntaTexto80 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto80" value="Si" />
+                                                  <input type="radio" v-model="respuestaPregunta80" name="preguntaTexto80"
+                                                    value="Si" />
                                                   Si
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto80" value="No" />
+                                                  <input type="radio" v-model="respuestaPregunta80" name="preguntaTexto80"
+                                                    value="No" />
                                                   No
                                                 </label>
                                               </div>
@@ -5680,11 +6873,13 @@ export default defineComponent({
                                               <h6 class="card-title">{{ preguntaTexto82 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto82" value="Si" />
+                                                  <input type="radio" v-model="respuestaPregunta82" name="preguntaTexto82"
+                                                    value="Si" />
                                                   Si
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto82" value="No" />
+                                                  <input type="radio" v-model="respuestaPregunta82" name="preguntaTexto82"
+                                                    value="No" />
                                                   No
                                                 </label>
                                               </div>
@@ -5697,44 +6892,52 @@ export default defineComponent({
                                               <h6 class="card-title">{{ preguntaTexto78 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto78" value="Si" />
+                                                  <input type="radio" v-model="respuestaPregunta78" name="preguntaTexto78"
+                                                    value="Si" />
                                                   Si
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto78" value="No" />
+                                                  <input type="radio" v-model="respuestaPregunta78" name="preguntaTexto78"
+                                                    value="No" />
                                                   No
                                                 </label>
                                               </div>
                                               <h6 class="card-title">{{ preguntaTexto81 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto81" value="Si" />
+                                                  <input type="radio" v-model="respuestaPregunta81" name="preguntaTexto81"
+                                                    value="Si" />
                                                   Si
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto81" value="No" />
+                                                  <input type="radio" v-model="respuestaPregunta81" name="preguntaTexto81"
+                                                    value="No" />
                                                   No
                                                 </label>
                                               </div>
                                               <h6 class="card-title">{{ preguntaTexto83 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto83" value="Si" />
+                                                  <input type="radio" v-model="respuestaPregunta83" name="preguntaTexto83"
+                                                    value="Si" />
                                                   Si
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto83" value="No" />
+                                                  <input type="radio" v-model="respuestaPregunta83" name="preguntaTexto83"
+                                                    value="No" />
                                                   No
                                                 </label>
                                               </div>
                                               <h6 class="card-title">{{ preguntaTexto84 }}</h6>
                                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto84" value="Lurawi peru" />
+                                                  <input type="radio" v-model="respuestaPregunta84" name="preguntaTexto84"
+                                                    value="Lurawi peru" />
                                                   Lurawi peru
                                                 </label>
                                                 <label class="btn form-check">
-                                                  <input type="radio" name="preguntaTexto84" value="Trabaja peru" />
+                                                  <input type="radio" v-model="respuestaPregunta84" name="preguntaTexto84"
+                                                    value="Trabaja peru" />
                                                   Trabaja peru
                                                 </label>
                                               </div>
@@ -5790,30 +6993,29 @@ export default defineComponent({
                     {{ preguntaTexto85 }}
                   </h5>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="preguntaTexto85"
-                      value="Vaso de Leche" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta85" id="inlineCheckbox1"
+                      name="preguntaTexto85" value="Vaso de Leche" />
                     <label class="form-check-label" for="inlineCheckbox1">Vaso de Leche</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto85"
-                      value="Pension 65" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta85" id="inlineCheckbox2"
+                      name="preguntaTexto85" value="Pension 65" />
                     <label class="form-check-label" for="inlineCheckbox2">Pension 65</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto85"
-                      value="Beca 18" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta85" id="inlineCheckbox2"
+                      name="preguntaTexto85" value="Beca 18" />
                     <label class="form-check-label" for="inlineCheckbox2">Beca 18</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto85"
-                      value="Juntos" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta85" id="inlineCheckbox2"
+                      name="preguntaTexto85" value="Juntos" />
                     <label class="form-check-label" for="inlineCheckbox2">Juntos</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto85"
-                      value="Todos" />
-                    <label class="form-check-label" value="Todos" name="preguntaTexto85"
-                      for="inlineCheckbox2">Todos</label>
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta85" id="inlineCheckbox2"
+                      name="preguntaTexto85" value="Todos" />
+                    <label class="form-check-label" for="inlineCheckbox2">Todos</label>
                   </div>
                   <div class="form-group">
                     <label for="exampleFormControlTextarea1">Describa</label>
@@ -5826,13 +7028,14 @@ export default defineComponent({
                     </h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto87" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta87" name="preguntaTexto87" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto87" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta87" name="preguntaTexto87" value="No" /> No
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto87" value="Solo un miembro" /> Solo
+                        <input type="radio" v-model="respuestaPregunta87" name="preguntaTexto87"
+                          value="Solo un miembro" /> Solo
                         un miembro
                       </label>
                     </div>
@@ -5848,10 +7051,10 @@ export default defineComponent({
                   </h5>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto86" value="Si" /> Si
+                      <input type="radio" v-model="respuestaPregunta86" name="preguntaTexto86" value="Si" /> Si
                     </label>
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto86" value="No" /> No
+                      <input type="radio" v-model="respuestaPregunta86" name="preguntaTexto86" value="No" /> No
                     </label>
                   </div>
                   <div class="form-group">
@@ -5882,10 +7085,10 @@ export default defineComponent({
                     </h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto88" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta88" name="preguntaTexto88" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto88" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta88" name="preguntaTexto88" value="No" /> No
                       </label>
                     </div>
                   </div>
@@ -5900,10 +7103,10 @@ export default defineComponent({
                   </h5>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto89" value="Si" /> Si
+                      <input type="radio" v-model="respuestaPregunta89" name="preguntaTexto89" value="Si" /> Si
                     </label>
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto89" value="No" /> No
+                      <input type="radio" v-model="respuestaPregunta89" name="preguntaTexto89" value="No" /> No
                     </label>
                   </div>
                 </div>
@@ -5924,10 +7127,10 @@ export default defineComponent({
                     <h5 class="card-title mt-3">{{ preguntaTexto90 }}</h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto90" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta90" name="preguntaTexto90" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto90" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta90" name="preguntaTexto90" value="No" /> No
                       </label>
                     </div>
                   </div>
@@ -5947,10 +7150,10 @@ export default defineComponent({
                   </h5>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto91" value="Si" /> Si
+                      <input type="radio" v-model="respuestaPregunta91" name="preguntaTexto91" value="Si" /> Si
                     </label>
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto91" value="No" /> No
+                      <input type="radio" v-model="respuestaPregunta91" name="preguntaTexto91" value="No" /> No
                     </label>
                   </div>
                   <div class="form-group">
@@ -5978,50 +7181,50 @@ export default defineComponent({
                     {{ preguntaTexto92 }}
                   </h5>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="preguntaTexto92"
-                      value="Mototaxi" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta92" id="inlineCheckbox1"
+                      name="preguntaTexto92" value="Mototaxi" />
                     <label class="form-check-label" for="inlineCheckbox1">Mototaxi</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto92"
-                      value="Agro" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta92" id="inlineCheckbox2"
+                      name="preguntaTexto92" value="Agro" />
                     <label class="form-check-label" for="inlineCheckbox2">Agro</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto92"
-                      value="Obrero" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta92" id="inlineCheckbox2"
+                      name="preguntaTexto92" value="Obrero" />
                     <label class="form-check-label" for="inlineCheckbox2">Obrero</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto92"
-                      value="Vendedor ambulante" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta92" id="inlineCheckbox2"
+                      name="preguntaTexto92" value="Vendedor ambulante" />
                     <label class="form-check-label" for="inlineCheckbox2">Vendedor ambulante</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto92"
-                      value="Mas de 2100" />
+                    <input class="form-check-input" type="checkbox" v-model="respuestaPregunta92" id="inlineCheckbox2"
+                      name="preguntaTexto92" value="Mas de 2100" />
                     <label class="form-check-label" for="inlineCheckbox2">Mas de 2100</label>
                   </div>
                   <div>
                     <h5 class="card-title mt-3">{{ preguntaTexto93 }}</h5>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="preguntaTexto93"
-                        value="Diario" />
+                      <input class="form-check-input" type="checkbox" v-model="respuestaPregunta93" id="inlineCheckbox1"
+                        name="preguntaTexto93" value="Diario" />
                       <label class="form-check-label" for="inlineCheckbox1">Diario</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto93"
-                        value="Agro" />
+                      <input class="form-check-input" type="checkbox" v-model="respuestaPregunta93" id="inlineCheckbox2"
+                        name="preguntaTexto93" value="Agro" />
                       <label class="form-check-label" for="inlineCheckbox2">Agro</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto93"
-                        value="Obrero" />
+                      <input class="form-check-input" type="checkbox" v-model="respuestaPregunta93" id="inlineCheckbox2"
+                        name="preguntaTexto93" value="Obrero" />
                       <label class="form-check-label" for="inlineCheckbox2">Obrero</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="preguntaTexto93"
-                        value="Otro" />
+                      <input class="form-check-input" type="checkbox" v-model="respuestaPregunta93" id="inlineCheckbox2"
+                        name="preguntaTexto93" value="Otro" />
                       <label class="form-check-label" for="inlineCheckbox2">Otro</label>
                     </div>
                   </div>
@@ -6034,19 +7237,23 @@ export default defineComponent({
                   <h5 class="card-title">{{ preguntaTexto94 }}</h5>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="de 10-300" /> de 10-300
+                      <input type="radio" v-model="respuestaPregunta94" name="preguntaTexto94" value="de 10-300" /> de
+                      10-300
                     </label>
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="400-800" /> 400-800
+                      <input type="radio" v-model="respuestaPregunta94" name="preguntaTexto94" value="400-800" /> 400-800
                     </label>
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="801-1200" /> 801-1200
+                      <input type="radio" v-model="respuestaPregunta94" name="preguntaTexto94" value="801-1200" />
+                      801-1200
                     </label>
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="1201-1600" /> 1201-1600
+                      <input type="radio" v-model="respuestaPregunta94" name="preguntaTexto94" value="1201-1600" />
+                      1201-1600
                     </label>
                     <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="1201-1600" /> 1601-2010
+                      <input type="radio" v-model="respuestaPregunta94" name="preguntaTexto94" value="1201-1600" />
+                      1601-2010
                     </label>
                   </div>
                 </div>
@@ -6059,7 +7266,7 @@ export default defineComponent({
             <!-- GUALDAD DE GENERO - ELIMINAR FORMAS DE VIOLENCIA DE GENRO -->
             <div class="alert alert-success" role="alert">
               <h5 class="alert-heading">
-                IGUALDAD DE GENERO - ELIMINAR FORMAS DE VIOLENCIA DE GENRO
+                IGUALDAD DE GENERO - ELIMINAR FORMAS DE VIOLENCIA DE GENERO
               </h5>
             </div>
           </div>
@@ -6073,10 +7280,10 @@ export default defineComponent({
                     </h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto95" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta95" name="preguntaTexto95" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto95" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta95" name="preguntaTexto95" value="No" /> No
                       </label>
                     </div>
 
@@ -6085,29 +7292,29 @@ export default defineComponent({
                     </h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto96" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta96" name="preguntaTexto96" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto96" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta96" name="preguntaTexto96" value="No" /> No
                       </label>
                     </div>
                     <h5 class="card-title mt-3">{{ preguntaTexto97 }}</h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto97" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta97" name="preguntaTexto97" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto97" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta97" name="preguntaTexto97" value="No" /> No
                       </label>
                     </div>
 
                     <h5 class="card-title mt-3">{{ preguntaTexto98 }}</h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto98" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta98" name="preguntaTexto98" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto98" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta98" name="preguntaTexto98" value="No" /> No
                       </label>
                     </div>
                   </div>
@@ -6121,10 +7328,10 @@ export default defineComponent({
                     </h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto99" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta99" name="preguntaTexto99" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto99" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta99" name="preguntaTexto99" value="No" /> No
                       </label>
                     </div>
 
@@ -6133,10 +7340,10 @@ export default defineComponent({
                     </h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto100" value="Si" /> Si
+                        <input type="radio" v-model="respuestaPregunta100" name="preguntaTexto100" value="Si" /> Si
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto100" value="No" /> No
+                        <input type="radio" v-model="respuestaPregunta100" name="preguntaTexto100" value="No" /> No
                       </label>
                     </div>
                     <h5 class="card-title mt-3">
@@ -6144,14 +7351,16 @@ export default defineComponent({
                     </h5>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto101" value="Personal" /> Personal
+                        <input type="radio" v-model="respuestaPregunta101" name="preguntaTexto101" value="Personal" />
+                        Personal
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto101" value="Delincuencial" />
+                        <input type="radio" v-model="respuestaPregunta101" name="preguntaTexto101"
+                          value="Delincuencial" />
                         Delincuencial
                       </label>
                       <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto101" value="Psicologica" />
+                        <input type="radio" v-model="respuestaPregunta101" name="preguntaTexto101" value="Psicologica" />
                         Psicologica
                       </label>
                     </div>
@@ -6182,21 +7391,22 @@ export default defineComponent({
                           </h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value="Denuncié al TG" />
-                              Denuncié al TG
+                              <input type="radio" v-model="respuestaPregunta102" name="preguntaTexto102"
+                                value="Denuncié al TG" /> Denuncié al TG
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value=" Denuncié en la Policía" />
-                              Denuncié en la Policía
+                              <input type="radio" v-model="respuestaPregunta102" name="preguntaTexto102"
+                                value="Denuncié en la Policía" /> Denuncié en la Policía
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value="Hice justicia solo" />
-                              Hice justicia solo
+                              <input type="radio" v-model="respuestaPregunta102" name="preguntaTexto102"
+                                value="Hice justicia solo" /> Hice justicia solo
                             </label>
                             <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value="No hice nada" /> No
-                              hice nada
+                              <input type="radio" v-model="respuestaPregunta102" name="preguntaTexto102"
+                                value="No hice nada" /> No hice nada
                             </label>
+
                           </div>
                         </div>
                       </div>
@@ -6220,10 +7430,12 @@ export default defineComponent({
                               <h5 class="card-title">{{ preguntaTexto103 }}</h5>
                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn form-check">
-                                  <input type="radio" name="preguntaTexto103" value="Si" /> Si
+                                  <input type="radio" v-model="respuestaPregunta103" name="preguntaTexto103" value="Si" />
+                                  Si
                                 </label>
                                 <label class="btn form-check">
-                                  <input type="radio" name="preguntaTexto103" value="No" /> No
+                                  <input type="radio" v-model="respuestaPregunta103" name="preguntaTexto103" value="No" />
+                                  No
                                 </label>
                               </div>
                               <div>
@@ -6232,10 +7444,12 @@ export default defineComponent({
                                 </h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto104" value="Si" /> Si
+                                    <input type="radio" v-model="respuestaPregunta104" name="preguntaTexto104"
+                                      value="Si" /> Si
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto104" value="No" /> No
+                                    <input type="radio" v-model="respuestaPregunta104" name="preguntaTexto104"
+                                      value="No" /> No
                                   </label>
                                 </div>
                                 <textarea class="form-control" id="diga" v-model="descripcionpreguntaTexto104" name="diga"
@@ -6249,10 +7463,12 @@ export default defineComponent({
                                 </h5>
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto105" value="Si" /> Si
+                                    <input type="radio" v-model="respuestaPregunta105" name="preguntaTexto105"
+                                      value="Si" /> Si
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto105" value="No" /> No
+                                    <input type="radio" v-model="respuestaPregunta105" name="preguntaTexto105"
+                                      value="No" /> No
                                   </label>
                                 </div>
                                 <textarea v-model="descripcionpreguntaTexto105" class="form-control" id="diga" name="diga"
@@ -6281,11 +7497,13 @@ export default defineComponent({
                             <h5 class="card-title mt-3">{{ preguntaTexto106 }}</h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto106" value="Asociacion Vecinal" />
+                                <input type="radio" v-model="respuestaPregunta106" name="preguntaTexto106"
+                                  value="Asociacion Vecinal" />
                                 Asociacion Vecinal
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto106" value="Grupo de rondas" />
+                                <input type="radio" v-model="respuestaPregunta106" name="preguntaTexto106"
+                                  value="Grupo de rondas" />
                                 Grupo de rondas
                               </label>
                             </div>
@@ -6298,10 +7516,12 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto107" value="Si" /> Si
+                                <input type="radio" v-model="respuestaPregunta107" name="preguntaTexto107" value="Si" />
+                                Si
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto107" value="No" /> No
+                                <input type="radio" v-model="respuestaPregunta107" name="preguntaTexto107" value="No" />
+                                No
                               </label>
                             </div>
                           </div>
@@ -6315,15 +7535,18 @@ export default defineComponent({
                             </h5>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto108" value="Gestion Financiera" />
+                                <input type="radio" v-model="respuestaPregunta108" name="preguntaTexto108"
+                                  value="Gestion Financiera" />
                                 Gestion Financiera
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto108" value="Planes de Trabajo" />
+                                <input type="radio" v-model="respuestaPregunta108" name="preguntaTexto108"
+                                  value="Planes de Trabajo" />
                                 Planes de Trabajo
                               </label>
                               <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto108" value="Acuerdos" />
+                                <input type="radio" v-model="respuestaPregunta108" name="preguntaTexto108"
+                                  value="Acuerdos" />
                                 Acuerdos
                               </label>
                             </div>

@@ -5,6 +5,9 @@ import LoginView from '../views/auth/LoginView.vue';
 import RoleView from "../views/role/RoleView.vue";
 import EditRoleView2 from "../views/role/EditRoleView2.vue"
 import ErrorPage from "@/views/error/Error.vue";
+import DesktopView from "@/views/init/InitView.vue";
+import DashBoardView from "@/views/dashboard/DashBoardView.vue";
+import EditFichaTecnica from "@/views/dashboard/EditFichaTecnica.vue";
 
 import { useAuth } from '@/stores/auth';
 import EquipoView from '@/views/equipo/EquipoView.vue';
@@ -35,6 +38,27 @@ const router = createRouter({
       meta: { requireAuth: true },
       beforeEnter: requireAuth
     },
+    {
+      path: '/ficha/:uuid', // Define el parámetro dinámico ':uuid'
+      name: 'ficha',
+      component: DashBoardView,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/editar-censo/:id', 
+      component: EditFichaTecnica,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/desktop',
+      name: 'desktop',
+      component: DesktopView,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+
     {
       path: '/equipo',
       name: 'equipo',

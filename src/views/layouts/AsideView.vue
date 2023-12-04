@@ -33,7 +33,7 @@ export default defineComponent({
     <div class="nk-apps-sidebar is-theme">
         <div class="nk-apps-brand">
             <RouterLink to="/" class="logo-link">
-                <img class="logo-light mt-3 logo-img" src="../../assets/images/icons/logo-aside.png" alt="logo" />
+                <img class="logo-light mt-3 logo-img" src="../../assets/images/icons/logo-aside.jpg" alt="logo" />
             </RouterLink>
         </div>
         <div class="nk-sidebar-element">
@@ -47,7 +47,13 @@ export default defineComponent({
                                     <span class="nk-menu-icon"><em class="icon ni ni-home icon-side"></em></span>
                                 </RouterLink>
                             </li>
-    
+                            <li class="nk-menu-item">
+                                <RouterLink to="/desktop" class="nk-menu-link"
+                                    :class="{ 'active-side-item': $route.path === '/desktop' }"
+                                    @click="handleModuleSelect('Informes')" title="Informes">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-file-text icon-side"></em></span>
+                                </RouterLink>
+                            </li>
 
                             <li class="nk-menu-item" v-show="hasPermissionTo(['permissions'])">
                                 <RouterLink to="/role" class="nk-menu-link"

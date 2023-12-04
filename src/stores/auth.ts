@@ -39,8 +39,13 @@ export const useAuth = defineStore({
 			if (this.refreshTokenInterval !== 0) {
 				clearInterval(this.refreshTokenInterval);
 			}
+
+			const horas = 5;
+            const segundosEnUnaHora = 3600; // 1 hora = 3600 segundos
+            const duracionEnSegundos = horas * segundosEnUnaHora;
+            const duracionEnMilisegundos = duracionEnSegundos * 1000;
 	  
-			const expiresInMs = 3500000; // 3500 segundos en milisegundos
+            const expiresInMs = duracionEnMilisegundos;
 			this.refreshTokenInterval = setInterval(this.refreshToken, expiresInMs);
 		},
 		async login(email: string, password: string) {
