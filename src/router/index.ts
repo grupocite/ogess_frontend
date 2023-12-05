@@ -6,7 +6,7 @@ import RoleView from "../views/role/RoleView.vue";
 import EditRoleView2 from "../views/role/EditRoleView2.vue"
 import ErrorPage from "@/views/error/Error.vue";
 import DesktopView from "@/views/init/InitView.vue";
-import DashBoardView from "@/views/dashboard/DashBoardView.vue";
+import DashBoardView from "@/views/dashboard/DashboardView.vue";
 import EditFichaTecnica from "@/views/dashboard/EditFichaTecnica.vue";
 
 import { useAuth } from '@/stores/auth';
