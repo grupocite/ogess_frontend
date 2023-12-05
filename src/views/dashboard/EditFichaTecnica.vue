@@ -2038,22 +2038,20 @@ idDistrito.value = distritoId;
 
         console.log(selectedValues)
 
-        if (
-          selectedValues.length === 0 ||
-          selectedQuestion1.length === 0 ||
-          selectedQuestion2.length === 0 ||
-          selectedQuestion3.length === 0 ||
-          selectedQuestion4.length === 0 ||
-          selectedQuestion5.length === 0 ||
-          selectedQuestion6.length === 0 ||
-          selectedQuestion7.length === 0 ||
-          selectedQuestion8.length === 0
-        ) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
+       
+        const algunaPreguntaRespondida =
+          selectedValues.length > 0 ||
+          selectedQuestion1.length > 0 ||
+          selectedQuestion2.length > 0 ||
+          selectedQuestion3.length > 0 ||
+          selectedQuestion4.length > 0 ||
+          selectedQuestion5.length > 0 ||
+          selectedQuestion6.length > 0 ||
+          selectedQuestion7.length > 0 ||
+          selectedQuestion8.length > 0;
 
-        const data = {
+        if (algunaPreguntaRespondida) {
+          const data = {
           respuestas: [
             {
               pregunta_id: 40,
@@ -2129,7 +2127,10 @@ idDistrito.value = distritoId;
 
           resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+          }
+        } else {
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
@@ -2786,14 +2787,11 @@ idDistrito.value = distritoId;
           document.querySelectorAll('input[name="preguntaTexto75"]:checked')
         ).map((input: any) => input.value)
 
-        console.log(selectedValues74)
+        // Verificar si al menos una pregunta está respondida
+        const algunaPreguntaRespondida = selectedValues74.length > 0 || selectedQuestion75.length > 0;
 
-        if (selectedValues74.length === 0 || selectedQuestion75.length === 0) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
-
-        const data = {
+        if (algunaPreguntaRespondida) {
+          const data = {
           respuestas: [
             {
               pregunta_id: 75,
@@ -2835,7 +2833,10 @@ idDistrito.value = distritoId;
 
           resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
+          }
+        } else {
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
