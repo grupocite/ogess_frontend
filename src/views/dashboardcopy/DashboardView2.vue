@@ -910,14 +910,14 @@ export default defineComponent({
 
     const renderMyChart2 = async () => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-catorce`, headers);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-riesgos-ninos`, headers);
     const data = response.data;
 
-    const riesgos = Object.keys(data.respuestas_por_riesgo);
+    const riesgos = Object.keys(data.respuestas_por_riesgo_nino);
 
     const series = riesgos.map((riesgo) => ({
       name: riesgo,
-      data: [data.respuestas_por_riesgo[riesgo]],
+      data: [data.respuestas_por_riesgo_nino[riesgo]],
     }));
 
     const options = {
