@@ -13,13 +13,17 @@ import { useAuth } from '../../stores/auth'
 import { Modal } from 'bootstrap'
 import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
-
+import { useRouter } from 'vue-router';
+import VueApexCharts from 'vue3-apexcharts';
 import { format } from 'date-fns'
 import { useCensoDetails } from '../composables'
 import Swal from 'sweetalert2'
 
 
 export default defineComponent({
+  components: {
+    apexchart: VueApexCharts,
+  },
   setup() {
     const estadoCivil = ref<Array<EstadoCivil>>([])
     const gradoInstruccion = ref<Array<GradoInstruccion>>([])
@@ -30,7 +34,12 @@ export default defineComponent({
     const personas = ref([])
     const familias = ref([])
 
-    
+
+    const direccionExacta = ref('');
+    const referencia = ref('');
+
+    const selectedManzana = ref('');
+    const selectedJr = ref('');
 
     const jefeFamilia = ref(false);
 
@@ -44,6 +53,9 @@ export default defineComponent({
     const searchTerm3 = ref('')
 
     const searchDNI = ref('')
+
+
+
 
     const preguntaTexto = ref('')
     const preguntaTexto2 = ref('')
@@ -250,16 +262,23 @@ export default defineComponent({
     const adultos_mayores_60 = ref(0)
 
     const selectedSexo = ref('');
+    const router = useRouter();
 
     const selectedRedSalud = ref('');
     const selectedMicroRed = ref('');
     const selectedEstablecimiento = ref('');
     const selectedSector = ref('');
 
+    const selectedProvincia = ref('');
+    const selectedDistrito = ref('');
+
     const redesSalud = ref([]);
     const microRedes = ref([]);
     const establecimientos = ref([]);
     const sectores = ref([]);
+
+    const provincias = ref([]);
+    const distritos = ref([]);
 
     const respuestaPregunta3 = ref('') // Para capturar la respuesta "Si" o "No"
     const respuestaPregunta4 = ref('') // Para capturar la respuesta "Si" o "No"
@@ -336,6 +355,8 @@ export default defineComponent({
       }
     };
 
+
+
     const getMicroRedes = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/micro_redes/${selectedRedSalud.value}`, headers);
@@ -383,6 +404,62 @@ export default defineComponent({
       }
     };
 
+    const getProvincias = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/ubigeo/provincias`, headers);
+        provincias.value = response.data.data.map((provincia: any) => ({
+          id: provincia.id,
+          name: provincia.prov_provincia
+        }));
+        console.log(provincias.value)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
+    const getDistritos = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/ubigeo/provincias/${selectedProvincia.value}/distritos`, headers);
+        distritos.value = response.data.data.map((distrito: any) => ({
+          id: distrito.id,
+          name: distrito.dis_distrito
+        }));
+        console.log(distritos.value)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
+    const getSectoresReal = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/ubigeo/distritos/${selectedDistrito.value}/sectores`, headers);
+        sectores.value = response.data.data.map((sector: any) => ({
+          id: sector.id,
+          name: sector.nombre_sector
+        }));
+        console.log(selectedSector.value)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
+    const onSectorChange = (event) => {
+      selectedSector.value = event.target.value; // Actualiza selectedSector con el valor seleccionado
+      console.log(selectedSector.value)
+    };
+
+    const onManzanaChange = (event) => {
+      selectedManzana.value = event.target.value; // Actualiza selectedManzana con el valor seleccionado
+      console.log(selectedManzana.value)
+    };
+
+    const onJrChange = (event) => {
+      selectedJr.value = event.target.value; // Actualiza selectedJr con el valor seleccionado
+      console.log(selectedJr.value)
+    };
 
     const capturarRespuesta = (respuesta: any) => {
       respuestaSeleccionada.value = respuesta
@@ -472,6 +549,8 @@ export default defineComponent({
         obtenerAdultos()
         obtenerAdultosMayores()
         obtenerIntegrantesFamily()
+        obtenerIntegrantesGestantes()
+        obtenerIntegrantesPuerpera()
         showBlock.value += 1
       }
     }
@@ -2078,6 +2157,7 @@ export default defineComponent({
               })
             }
 
+            obtenerIntegrantesPuerpera()
             resetAllCheckboxesAndRadios()
           } else {
             ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
@@ -2240,6 +2320,7 @@ export default defineComponent({
         ).map((checkbox) => checkbox.value)
 
         const selectedValuesArray = [
+          selectedValues76,
           selectedValues77,
           selectedValues78,
           selectedValues79,
@@ -2882,7 +2963,7 @@ export default defineComponent({
 
         const id = response.data.data.id;
 
-        idFamiliaAsignacion.value =id;
+        idFamiliaAsignacion.value = id;
 
         console.log("El ID de la familia creada es:", id);
 
@@ -2890,8 +2971,8 @@ export default defineComponent({
         if (response.status === 201) {
           ElMessage.success(response.data.message)
           setTimeout(() => {
-        window.location.reload();
-      }, 4000);
+            window.location.reload();
+          }, 4000);
         } else {
           ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
@@ -2974,7 +3055,7 @@ export default defineComponent({
     const fetchFamilies = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/persona/records-custom`,
+          `${import.meta.env.VITE_API_URL}/persona/${idFamilia.value}/records-custom-person`,
           headers
         )
 
@@ -3356,15 +3437,89 @@ export default defineComponent({
         )
 
         personasIntegrantesOfTheFamily.value = response.data.data
-        personasGestanteOfTheFamily.value = response.data.data
-        personasPuerperaOfTheFamily.value = response.data.data
-
 
         console.log(personasIntegrantesOfTheFamily.value)
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
     }
+
+
+    const obtenerIntegrantesGestantes = async () => {
+      try {
+
+        const responseFemenino = await axios.get(
+          `${import.meta.env.VITE_API_URL}/familia/${idFamilia.value}/integrantes-femenino`,
+          headers
+        )
+
+        personasGestanteOfTheFamily.value = responseFemenino.data.data
+
+      } catch (error) {
+        console.error('Ocurrió un error inesperado:', error)
+      }
+    }
+
+    const obtenerIntegrantesPuerpera = async () => {
+      try {
+
+        const responseFemeninoPuerpera = await axios.get(
+          `${import.meta.env.VITE_API_URL}/familia/${idFamilia.value}/integrantes-femenino-puerpera`,
+          headers
+        )
+
+        personasPuerperaOfTheFamily.value = responseFemeninoPuerpera.data.data
+
+        console.log(personasIntegrantesOfTheFamily.value)
+      } catch (error) {
+        console.error('Ocurrió un error inesperado:', error)
+      }
+    }
+
+    const chartOptions = ref({
+      chart: {
+        height: 190,
+        type: 'radialBar',
+        offsetY: -170
+      },
+      plotOptions: {
+        radialBar: {
+          startAngle: -135,
+          endAngle: 135,
+          dataLabels: {
+            name: {
+              fontSize: '16px',
+              color: undefined,
+              offsetY: 120
+            },
+            value: {
+              offsetY: 76,
+              fontSize: '22px',
+              color: undefined,
+              formatter: function (val) {
+                return val + '%';
+              }
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          shadeIntensity: 0.15,
+          inverseColors: false,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 50, 65, 91]
+        },
+      },
+      stroke: {
+        dashArray: 4
+      },
+      labels: ['Porcentaje de avance'],
+      series: [0], // Inicializar con un valor de 0%
+    });
 
 
 
@@ -3385,7 +3540,7 @@ export default defineComponent({
           ElMessage.success(messageFromBackend); // Muestra un mensaje de éxito
         }
         // Manejar la respuesta según sea necesario
-      }  catch (error) {
+      } catch (error) {
         if (error.response && error.response.status === 404) {
           // Mostrar un mensaje de error por defecto para el código de estado 404
           ElMessage.error('No se encontró el recurso solicitado');
@@ -3403,7 +3558,8 @@ export default defineComponent({
 
         if (response.status === 200) {
           idFamilia.value = response.data.id_familia;
-          console.log('ID de la familia:', idFamilia.value );
+          obtenerInformacionEdad()
+          console.log('ID de la familia:', idFamilia.value);
         }
       } catch (error) {
         console.error('Error al obtener la familia por UUID:', error);
@@ -3423,6 +3579,9 @@ export default defineComponent({
         porcentajeAvance.value = data.porcentaje_avance;
         totalPreguntasRespondidas.value = data.totalPreguntasRespondidas;
 
+        chartOptions.value.series = [porcentajeAvance.value];
+
+
         ElMessage.success('Cálculo del porcentaje de avance exitoso');
 
 
@@ -3431,6 +3590,38 @@ export default defineComponent({
       } catch (error) {
         console.error('Error al calcular el porcentaje de avance:', error);
       }
+    };
+
+
+    const guardarDetalleFamilia = async () => {
+
+
+      const formulario = {
+        direccion_hogar: direccionExacta.value,
+        referencia_ubicacion_hogar: referencia.value,
+        numero_manzana_hogar: selectedManzana.value,
+        abreviatura_direccion_hogar: selectedJr.value,
+        sector_id: selectedSector.value
+      };
+
+      try {
+        const response = await axios.put(`${import.meta.env.VITE_API_URL}/familia/update-detail/${idFamilia.value}`,
+          formulario,
+          {
+            ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
+          }
+        );
+        console.log('Respuesta del servidor:', response.data);
+
+        if (response.status === 200) {
+          ElMessage.success(response.data.message); // Muestra el mensaje exitoso
+        }
+
+      } catch (error) {
+        ElMessage.success('Error al actualizar la familia:', error);
+        // Manejo de errores
+      }
+
     };
 
     const onCheckboxChange = () => {
@@ -3446,6 +3637,7 @@ export default defineComponent({
     onMounted(async () => {
       capturarValor();
       getRedesSalud();
+      getProvincias();
       fetchEstadoCivil()
       fetchGradoInstruccion()
       fetchReligion()
@@ -3453,35 +3645,46 @@ export default defineComponent({
       fetchSeguroSalud()
       fetchData()
       fetchPersons()
-      fetchFamilies()
       obtenerFamiliaPorUuid()
+      fetchFamilies()
     })
 
     const terminarCenso = async () => {
-  // ... (código para la solicitud axios)
+      // ... (código para la solicitud axios)
 
-  try {
-    const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${uuid}/actualizarFechaFinuuid`,
+      try {
+        const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${uuid}/actualizarFechaFinuuid`,
           null,
           {
             ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
           }
-        );    
-    // Manejo de la respuesta
-    console.log(response.data);
+        );
+        // Manejo de la respuesta
+        console.log(response.data);
 
-    // Mostrar el mensaje de éxito si la actualización fue exitosa
-    if (response.data.status === 'success') {
-      ElMessage.success(response.data.message);
-    }
-  } catch (error) {
-    // Manejo de errores
-    console.error('Error al actualizar el censo:', error);
-    ElMessage.error('Hubo un error al actualizar el censo.');
-  }
-};
+
+        // Mostrar el mensaje de éxito si la actualización fue exitosa
+        if (response.data.status === 'success') {
+          ElMessage.success(response.data.message);
+
+
+          setTimeout(() => {
+            router.push('/desktop'); // Reemplaza '/nueva-ruta' con la ruta a la que quieras redireccionar
+          }, 1000);
+
+
+        }
+      } catch (error) {
+        // Manejo de errores
+        console.error('Error al actualizar el censo:', error);
+        ElMessage.error('Hubo un error al actualizar el censo.');
+      }
+    };
 
     return {
+      direccionExacta,
+      referencia,
+      guardarDetalleFamilia,
       calcularPorcentajeAvance,
       guardarDetalle,
       tableData,
@@ -3506,6 +3709,8 @@ export default defineComponent({
       jefeFamilia,
       onCheckboxChange,
       obtenerIntegrantesFamily,
+      obtenerIntegrantesGestantes,
+      obtenerIntegrantesPuerpera,
       saveRiesgosJovenes,
       saveOccupation,
       saveFamily,
@@ -3546,6 +3751,11 @@ export default defineComponent({
       respuestas9,
       respuestas15,
       respuestas17,
+      onSectorChange,
+      selectedManzana,
+      selectedJr,
+      onManzanaChange,
+      onJrChange,
       mostrarCampoEntrada,
       nuevoNombreFamilia,
       obtenerInformacionEdad,
@@ -3553,6 +3763,7 @@ export default defineComponent({
       assignPersonToFamily,
       respuestas23,
       preguntaTexto2,
+      chartOptions,
       preguntaTexto3,
       preguntaTexto4,
       preguntaTexto5,
@@ -3672,6 +3883,9 @@ export default defineComponent({
       getMicroRedes,
       getEstablecimientosSalud,
       getSectores,
+      getDistritos,
+      getSectoresReal,
+      router,
       preguntaTexto62,
       preguntaTexto63,
       preguntaTexto64,
@@ -3790,6 +4004,10 @@ export default defineComponent({
       openAddOccupationModal,
       openAsignmentPersonAtFamily,
       apellidos,
+      provincias,
+      distritos,
+      selectedProvincia,
+      selectedDistrito,
       headers,
       user,
       todayFormatted,
@@ -3812,9 +4030,9 @@ export default defineComponent({
 <template>
   <div class="container-fluid mt-5">
     <div class="card mt-5">
-      <div class="card-body">
+      <div class="card-body" style="height: 200px;">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <input :value="user.name + ' ' + user.last_name" type="text" class="form-control" placeholder="Encuestador"
               readonly disabled />
           </div>
@@ -3822,20 +4040,16 @@ export default defineComponent({
             <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
           </div>
 
-  <div class="col-md-1">
-    <button @click="guardarDetalle" class="btn btn-primary btn-sm mb-3">Guardar Detalle</button>
-  </div>
-  <div class="col-md-1">
-    <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
-  </div>
-  <div class="col-md-1">
-    <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
-  </div>
+
+          <div class="col-md-1">
+            <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
+          </div>
+          <div class="col-md-1">
+            <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
+          </div>
         </div>
 
-        
-
-        <div class="row ">
+        <div class="row mt-6">
           <!-- Aquí agregamos los botones -->
 
 
@@ -3859,17 +4073,37 @@ export default defineComponent({
             </select>
           </div>
 
+          <div class="col-md-1">
+            <button @click="guardarDetalle" class="btn btn-primary btn-sm mb-3">Guardar Detalle</button>
+          </div>
+
+          <!--
           <div class="col-md-3">
             <select class="form-select" v-model="selectedSector">
               <option value="">Selecciona un Sector</option>
               <option v-for="sector in sectores" :key="sector.id" :value="sector.id">{{
                 sector.name }}</option>
             </select>
+          </div>-->
+
+
+
+
+        </div>
+
+        <div class="row ">
+          <div class="col-md-3 order-last">
+            <!-- Movemos el div del gráfico aquí -->
+            <div class="d-flex justify-content-center align-items-right">
+              <div id="chart">
+                <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
+                </apexchart>
+              </div>
+            </div>
           </div>
-
-
-
-
+          <div class="col-md-9 order-first">
+            <!-- Contenido en el lado izquierdo -->
+          </div>
         </div>
       </div>
     </div>
@@ -3926,17 +4160,12 @@ export default defineComponent({
                   <input disabled type="number" class="form-control" placeholder="Edad" v-model="edad" />
                 </div>
                 <div class="col-md-2">
-    <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="gridCheck"
-        v-model="jefeFamilia"
-        @change="onCheckboxChange"
-      />
-      <label class="form-check-label" for="gridCheck">Jefe de familia</label>
-    </div>
-  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck" v-model="jefeFamilia"
+                      @change="onCheckboxChange" />
+                    <label class="form-check-label" for="gridCheck">Jefe de familia</label>
+                  </div>
+                </div>
               </div>
 
               <div class="row mt-3">
@@ -4045,7 +4274,7 @@ export default defineComponent({
               <div class="row" v-else>
                 <div class="col-auto">
                   <button type="button" class="btn btn-success" @click="updatePersona">
-                    Actualizar datos 
+                    Actualizar datos
                   </button>
                 </div>
                 <div class="col-auto">
@@ -4105,15 +4334,13 @@ export default defineComponent({
               </div>
 
               <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group mt-3">
+                <div class="col-md-2">
+                  <div class="form-group ">
                     <label for="nombreFamilia">Nombre de familia</label>
                     <input type="text" class="form-control" id="nombreFamilia" v-model="nombreFamilia" disabled />
                   </div>
                 </div>
-              </div>
 
-              <div class="row mt-4">
                 <div class="col-md-2">
                   <label for="exampleFormControlSelect1">Niños(as) O a 11 años</label>
                   <input type="int" class="form-control" v-model="niños_0_11" disabled />
@@ -4134,7 +4361,75 @@ export default defineComponent({
                   <label for="exampleFormControlSelect1">Adulto mayor a 60 años</label>
                   <input type="text" class="form-control" v-model="adultos_mayores_60" disabled />
                 </div>
+
               </div>
+
+
+              <div class="row mt-4">
+
+                <div class="col-md-2">
+                  <select class="form-select" v-model="selectedProvincia" @change="getDistritos">
+                    <option value="">Provincia</option>
+                    <option v-for="provincia in provincias" :key="provincia.id" :value="provincia.id">{{ provincia.name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-select" v-model="selectedDistrito" @change="getSectoresReal">
+                    <option value="">Distrito</option>
+                    <option v-for="distrito in distritos" :key="distrito.id" :value="distrito.id">{{ distrito.name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-select" @change="onSectorChange">
+                    <option value="">Sector</option>
+                    <option v-for="sector in sectores" :key="sector.id" :value="sector.id">{{ sector.name }}</option>
+                  </select>
+                </div>
+
+                <!-- Selector de Manzana -->
+                <div class="col-md-2">
+                  <select class="form-select" @change="onManzanaChange">
+                    <option value="">Manzana</option>
+                    <option v-for="n in 10" :key="n">Manzana {{ n }}</option>
+                  </select>
+                </div>
+                <!-- Selector de Jr -->
+                <div class="col-md-2">
+                  <select class="form-select" @change="onJrChange">
+                    <option value="">Ubicación</option>
+                    <option value="Jr">Jr</option>
+                    <option value="Lote">Lote</option>
+                    <option value="Urb">Urb</option>
+                    <!-- Otras opciones según sea necesario -->
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="row mt-3">
+
+                <div class="col-md-6">
+                  <input type="text" class="form-control" v-model="direccionExacta"
+                    placeholder="Escribir dirección exacta">
+                </div>
+
+                <div class="col-md-4">
+                  <input type="text" class="form-control" v-model="referencia" placeholder="Escribir Referencia">
+                </div>
+
+                <div class="col-md-2">
+                  <button class="btn btn-success" @click="guardarDetalleFamilia">
+                    <i class="fas fa-save"></i> <!-- Ícono de guardar de Font Awesome -->
+                  </button>
+
+                </div>
+
+
+              </div>
+
+
               <div class="form-group mt-3"></div>
 
               <div class="alert alert-success mt-5" role="alert">
@@ -4483,7 +4778,7 @@ export default defineComponent({
               <div v-if="showBlock === 1">
                 <p class="card-text">EN LA ETAPA NIÑO 0-11 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoNinos.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedPersona" @change="updateFields">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoNinos" :key="index" :value="persona.id">
@@ -4491,13 +4786,18 @@ export default defineComponent({
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoNinos.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaNinos.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoNinos.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaNinos.edad" />
@@ -4506,7 +4806,7 @@ export default defineComponent({
                 </div>
 
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoNinos.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -4667,7 +4967,8 @@ export default defineComponent({
                       </div>
                     </div>
                   </div>
-                  <a @click="saveRiesgosNiños" class="btn btn-success mt-4">Guardar</a>
+                  <a v-if="personasEnRangoNinos.length > 0" @click="saveRiesgosNiños"
+                    class="btn btn-success mt-4">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
                 </div>
@@ -4676,7 +4977,7 @@ export default defineComponent({
               <div v-if="showBlock === 2">
                 <p class="card-text">EN LA ETAPA ADOLESCENTE 12-17 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedAdolescente" @change="updateFields2">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoAdolescentes" :key="index" :value="persona.id">
@@ -4684,13 +4985,18 @@ export default defineComponent({
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaAdolescentes.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaAdolescentes.edad" />
@@ -4698,7 +5004,7 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -4833,7 +5139,8 @@ export default defineComponent({
                       </div>
                     </div>
                   </div>
-                  <a class="btn btn-success mt-4" @click="saveRiesgosAdolescentes">Guardar</a>
+                  <a v-if="personasEnRangoAdolescentes.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosAdolescentes">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
                 </div>
@@ -4842,7 +5149,7 @@ export default defineComponent({
               <div v-if="showBlock === 3">
                 <p class="card-text">EN LA ETAPA JOVEN 18-29 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoJovenes.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedJoven" @change="updateFields3">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoJovenes" :key="index" :value="persona.id">
@@ -4850,13 +5157,18 @@ export default defineComponent({
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoJovenes.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaJovenes.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoJovenes.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaJovenes.edad" />
@@ -4864,7 +5176,7 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoJovenes.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -4946,18 +5258,18 @@ export default defineComponent({
                     </div>
                   </div>
 
-                  <a class="btn btn-success mt-4" @click="saveRiesgosJovenes">Guardar</a>
+                  <a v-if="personasEnRangoJovenes.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosJovenes">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
 
-                  <a href="#" class="btn btn-success mt-4">Limpiar</a>
                 </div>
               </div>
 
               <div v-if="showBlock === 4">
                 <p class="card-text">EN LA ETAPA ADULTO 30-59 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoAdultos.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedAdulto" @change="updateFields4">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoAdultos" :key="index" :value="persona.id">
@@ -4965,13 +5277,18 @@ export default defineComponent({
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoAdultos.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaAdultos.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoAdultos.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaAdultos.edad" />
@@ -4979,7 +5296,7 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoAdultos.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -5128,7 +5445,8 @@ export default defineComponent({
                       </div>
                     </div>
                   </div>
-                  <a class="btn btn-success mt-4" @click="saveRiesgosAdultos">Guardar</a>
+                  <a v-if="personasEnRangoAdultos.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosAdultos">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
                 </div>
@@ -5137,7 +5455,7 @@ export default defineComponent({
               <div v-if="showBlock === 5">
                 <p class="card-text">EN LA ETAPA ADULTO MAYOR 60-110 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedAdultoMayor" @change="updateFields5">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoAdultosMayores" :key="index" :value="persona.id">
@@ -5145,13 +5463,18 @@ export default defineComponent({
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a otros riesgos</span>
+                  </div>
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaAdultosMayores.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaAdultosMayores.edad" />
@@ -5159,7 +5482,7 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -5295,7 +5618,8 @@ export default defineComponent({
                   </div>
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Otros Riesgos</a>
 
-                  <a class="btn btn-success mt-4" @click="saveRiesgosAdultosMayores">Guardar</a>
+                  <a v-if="personasEnRangoAdultosMayores.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosAdultosMayores">Guardar</a>
                 </div>
               </div>
               <div v-if="showBlock === 6">
@@ -6773,6 +7097,8 @@ export default defineComponent({
     width: 80px;
   }
 
+
+
   .w-110 {
     width: 50px;
   }
@@ -6803,6 +7129,8 @@ export default defineComponent({
   .w-per-2 {
     width: 770px;
   }
+
+
 
   .wh-ft {
     width: 770px;
@@ -6869,5 +7197,4 @@ export default defineComponent({
   border: 1.7px solid #f8bc02;
   background: transparent;
   color: #f8bc02;
-}
-</style>
+}</style>

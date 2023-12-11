@@ -38,29 +38,41 @@ export default defineComponent({
     }
 
     const saveUser = async () => {
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/users/create`, props.formData, headers);
-
-        if (response.status === 201) {
-          ElMessage({
-            message: response.data.message,
-            type: "success"
-          });
-          closeModal();
-        } else {
-          console.error("Error al realizar la operación: " + response);
-        }
-      } catch (error: any) {
-        if (error.response && error.response.status === 422) {
-          const validationErrors = error.response.data.errors;
-
-          showAlertWithErrors(validationErrors);
-        } else {
-          console.log("Error al editar el usuario", error);
-        }
-      }
+  try {
+    let response;
+    if (props.formData.id) {
+      response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/mantenimiento/preguntas/update/${props.formData.id}`,
+        props.formData,
+        headers
+      );
+    } else {
+      response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/mantenimiento/preguntas/create`,
+        props.formData,
+        headers
+      );
     }
+
+    if (response.status === 201 || response.status === 200) {
+      ElMessage({
+        message: response.data.message,
+        type: "success"
+      });
+      closeModal();
+    } else {
+      console.error("Error al realizar la operación: " + response);
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 422) {
+      const validationErrors = error.response.data.errors;
+      showAlertWithErrors(validationErrors);
+    } else {
+      console.log("Error al editar el usuario", error);
+    }
+  }
+};
+
 
     const showAlertWithErrors = (errros: Error) => {
       const errorMessage = Object.values(errros).flat().join("\n");
@@ -86,15 +98,15 @@ export default defineComponent({
   <!-- Modal -->
   <div class="modal right fade show" style="display: block; background-color: #b4b0b052" tabindex="-1" role="dialog"
     v-if="show">
-    <div class="modal-dialog" style="width: 388px;" role="document">
+    <div class="modal-dialog" style="width: 488px;" role="document">
       <div class="modal-content" style="background-color: #ffffff;">
         <div class="modal-body p-0">
           <!-- Agregar padding y head -->
           <div class="p-4">
             <div class="d-flex justify-content-between align-items-center">
               <h4 class="modal-title w-100 border-bottom me-2 fw-semibold color-w font-family f-18" id="myModalLabel2">
-                <span v-if="formData.id">Editar encuestador</span>
-                <span v-else>Agregar encuestador</span>
+                <span v-if="formData.id">Editar pregunta</span>
+                <span v-else>Agregar pregunta</span>
               </h4>
               <div @click.prevent="closeModal" class="color-y fs-1 poe" aria-label="Cerrar"><em class="icon ni ni-cross-sm"></em>
               </div>
@@ -102,61 +114,29 @@ export default defineComponent({
             <!--  -->
             <form>
               <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label class="form-label" for="default-01">Nombres</label>
-                    <div class="form-control-wrap">
-                      <input v-model="formData.name" type="text" class="input-AA" name="name" placeholder="" />
-                    </div>
-                  </div>
-                </div>
                 <div class="col-md-12 mt-2">
                   <div class="form-group">
-                    <label class="form-label" for="default-01">Apellidos</label>
+                    <label class="form-label" for="default-01">Pregunta</label>
                     <div class="form-control-wrap">
-                      <input v-model="formData.last_name" type="text" class="input-AA" name="last_name" placeholder="" />
+                      <textarea v-model="formData.pre_pregunta" type="text" class="input-AB" name="name" placeholder="" ></textarea>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-12 mt-2">
+                <div class="col-md-12 mt-4">
                   <div class="form-group">
-                    <label class="form-label">Rol</label>
+                    <label class="form-label" for="default-01">Pregunta aplica para</label>
                     <div class="form-control-wrap">
-                      <select v-model="formData.role" class="input-AA" name="role" ria-label="Default select example">
-                        <option v-for="rol in roles" :value="rol.name" :key="rol.id">{{ rol.name }}</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-
-                <div class="col-md-12 mt-2">
-                  <div class="form-group">
-                    <label class="form-label" for="default-01">E-mail</label>
-                    <div class="form-control-wrap">
-                      <input v-model="formData.email" type="text" class="input-AA" name="email" placeholder="" />
+                      <input v-model="formData.pre_aplica_para" type="text" class="input-AA" name="last_name" placeholder="" >
                     </div>
                   </div>
                 </div>
 
 
 
-                <div class="col-md-12 mt-2">
-                  <div class="form-group">
-                    <div class="form-label-group">
-                      <label class="form-label" for="password">Contraseña</label>
-                    </div>
-                    <div class="form-control-wrap w-p">
-                      <a tabindex="-1" href="#" class="form-icon form-icon-right passcode-switch lg"
-                        data-target="password"><em class="passcode-icon icon-show icon ni ni-eye"></em><em
-                          class="passcode-icon icon-hide icon ni ni-eye-off"></em></a><input v-model="formData.password"
-                        autocomplete="new-password" type="password" class="input-AA form-control-lg" required
-                        name="password" placeholder="******************" />
-                    </div>
-                  </div>
-                </div>
+
+
                 <!-- cambiar clases del boton -->
-                <div class="flex justify-center mt-3">
+                <div class="flex justify-center mt-4">
                   <button @click.prevent="saveUser()" class="btn-aceptar fw-semibold">
                     <span v-if="formData.id">Actualizar</span>
                     <span v-else>Registrar</span>
@@ -200,12 +180,25 @@ export default defineComponent({
 }
 
 .input-AA {
-  width: 328px;
+  width: 325px;
   height: 42px;
   border: 1px solid #d2d2d2;
   border-radius: 10px;
   outline: none;
   padding-left: 12px;
+}
+
+.input-AB {
+  width: 425px;
+    height: 100px; /* Altura ajustable según tus preferencias */
+    border: 1px solid #d2d2d2;
+    border-radius: 10px;
+    outline: none;
+    padding: 10px 12px; /* Puedes ajustar el relleno según lo necesites */
+    resize: vertical; /* Permite redimensionar verticalmente */
+    font-family: Arial, sans-serif; /* Cambia la familia de fuente según lo desees */
+    font-size: 18px; /* Tamaño de fuente ajustable */
+    line-height: 1.5; /* Altura de línea ajustable */
 }
 
 .poe {

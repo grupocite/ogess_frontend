@@ -14,10 +14,15 @@ import { Modal } from 'bootstrap'
 import { ElMessage } from 'element-plus'
 import { format } from 'date-fns'
 import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router';
+import VueApexCharts from 'vue3-apexcharts';
 import { useCensoDetails } from '../composables'
 import Swal from 'sweetalert2'
 
 export default defineComponent({
+  components: {
+    apexchart: VueApexCharts,
+  },
   setup() {
     const estadoCivil = ref<Array<EstadoCivil>>([])
     const gradoInstruccion = ref<Array<GradoInstruccion>>([])
@@ -25,10 +30,18 @@ export default defineComponent({
     const seguroSalud = ref<Array<SeguroSalud>>([])
     const ocupaciones = ref<Array<Ocupacion>>([])
 
+    const sectorId = ref(null); // Variable ref para almacenar el id del sector
 
 
     const porcentajeAvance = ref(null);
     const totalPreguntasRespondidas = ref(null);
+    const router = useRouter();
+
+
+    const redSalud = ref('');
+    const microRed = ref('');
+    const establecimientoSalud = ref('');
+
 
 
     const form = reactive({
@@ -398,7 +411,7 @@ export default defineComponent({
         [respuestaPregunta5.value] = respuestasPreguntaEspecifica5;
         [respuestaSeleccionada2.value] = respuestasPreguntaEspecifica6;
         [respuestaSeleccionada3.value] = respuestasPreguntaEspecifica7;
-        [respuestaSeleccionada4.value] = respuestasPreguntaEspecifica9;
+        [respuestaSeleccionada5.value] = respuestasPreguntaEspecifica9;
 
 
         [respuestaPregunta14.value] = respuestasPreguntaEspecifica14;
@@ -593,6 +606,16 @@ export default defineComponent({
         console.error(error)
       }
     }
+
+
+    const familiaDetailUpdate = ref(null);
+    const provincia = ref('');
+    const distrito = ref('');
+    const sector = ref('');
+    const direccionExacta = ref('');
+    const referencia = ref('');
+    const selectedManzana = ref('');
+    const selectedAbreviatura = ref('');
 
     const personas = ref([])
     const familias = ref([])
@@ -972,7 +995,7 @@ export default defineComponent({
       }
     };
 
-    
+
 
     const getEstablecimientosSalud = async () => {
       try {
@@ -986,7 +1009,7 @@ export default defineComponent({
 
         const distritoId = response.data.length > 0 ? response.data[0].distrito_id : null;
 
-idDistrito.value = distritoId;
+        idDistrito.value = distritoId;
 
         console.log(selectedMicroRed.value);
 
@@ -995,7 +1018,7 @@ idDistrito.value = distritoId;
       }
     };
 
-    
+
     const getSectores = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/establecimientos_salud22/${idDistrito.value}/sectores`, headers);
@@ -1101,9 +1124,57 @@ idDistrito.value = distritoId;
         obtenerAdultos()
         obtenerAdultosMayores()
         obtenerIntegrantesFamily()
+        obtenerIntegrantesGestantes()
+        obtenerIntegrantesPuerpera()
         showBlock.value += 1
       }
     }
+
+
+    const chartOptions = ref({
+      chart: {
+        height: 190,
+        type: 'radialBar',
+        offsetY: -15
+      },
+      plotOptions: {
+        radialBar: {
+          startAngle: -135,
+          endAngle: 135,
+          dataLabels: {
+            name: {
+              fontSize: '16px',
+              color: undefined,
+              offsetY: 120
+            },
+            value: {
+              offsetY: 76,
+              fontSize: '22px',
+              color: undefined,
+              formatter: function (val) {
+                return val + '%';
+              }
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          shadeIntensity: 0.15,
+          inverseColors: false,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 50, 65, 91]
+        },
+      },
+      stroke: {
+        dashArray: 4
+      },
+      labels: ['Porcentaje de avance'],
+      series: [porcentajeAvance.value], // Serie inicial
+    });
 
 
 
@@ -1649,11 +1720,11 @@ idDistrito.value = distritoId;
           respuestas: {
             '86': {
               respuesta: selectedValues85,
-              detalle: descripcionpreguntaTexto85.value
+              detalle: descripcionpreguntaTexto85.value ?? null
             },
             '87': {
               respuesta: selectedValues86,
-              detalle: descripcionpreguntaTexto86.value
+              detalle: descripcionpreguntaTexto86.value ?? null
             },
             '88': {
               respuesta: selectedValues87,
@@ -1669,11 +1740,11 @@ idDistrito.value = distritoId;
             },
             '91': {
               respuesta: selectedValues90,
-              detalle: descripcionpreguntaTexto90.value
+              detalle: descripcionpreguntaTexto90.value ?? null
             },
             '92': {
               respuesta: selectedValues91,
-              detalle: descripcionpreguntaTexto91.value
+              detalle: descripcionpreguntaTexto91.value ?? null
             },
             '93': {
               respuesta: selectedValues92,
@@ -1713,7 +1784,7 @@ idDistrito.value = distritoId;
             },
             '102': {
               respuesta: selectedValues101,
-              detalle: descripcionpreguntaTexto101.value
+              detalle: descripcionpreguntaTexto101.value ?? null
             },
             '103': {
               respuesta: selectedValues102,
@@ -1725,15 +1796,15 @@ idDistrito.value = distritoId;
             },
             '105': {
               respuesta: selectedValues104,
-              detalle: descripcionpreguntaTexto104.value
+              detalle: descripcionpreguntaTexto104.value ?? null
             },
             '106': {
               respuesta: selectedValues105,
-              detalle: descripcionpreguntaTexto105.value
+              detalle: descripcionpreguntaTexto105.value ?? null
             },
             '107': {
               respuesta: selectedValues106,
-              detalle: descripcionpreguntaTexto106.value
+              detalle: descripcionpreguntaTexto106.value ?? null
             },
             '108': {
               respuesta: selectedValues107,
@@ -1741,7 +1812,7 @@ idDistrito.value = distritoId;
             },
             '109': {
               respuesta: selectedValues108,
-              detalle: descripcionpreguntaTexto108.value
+              detalle: descripcionpreguntaTexto108.value ?? null
             }
           },
           familia_id: idFamilia.value,
@@ -1857,116 +1928,116 @@ idDistrito.value = distritoId;
 
         console.log(selectedValues)
 
-        if (
-          selectedValues.length === 0 ||
-          selectedQuestion1.length === 0 ||
-          selectedQuestion2.length === 0 ||
-          selectedQuestion3.length === 0 ||
-          selectedQuestion4.length === 0 ||
-          selectedQuestion5.length === 0 ||
-          selectedQuestion6.length === 0 ||
-          selectedQuestion7.length === 0 ||
-          selectedQuestion8.length === 0 ||
-          selectedQuestion9.length === 0 ||
-          selectedQuestion10.length === 0 ||
-          selectedQuestion11.length === 0
-        ) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
+        const algunaPreguntaRespondida =
+          selectedValues.length > 0 ||
+          selectedQuestion1.length > 0 ||
+          selectedQuestion2.length > 0 ||
+          selectedQuestion3.length > 0 ||
+          selectedQuestion4.length > 0 ||
+          selectedQuestion5.length > 0 ||
+          selectedQuestion6.length > 0 ||
+          selectedQuestion7.length > 0 ||
+          selectedQuestion8.length > 0 ||
+          selectedQuestion9.length > 0 ||
+          selectedQuestion10.length > 0 ||
+          selectedQuestion11.length > 0;
 
-        const data = {
-          respuestas: [
+        if (algunaPreguntaRespondida) {
+          const data = {
+            respuestas: [
+              {
+                pregunta_id: 28,
+                respuesta: selectedValues,
+                detalle: ''
+              },
+              {
+                pregunta_id: 29,
+                respuesta: selectedQuestion1,
+                detalle: ''
+              },
+              {
+                pregunta_id: 30,
+                respuesta: selectedQuestion2,
+                detalle: ''
+              },
+              {
+                pregunta_id: 31,
+                respuesta: selectedQuestion3,
+                detalle: ''
+              },
+              {
+                pregunta_id: 32,
+                respuesta: selectedQuestion4,
+                detalle: ''
+              },
+              {
+                pregunta_id: 33,
+                respuesta: selectedQuestion5,
+                detalle: ''
+              },
+              {
+                pregunta_id: 34,
+                respuesta: selectedQuestion6,
+                detalle: ''
+              },
+              {
+                pregunta_id: 35,
+                respuesta: selectedQuestion7,
+                detalle: ''
+              },
+              {
+                pregunta_id: 36,
+                respuesta: selectedQuestion8,
+                detalle: ''
+              },
+              {
+                pregunta_id: 37,
+                respuesta: selectedQuestion9,
+                detalle: ''
+              },
+              {
+                pregunta_id: 38,
+                respuesta: selectedQuestion10,
+                detalle: ''
+              },
+              {
+                pregunta_id: 39,
+                respuesta: selectedQuestion11,
+                detalle: ''
+              }
+            ],
+            persona_id: idPersonaRiesgoNino.value,
+            censo_uuid: uuidCenso.value
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 28,
-              respuesta: selectedValues,
-              detalle: ''
-            },
-            {
-              pregunta_id: 29,
-              respuesta: selectedQuestion1,
-              detalle: ''
-            },
-            {
-              pregunta_id: 30,
-              respuesta: selectedQuestion2,
-              detalle: ''
-            },
-            {
-              pregunta_id: 31,
-              respuesta: selectedQuestion3,
-              detalle: ''
-            },
-            {
-              pregunta_id: 32,
-              respuesta: selectedQuestion4,
-              detalle: ''
-            },
-            {
-              pregunta_id: 33,
-              respuesta: selectedQuestion5,
-              detalle: ''
-            },
-            {
-              pregunta_id: 34,
-              respuesta: selectedQuestion6,
-              detalle: ''
-            },
-            {
-              pregunta_id: 35,
-              respuesta: selectedQuestion7,
-              detalle: ''
-            },
-            {
-              pregunta_id: 36,
-              respuesta: selectedQuestion8,
-              detalle: ''
-            },
-            {
-              pregunta_id: 37,
-              respuesta: selectedQuestion9,
-              detalle: ''
-            },
-            {
-              pregunta_id: 38,
-              respuesta: selectedQuestion10,
-              detalle: ''
-            },
-            {
-              pregunta_id: 39,
-              respuesta: selectedQuestion11,
-              detalle: ''
+              ...headers
             }
-          ],
-          persona_id: idPersonaRiesgoNino.value,
-          censo_uuid: uuidCenso.value
-        }
+          )
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
+          console.log(response)
+
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+
+            }
+
+            resetAllCheckboxesAndRadios()
+          } else {
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
-        )
-
-        console.log(response)
-
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-
-          }
-
-          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
@@ -2038,7 +2109,7 @@ idDistrito.value = distritoId;
 
         console.log(selectedValues)
 
-       
+
         const algunaPreguntaRespondida =
           selectedValues.length > 0 ||
           selectedQuestion1.length > 0 ||
@@ -2052,81 +2123,81 @@ idDistrito.value = distritoId;
 
         if (algunaPreguntaRespondida) {
           const data = {
-          respuestas: [
+            respuestas: [
+              {
+                pregunta_id: 40,
+                respuesta: selectedValues,
+                detalle: ''
+              },
+              {
+                pregunta_id: 41,
+                respuesta: selectedQuestion1,
+                detalle: ''
+              },
+              {
+                pregunta_id: 42,
+                respuesta: selectedQuestion2,
+                detalle: descripcionPregunta41.value ?? null
+              },
+              {
+                pregunta_id: 43,
+                respuesta: selectedQuestion3,
+                detalle: ''
+              },
+              {
+                pregunta_id: 44,
+                respuesta: selectedQuestion4,
+                detalle: descripcionpreguntaTexto43.value ?? null
+              },
+              {
+                pregunta_id: 45,
+                respuesta: selectedQuestion5,
+                detalle: descripcionpreguntaTexto44.value ?? null
+              },
+              {
+                pregunta_id: 46,
+                respuesta: selectedQuestion6,
+                detalle: ''
+              },
+              {
+                pregunta_id: 47,
+                respuesta: selectedQuestion7,
+                detalle: ''
+              },
+              {
+                pregunta_id: 48,
+                respuesta: selectedQuestion8,
+                detalle: ''
+              }
+            ],
+            persona_id: idPersonaRiesgoAdolescente.value,
+            censo_uuid: uuidCenso.value
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 40,
-              respuesta: selectedValues,
-              detalle: ''
-            },
-            {
-              pregunta_id: 41,
-              respuesta: selectedQuestion1,
-              detalle: ''
-            },
-            {
-              pregunta_id: 42,
-              respuesta: selectedQuestion2,
-              detalle: descripcionPregunta41.value
-            },
-            {
-              pregunta_id: 43,
-              respuesta: selectedQuestion3,
-              detalle: ''
-            },
-            {
-              pregunta_id: 44,
-              respuesta: selectedQuestion4,
-              detalle: descripcionpreguntaTexto43.value
-            },
-            {
-              pregunta_id: 45,
-              respuesta: selectedQuestion5,
-              detalle: descripcionpreguntaTexto44.value
-            },
-            {
-              pregunta_id: 46,
-              respuesta: selectedQuestion6,
-              detalle: ''
-            },
-            {
-              pregunta_id: 47,
-              respuesta: selectedQuestion7,
-              detalle: ''
-            },
-            {
-              pregunta_id: 48,
-              respuesta: selectedQuestion8,
-              detalle: ''
+              ...headers
             }
-          ],
-          persona_id: idPersonaRiesgoAdolescente.value,
-          censo_uuid: uuidCenso.value
-        }
+          )
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
-          }
-        )
+          console.log(response)
 
-        console.log(response)
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
 
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+            }
 
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-          }
-
-          resetAllCheckboxesAndRadios()
-        } else {
+            resetAllCheckboxesAndRadios()
+          } else {
             ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
         } else {
@@ -2183,74 +2254,74 @@ idDistrito.value = distritoId;
           document.querySelectorAll('input[name="preguntaTexto52"]:checked')
         ).map((input: any) => input.value)
 
-        if (
-          selectedValues.length === 0 ||
-          selectedQuestion1.length === 0 ||
-          selectedQuestion2.length === 0 ||
-          selectedQuestion3.length === 0 ||
-          selectedQuestion4.length === 0
-        ) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
+        const algunaPreguntaRespondida =
+          selectedValues.length > 0 ||
+          selectedQuestion1.length > 0 ||
+          selectedQuestion2.length > 0 ||
+          selectedQuestion3.length > 0 ||
+          selectedQuestion4.length > 0;
 
-        const data = {
-          respuestas: [
+        if (algunaPreguntaRespondida) {
+          const data = {
+            respuestas: [
+              {
+                pregunta_id: 49,
+                respuesta: selectedValues,
+                detalle: ''
+              },
+              {
+                pregunta_id: 50,
+                respuesta: selectedQuestion1,
+                detalle: ''
+              },
+              {
+                pregunta_id: 51,
+                respuesta: selectedQuestion2,
+                detalle: ''
+              },
+              {
+                pregunta_id: 52,
+                respuesta: selectedQuestion3,
+                detalle: ''
+              },
+              {
+                pregunta_id: 53,
+                respuesta: selectedQuestion4,
+                detalle: ''
+              }
+            ],
+            persona_id: idPersonaRiesgoJoven.value,
+            censo_uuid: uuidCenso.value
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 49,
-              respuesta: selectedValues,
-              detalle: ''
-            },
-            {
-              pregunta_id: 50,
-              respuesta: selectedQuestion1,
-              detalle: ''
-            },
-            {
-              pregunta_id: 51,
-              respuesta: selectedQuestion2,
-              detalle: ''
-            },
-            {
-              pregunta_id: 52,
-              respuesta: selectedQuestion3,
-              detalle: ''
-            },
-            {
-              pregunta_id: 53,
-              respuesta: selectedQuestion4,
-              detalle: ''
+              ...headers
             }
-          ],
-          persona_id: idPersonaRiesgoJoven.value,
-          censo_uuid: uuidCenso.value
-        }
+          )
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
+          console.log(response)
+
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
+
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+            }
+
+            resetAllCheckboxesAndRadios()
+          } else {
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
-        )
-
-        console.log(response)
-
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
-
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-          }
-
-          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
@@ -2325,105 +2396,105 @@ idDistrito.value = distritoId;
 
         console.log(selectedValues)
 
-        if (
-          selectedValues.length === 0 ||
-          selectedQuestion1.length === 0 ||
-          selectedQuestion2.length === 0 ||
-          selectedQuestion3.length === 0 ||
-          selectedQuestion4.length === 0 ||
-          selectedQuestion5.length === 0 ||
-          selectedQuestion6.length === 0 ||
-          selectedQuestion7.length === 0 ||
-          selectedQuestion8.length === 0 ||
-          selectedQuestion9.length === 0
-        ) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
+        const algunaPreguntaRespondida =
+          selectedValues.length > 0 ||
+          selectedQuestion1.length > 0 ||
+          selectedQuestion2.length > 0 ||
+          selectedQuestion3.length > 0 ||
+          selectedQuestion4.length > 0 ||
+          selectedQuestion5.length > 0 ||
+          selectedQuestion6.length > 0 ||
+          selectedQuestion7.length > 0 ||
+          selectedQuestion8.length > 0 ||
+          selectedQuestion9.length > 0;
 
-        const data = {
-          respuestas: [
+        if (algunaPreguntaRespondida) {
+          const data = {
+            respuestas: [
+              {
+                pregunta_id: 54,
+                respuesta: selectedValues,
+                detalle: ''
+              },
+              {
+                pregunta_id: 55,
+                respuesta: selectedQuestion1,
+                detalle: descicripcionpreguntaTexto54.value ?? null
+              },
+              {
+                pregunta_id: 56,
+                respuesta: selectedQuestion2,
+                detalle: descicripcionpreguntaTexto55.value ?? null
+              },
+              {
+                pregunta_id: 57,
+                respuesta: selectedQuestion3,
+                detalle: descicripcionpreguntaTexto56.value ?? null
+              },
+              {
+                pregunta_id: 58,
+                respuesta: selectedQuestion4,
+                detalle: ''
+              },
+              {
+                pregunta_id: 59,
+                respuesta: selectedQuestion5,
+                detalle: ''
+              },
+              {
+                pregunta_id: 60,
+                respuesta: selectedQuestion6,
+                detalle: ''
+              },
+              {
+                pregunta_id: 61,
+                respuesta: selectedQuestion7,
+                detalle: descripcionpreguntaTexto60.value ?? null
+              },
+              {
+                pregunta_id: 62,
+                respuesta: selectedQuestion8,
+                detalle: descripcionpreguntaTexto61.value ?? null
+              },
+              {
+                pregunta_id: 63,
+                respuesta: selectedQuestion9,
+                detalle: descripcionpreguntaTexto62.value ?? null
+              }
+            ],
+            persona_id: idPersonaRiesgoAdulto.value,
+            censo_uuid: uuidCenso.value
+
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 54,
-              respuesta: selectedValues,
-              detalle: ''
-            },
-            {
-              pregunta_id: 55,
-              respuesta: selectedQuestion1,
-              detalle: descicripcionpreguntaTexto54.value
-            },
-            {
-              pregunta_id: 56,
-              respuesta: selectedQuestion2,
-              detalle: descicripcionpreguntaTexto55.value
-            },
-            {
-              pregunta_id: 57,
-              respuesta: selectedQuestion3,
-              detalle: descicripcionpreguntaTexto56.value
-            },
-            {
-              pregunta_id: 58,
-              respuesta: selectedQuestion4,
-              detalle: ''
-            },
-            {
-              pregunta_id: 59,
-              respuesta: selectedQuestion5,
-              detalle: ''
-            },
-            {
-              pregunta_id: 60,
-              respuesta: selectedQuestion6,
-              detalle: ''
-            },
-            {
-              pregunta_id: 61,
-              respuesta: selectedQuestion7,
-              detalle: descripcionpreguntaTexto60.value
-            },
-            {
-              pregunta_id: 62,
-              respuesta: selectedQuestion8,
-              detalle: descripcionpreguntaTexto61.value
-            },
-            {
-              pregunta_id: 63,
-              respuesta: selectedQuestion9,
-              detalle: descripcionpreguntaTexto62.value
+              ...headers
             }
-          ],
-          persona_id: idPersonaRiesgoAdulto.value,
-          censo_uuid: uuidCenso.value
+          )
 
-        }
+          console.log(response)
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
+
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+            }
+
+            resetAllCheckboxesAndRadios()
+          } else {
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
-        )
-
-        console.log(response)
-
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
-
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-          }
-
-          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
@@ -2486,87 +2557,88 @@ idDistrito.value = distritoId;
 
         console.log(selectedValues)
 
-        if (
-          selectedValues.length === 0 ||
-          selectedQuestion1.length === 0 ||
-          selectedQuestion2.length === 0 ||
-          selectedQuestion3.length === 0 ||
-          selectedQuestion4.length === 0 ||
-          selectedQuestion5.length === 0 ||
-          selectedQuestion6.length === 0
-        ) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
+        // Verificar si al menos una pregunta está respondida
+        const algunaPreguntaRespondida =
+          selectedValues.length > 0 ||
+          selectedQuestion1.length > 0 ||
+          selectedQuestion2.length > 0 ||
+          selectedQuestion3.length > 0 ||
+          selectedQuestion4.length > 0 ||
+          selectedQuestion5.length > 0 ||
+          selectedQuestion6.length > 0;
 
-        const data = {
-          respuestas: [
+        if (algunaPreguntaRespondida) {
+          const data = {
+            respuestas: [
+              {
+                pregunta_id: 64,
+                respuesta: selectedValues,
+                detalle: ''
+              },
+              {
+                pregunta_id: 65,
+                respuesta: selectedQuestion1,
+                detalle: descripcionpreguntaTexto64.value ?? null
+              },
+              {
+                pregunta_id: 66,
+                respuesta: selectedQuestion2,
+                detalle: descripcionpreguntaTexto65.value ?? null
+              },
+              {
+                pregunta_id: 67,
+                respuesta: selectedQuestion3,
+                detalle: descripcionpreguntaTexto66.value ?? null
+              },
+              {
+                pregunta_id: 68,
+                respuesta: selectedQuestion4,
+                detalle: ''
+              },
+              {
+                pregunta_id: 69,
+                respuesta: selectedQuestion5,
+                detalle: descripcionpreguntaTexto68.value ?? null
+              },
+              {
+                pregunta_id: 70,
+                respuesta: selectedQuestion6,
+                detalle: ''
+              }
+            ],
+            persona_id: idPersonaRiesgoAdultoMayor.value,
+            censo_uuid: uuidCenso.value
+
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 64,
-              respuesta: selectedValues,
-              detalle: ''
-            },
-            {
-              pregunta_id: 65,
-              respuesta: selectedQuestion1,
-              detalle: descripcionpreguntaTexto64.value
-            },
-            {
-              pregunta_id: 66,
-              respuesta: selectedQuestion2,
-              detalle: descripcionpreguntaTexto65.value
-            },
-            {
-              pregunta_id: 67,
-              respuesta: selectedQuestion3,
-              detalle: descripcionpreguntaTexto66.value
-            },
-            {
-              pregunta_id: 68,
-              respuesta: selectedQuestion4,
-              detalle: ''
-            },
-            {
-              pregunta_id: 69,
-              respuesta: selectedQuestion5,
-              detalle: descripcionpreguntaTexto68.value
-            },
-            {
-              pregunta_id: 70,
-              respuesta: selectedQuestion6,
-              detalle: ''
+              ...headers
             }
-          ],
-          persona_id: idPersonaRiesgoAdultoMayor.value,
-          censo_uuid: uuidCenso.value
+          )
 
-        }
+          console.log(response)
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
+
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+            }
+
+            resetAllCheckboxesAndRadios()
+          } else {
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
-        )
-
-        console.log(response)
-
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
-
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-          }
-
-          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
@@ -2609,54 +2681,57 @@ idDistrito.value = distritoId;
 
         console.log(selectedValues70)
 
-        if (selectedValues70.length === 0 || selectedQuestion71.length === 0) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
 
-        const data = {
-          respuestas: [
+        // Verificar si al menos una pregunta está respondida
+        const algunaPreguntaRespondida = selectedValues70.length > 0 || selectedQuestion71.length > 0;
+
+        if (algunaPreguntaRespondida) {
+          const data = {
+            respuestas: [
+              {
+                pregunta_id: 71,
+                respuesta: selectedValues70,
+                detalle: ''
+              },
+              {
+                pregunta_id: 72,
+                respuesta: selectedQuestion71,
+                detalle: ''
+              }
+            ],
+            persona_id: idPersonaDiscapacidad.value,
+            censo_uuid: uuidCenso.value
+
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 71,
-              respuesta: selectedValues70,
-              detalle: ''
-            },
-            {
-              pregunta_id: 72,
-              respuesta: selectedQuestion71,
-              detalle: ''
+              ...headers
             }
-          ],
-          persona_id: idPersonaDiscapacidad.value,
-          censo_uuid: uuidCenso.value
+          )
 
-        }
+          console.log(response)
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
+
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+            }
+
+            resetAllCheckboxesAndRadios()
+          } else {
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
-        )
-
-        console.log(response)
-
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
-
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-          }
-
-          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
@@ -2699,54 +2774,56 @@ idDistrito.value = distritoId;
 
         console.log(selectedValues72)
 
-        if (selectedValues72.length === 0 || selectedQuestion73.length === 0) {
-          ElMessage.error('Por favor, completa todas las preguntas.')
-          return
-        }
+        // Verificar si al menos una pregunta está respondida
+        const algunaPreguntaRespondida = selectedValues72.length > 0 || selectedQuestion73.length > 0;
 
-        const data = {
-          respuestas: [
+        if (algunaPreguntaRespondida) {
+          const data = {
+            respuestas: [
+              {
+                pregunta_id: 73,
+                respuesta: selectedValues72,
+                detalle: ''
+              },
+              {
+                pregunta_id: 74,
+                respuesta: selectedQuestion73,
+                detalle: ''
+              }
+            ],
+            persona_id: idPersonaGestante.value,
+            censo_uuid: uuidCenso.value
+
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 73,
-              respuesta: selectedValues72,
-              detalle: ''
-            },
-            {
-              pregunta_id: 74,
-              respuesta: selectedQuestion73,
-              detalle: ''
+              ...headers
             }
-          ],
-          persona_id: idPersonaGestante.value,
-          censo_uuid: uuidCenso.value
+          )
 
-        }
+          console.log(response)
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
+
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+            }
+            obtenerIntegrantesPuerpera()
+            resetAllCheckboxesAndRadios()
+          } else {
+            ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
-        )
-
-        console.log(response)
-
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
-
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-          }
-
-          resetAllCheckboxesAndRadios()
         } else {
-          ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
+          ElMessage.error('Por favor, completa al menos una pregunta.');
         }
       } catch (error: any) {
         if (error.response) {
@@ -2792,47 +2869,47 @@ idDistrito.value = distritoId;
 
         if (algunaPreguntaRespondida) {
           const data = {
-          respuestas: [
+            respuestas: [
+              {
+                pregunta_id: 75,
+                respuesta: selectedValues74,
+                detalle: ''
+              },
+              {
+                pregunta_id: 76,
+                respuesta: selectedQuestion75,
+                detalle: ''
+              }
+            ],
+            persona_id: idPersonaPuerpera.value,
+            censo_uuid: uuidCenso.value
+
+          }
+
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
+            data,
             {
-              pregunta_id: 75,
-              respuesta: selectedValues74,
-              detalle: ''
-            },
-            {
-              pregunta_id: 76,
-              respuesta: selectedQuestion75,
-              detalle: ''
+              ...headers
             }
-          ],
-          persona_id: idPersonaPuerpera.value,
-          censo_uuid: uuidCenso.value
+          )
 
-        }
+          console.log(response)
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/pregunta-persona/create`,
-          data,
-          {
-            ...headers
-          }
-        )
+          if (response.status === 201) {
+            ElMessage.success(response.data.message)
+            const resetAllCheckboxesAndRadios = () => {
+              const inputsToReset = document.querySelectorAll(
+                'input[type="checkbox"], input[type="radio"]'
+              )
 
-        console.log(response)
+              inputsToReset.forEach((input: any) => {
+                input.checked = false
+              })
+            }
 
-        if (response.status === 201) {
-          ElMessage.success(response.data.message)
-          const resetAllCheckboxesAndRadios = () => {
-            const inputsToReset = document.querySelectorAll(
-              'input[type="checkbox"], input[type="radio"]'
-            )
-
-            inputsToReset.forEach((input: any) => {
-              input.checked = false
-            })
-          }
-
-          resetAllCheckboxesAndRadios()
-        } else {
+            resetAllCheckboxesAndRadios()
+          } else {
             ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.');
           }
         } else {
@@ -2957,7 +3034,7 @@ idDistrito.value = distritoId;
               },
               '85': {
                 respuesta: selectedValues84,
-                detalle: descripcionPreguntaTexto84.value
+                detalle: descripcionPreguntaTexto84.value ?? null
               }
             },
             familia_id: idFamilia.value,
@@ -3701,6 +3778,25 @@ idDistrito.value = distritoId;
           console.error('Error al obtener la información de edad.')
         }
 
+
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/familia/detalle-update/${idFamilia.value}`, headers);
+          const dataX = response.data;
+
+          familiaDetailUpdate.value = dataX;
+
+          provincia.value = dataX.sectores[0].distrito.provincia.prov_provincia;
+          distrito.value = dataX.sectores[0].distrito.dis_distrito;
+          sector.value = dataX.sectores[0].nombre_sector;
+          direccionExacta.value = dataX.direccion_hogar;
+          referencia.value = dataX.referencia_ubicacion_hogar;
+
+          sectorId.value = dataX.sectores[0].id; // Asigna el id del sector a sectorId
+
+        } catch (error) {
+          console.error('Error al obtener los datos de la familia:', error);
+        }
+
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
@@ -4431,6 +4527,7 @@ idDistrito.value = distritoId;
       }
     }
 
+
     const obtenerIntegrantesFamily = async () => {
       try {
         const response = await axios.get(
@@ -4439,14 +4536,46 @@ idDistrito.value = distritoId;
         )
 
         personasIntegrantesOfTheFamily.value = response.data.data
-        personasGestanteOfTheFamily.value = response.data.data
-        personasPuerperaOfTheFamily.value = response.data.data
 
         console.log(personasIntegrantesOfTheFamily.value)
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
     }
+
+
+    const obtenerIntegrantesGestantes = async () => {
+      try {
+
+        const responseFemenino = await axios.get(
+          `${import.meta.env.VITE_API_URL}/familia/${idFamilia.value}/integrantes-femenino-gestante-valid`,
+          headers
+        )
+
+        personasGestanteOfTheFamily.value = responseFemenino.data.data
+
+      } catch (error) {
+        console.error('Ocurrió un error inesperado:', error)
+      }
+    }
+
+
+    const obtenerIntegrantesPuerpera = async () => {
+      try {
+
+        const responseFemeninoPuerpera = await axios.get(
+          `${import.meta.env.VITE_API_URL}/familia/${idFamilia.value}/integrantes-femenino-puerpera`,
+          headers
+        )
+
+        personasPuerperaOfTheFamily.value = responseFemeninoPuerpera.data.data
+
+        console.log(personasIntegrantesOfTheFamily.value)
+      } catch (error) {
+        console.error('Ocurrió un error inesperado:', error)
+      }
+    }
+
 
     const obtenerFamiliaPorId = async () => {
       try {
@@ -4455,6 +4584,7 @@ idDistrito.value = distritoId;
         if (response.status === 200) {
           idFamilia.value = response.data.id_familia;
           obtenerInformacionEdad()
+          fetchDataFromAPI()
         }
       } catch (error) {
         console.error('Error al obtener la familia por UUID:', error);
@@ -4489,15 +4619,61 @@ idDistrito.value = distritoId;
         porcentajeAvance.value = data.porcentaje_avance;
         totalPreguntasRespondidas.value = data.totalPreguntasRespondidas;
 
+        chartOptions.value.series = [porcentajeAvance.value];
 
         ElMessage.success('Cálculo del porcentaje de avance exitoso');
 
 
         console.log(data);
-        console.log(totalPreguntasRespondidas.value);
+        console.log(porcentajeAvance.value);
       } catch (error) {
         console.error('Error al calcular el porcentaje de avance:', error);
       }
+    };
+
+
+    const onManzanaChange = (event) => {
+      // Acción cuando cambia la opción de Manzana
+      selectedManzana.value = event.target.value;
+      console.log('Manzana seleccionada:', selectedManzana.value);
+      // Otra lógica que desees ejecutar
+    };
+    const onAbreviaturaChange = (event) => {
+      // Acción cuando cambia la opción de Abreviatura
+      selectedAbreviatura.value = event.target.value;
+      console.log('Abreviatura seleccionada:', selectedAbreviatura.value);
+      // Otra lógica que desees ejecutar
+    };
+
+
+
+    const guardarDetalleFamilia = async () => {
+
+      const formulario = {
+        direccion_hogar: direccionExacta.value,
+        referencia_ubicacion_hogar: referencia.value,
+        numero_manzana_hogar: selectedManzana.value,
+        abreviatura_direccion_hogar: selectedAbreviatura.value,
+      };
+
+      try {
+        const response = await axios.put(`${import.meta.env.VITE_API_URL}/familia/update-detail/${idFamilia.value}`,
+          formulario,
+          {
+            ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
+          }
+        );
+        console.log('Respuesta del servidor:', response.data);
+
+        if (response.status === 200) {
+          ElMessage.success(response.data.message); // Muestra el mensaje exitoso
+        }
+
+      } catch (error) {
+        ElMessage.success('Error al actualizar la familia:', error);
+        // Manejo de errores
+      }
+
     };
 
 
@@ -4520,38 +4696,81 @@ idDistrito.value = distritoId;
       fetchData()
       fetchPersons()
       fetchFamilies()
+      fetchPorcentajeAvance()
+      console.log(porcentajeAvance.value);
 
     })
 
 
     const terminarCenso = async () => {
-  // ... (código para la solicitud axios)
+      // ... (código para la solicitud axios)
 
-  try {
-    const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${id}/actualizarFechaFin`,
+      try {
+        const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${id}/actualizarFechaFin`,
           null,
           {
             ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
           }
-        );    
-    // Manejo de la respuesta
-    console.log(response.data);
+        );
+        // Manejo de la respuesta
+        console.log(response.data);
 
-    // Mostrar el mensaje de éxito si la actualización fue exitosa
-    if (response.data.status === 'success') {
-      ElMessage.success(response.data.message);
-    }
-  } catch (error) {
-    // Manejo de errores
-    console.error('Error al actualizar el censo:', error);
-    ElMessage.error('Hubo un error al actualizar el censo.');
-  }
-};
+        // Mostrar el mensaje de éxito si la actualización fue exitosa
+        if (response.data.status === 'success') {
+          ElMessage.success(response.data.message);
+
+
+          setTimeout(() => {
+            router.push('/desktop'); // Reemplaza '/nueva-ruta' con la ruta a la que quieras redireccionar
+          }, 1000);
+
+        }
+      } catch (error) {
+        // Manejo de errores
+        console.error('Error al actualizar el censo:', error);
+        ElMessage.error('Hubo un error al actualizar el censo.');
+      }
+    };
+
+    const fetchDataFromAPI = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/record/${id}`, headers);
+        const data = response.data;
+
+        if (data.success) {
+          const establecimiento = data.data.establecimiento_salud;
+          const microRedInfo = establecimiento.micro_red;
+          const redSaludInfo = microRedInfo.red_salud;
+
+          redSalud.value = redSaludInfo.rsa_red_salud;
+          microRed.value = microRedInfo.mred_micro_red;
+          establecimientoSalud.value = establecimiento.esa_establecimiento_salud;
+        } else {
+          console.error('No se pudo obtener la información del censo.');
+        }
+      } catch (error) {
+        console.error('Error al obtener la información del censo:', error);
+      }
+    };
+
+
+
+    const fetchPorcentajeAvance = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/censo/${id}/porcentaje-avance/`, headers);
+        const data = response.data;
+
+        chartOptions.value.series = [data.porcentaje_avance];
+      } catch (error) {
+        console.error('Error al obtener el porcentaje de avance:', error);
+      }
+    };
 
 
     return {
       calcularPorcentajeAvance,
       selectedRedSalud,
+      guardarDetalleFamilia,
       selectedMicroRed,
       selectedEstablecimiento,
       selectedSector,
@@ -4578,6 +4797,8 @@ idDistrito.value = distritoId;
       saveRiesgosAdultos,
       familia,
       obtenerIntegrantesFamily,
+      obtenerIntegrantesGestantes,
+      obtenerIntegrantesPuerpera,
       saveRiesgosJovenes,
       saveOccupation,
       saveFamily,
@@ -4624,6 +4845,7 @@ idDistrito.value = distritoId;
       assignPersonToFamily,
       respuestas23,
       guardarDetalle,
+      router,
       idDistrito,
       preguntaTexto2,
       preguntaTexto3,
@@ -4710,6 +4932,7 @@ idDistrito.value = distritoId;
       respuestaSeleccionada2,
       respuestaSeleccionada3,
       respuestaSeleccionada4,
+      respuestaSeleccionada5,
       respuestaPregunta26,
       respuestaPregunta27,
       respuestaPregunta28,
@@ -4922,6 +5145,9 @@ idDistrito.value = distritoId;
       seguroSalud,
       searchDNI,
       valorInput,
+      redSalud,
+      microRed,
+      establecimientoSalud,
       nombreFamilia,
       niños_0_11,
       adolescentes_12_17,
@@ -4931,6 +5157,16 @@ idDistrito.value = distritoId;
       searchByDNI,
       saveRiesgosFamilia,
       fechaNacimiento,
+      familiaDetailUpdate,
+      provincia,
+      distrito,
+      sector,
+      direccionExacta,
+      selectedManzana,
+      onManzanaChange,
+      onAbreviaturaChange,
+      selectedAbreviatura,
+      referencia,
       edad,
       calcularEdad,
       ocupaciones,
@@ -4954,6 +5190,7 @@ idDistrito.value = distritoId;
       cancelPersonaEdit,
       updatePersona,
       eliminarPersona,
+      chartOptions,
       terminarCenso
     }
   }
@@ -4965,7 +5202,7 @@ idDistrito.value = distritoId;
     <div class="card mt-5">
       <div class="card-body">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <input :value="user.name + ' ' + user.last_name" type="text" class="form-control" placeholder="Encuestador"
               readonly disabled />
           </div>
@@ -4973,56 +5210,56 @@ idDistrito.value = distritoId;
             <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
           </div>
 
-  <div class="col-md-1">
-    <button @click="guardarDetalle" class="btn btn-primary btn-sm mb-3">Guardar Detalle</button>
-  </div>
-  <div class="col-md-1">
-    <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
-  </div>
-  <div class="col-md-1">
-    <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
-  </div>
+
+          <div class="col-md-1">
+            <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
+          </div>
+          <div class="col-md-1">
+            <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
+          </div>
+
         </div>
 
-        
-
-        <div class="row ">
-          <!-- Aquí agregamos los botones -->
 
 
+
+
+        <!-- Movemos los selectores a la misma fila que los botones -->
+        <div class="row mt-3">
           <div class="col-md-3">
-            <select class="form-select" v-model="selectedRedSalud" @change="getMicroRedes">
-              <option value="">Selecciona una red de salud</option>
-              <option v-for="red in redesSalud" :key="red.id" :value="red.id">{{ red.name }}</option>
-            </select>
+            <label for="redSalud">Red de salud:</label>
+            <input disabled type="text" class="form-control" v-model="redSalud" id="redSalud">
           </div>
           <div class="col-md-3">
-            <select class="form-select" v-model="selectedMicroRed" @change="getEstablecimientosSalud">
-              <option value="">Selecciona una micro red</option>
-              <option v-for="microRed in microRedes" :key="microRed.id" :value="microRed.id">{{ microRed.name }}</option>
-            </select>
+            <label for="microRed">Micro red:</label>
+            <input disabled type="text" class="form-control" v-model="microRed" id="microRed">
           </div>
           <div class="col-md-3">
-            <select class="form-select" v-model="selectedEstablecimiento" @change="getSectores">
-              <option value="">Selecciona un establecimiento de salud</option>
-              <option v-for="establecimiento in establecimientos" :key="establecimiento.id" :value="establecimiento.id">{{
-                establecimiento.name }}</option>
-            </select>
+            <label for="establecimientoSalud">Establecimiento de salud:</label>
+            <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
           </div>
+        </div>
 
-          <div class="col-md-3">
-            <select class="form-select" v-model="selectedSector">
-              <option value="">Selecciona un Sector</option>
-              <option v-for="sector in sectores" :key="sector.id" :value="sector.id">{{
-                sector.name }}</option>
-            </select>
+
+
+
+
+        <div class="row move-up">
+          <div class="col-md-3 order-last">
+            <!-- Movemos el div del gráfico aquí -->
+            <div class="d-flex justify-content-center align-items-center">
+              <div id="chart">
+                <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
+                </apexchart>
+              </div>
+            </div>
           </div>
-
-
-
-
+          <div class="col-md-9 order-first">
+            <!-- Contenido en el lado izquierdo -->
+          </div>
         </div>
       </div>
+
     </div>
   </div>
   <div class="card mt-5">
@@ -5234,15 +5471,13 @@ idDistrito.value = distritoId;
               </div>
 
               <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group mt-3">
+                <div class="col-md-2">
+                  <div class="form-group ">
                     <label for="nombreFamilia">Nombre de familia</label>
                     <input type="text" class="form-control" id="nombreFamilia" v-model="nombreFamilia" disabled />
                   </div>
                 </div>
-              </div>
 
-              <div class="row mt-4">
                 <div class="col-md-2">
                   <label for="exampleFormControlSelect1">Niños(as) O a 11 años</label>
                   <input type="int" class="form-control" v-model="niños_0_11" disabled />
@@ -5264,359 +5499,378 @@ idDistrito.value = distritoId;
                   <input type="text" class="form-control" v-model="adultos_mayores_60" disabled />
                 </div>
               </div>
+
+              <div class="row mt-4">
+      
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-md-2">
+                  <input disabled type="text" class="form-control" v-model="provincia" placeholder="Provincia">
+                </div>
+                <div class="col-md-2">
+                  <input disabled type="text" class="form-control" v-model="distrito" placeholder="Distrito">
+                </div>
+                <div class="col-md-2">
+                  <input disabled type="text" class="form-control" v-model="sector" placeholder="Sector">
+                </div>
+                <!-- Otros campos -->
+
+                <div class="col-md-2">
+                  <select class="form-select" v-model="selectedManzana" @change="onManzanaChange">
+                    <option value="">Manzana</option>
+                    <option v-for="n in 10" :key="n">Manzana {{ n }}</option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <select class="form-select" v-model="selectedAbreviatura" @change="onAbreviaturaChange">
+                    <option value="">Ubicación</option>
+                    <option value="Jr">Jr</option>
+                    <option value="Lote">Lote</option>
+                    <option value="Urb">Urb</option>
+                    <!-- Otras opciones según sea necesario -->
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <input type="text" class="form-control" v-model="direccionExacta"
+                    placeholder="Escribir dirección exacta">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" v-model="referencia" placeholder="Escribir Referencia">
+                </div>
+                <div class="col-md-2">
+                  <button class="btn btn-success" @click="guardarDetalleFamilia">
+                    <i class="fas fa-save"></i> <!-- Ícono de guardar de Font Awesome -->
+                  </button>
+                </div>
+              </div>
+
               <div class="form-group mt-3"></div>
 
               <div class="alert alert-success mt-5" role="alert">
                 <h4 class="alert-heading">CARACTERÍSTICAS</h4>
               </div>
 
-              <div class="mt-4 col-md-12">
-                <label>{{ preguntaTexto }}</label>
-                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta" :key="index">
-                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto1" v-model="respuesta.isChecked" />
-                  <label class="form-check-label" :for="`checkbox${index}`">{{
-                    respuesta.rc_respuesta_comun
-                  }}</label>
-                </div>
-              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ preguntaTexto }}</h5>
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto1" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
 
-              <div class="row mt-4">
-                <div class="col-md-4">
-                  <label for="exampleFormControlSelect1">{{ preguntaTexto2 }}</label>
-                  <input type="text" class="form-control" v-model="valorInput" name="preguntaTexto2"
-                    placeholder="Número" />
-                </div>
 
-                <div class="col-md-6">
-                  <label>{{ preguntaTexto3 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta3" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta3" value="No" /> No
-                    </label>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto4 }}</h5>
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta4" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta4" value="No" /> No
+                        </label>
+                      </div>
+
+                      <div></div>
+                      <div class="form-group mt-3">
+                        <label for="exampleFormControlTextarea1">Detalle</label>
+                        <textarea v-model="descripcionQuestion4" class="form-control" id="exampleFormControlTextarea1"
+                          rows="3"></textarea>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto6 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check" v-for="(respuesta, index) in respuestas2" :key="index">
+                          <input type="radio" name="xd" :id="`radioRespuesta${index}`"
+                            :value="respuesta.rc_respuesta_comun" v-model=respuestaSeleccionada2 />
+                          {{ respuesta.rc_respuesta_comun }}
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto8 }}</h5>
+
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta2"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto8" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto10 }}</h5>
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta4"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto10" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto12 }}</h5>
+
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta6"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto12" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto14 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta14" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta14" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto16 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta16" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta16" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto18 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta18" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta18" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto20 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta20" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta20" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto22 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta22" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta22" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto24 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta24" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta24" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto26 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta26" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta26" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto25 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta25" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta25" value="No" /> No
+                        </label>
+                      </div>
+
+                    </div>
                   </div>
                 </div>
-              </div>
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ preguntaTexto2 }}</h5>
+                      <input type="text" class="form-control" v-model="valorInput" name="preguntaTexto2"
+                        placeholder="Número" />
 
-              <div class="form-group mt-3">
-                <label for="exampleFormControlTextarea1">Describe como son compartidas</label>
-                <textarea v-model="descripcionCompartidas" class="form-control" id="exampleFormControlTextarea1"
-                  rows="3"></textarea>
-              </div>
+                      <h5 class="card-title mt-3">{{ preguntaTexto3 }}</h5>
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta3" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta3" value="No" /> No
+                        </label>
+                      </div>
 
-              <div class="mt-3 col-md-5">
-                <label>{{ preguntaTexto4 }}</label>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta4" value="Si" /> Si
-                  </label>
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta4" value="No" /> No
-                  </label>
-                </div>
-              </div>
+                      <div></div>
+                      <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Describe como son compartidas</label>
+                        <textarea v-model="descripcionCompartidas" class="form-control" id="exampleFormControlTextarea1"
+                          rows="3"></textarea>
+                      </div>
 
-              <div class="form-group mt-3">
-                <label for="exampleFormControlTextarea1">Detalle</label>
-                <textarea v-model="descripcionQuestion4" class="form-control" id="exampleFormControlTextarea1"
-                  rows="3"></textarea>
-              </div>
+                      <h5 class="card-title mt-3">{{ preguntaTexto5 }}</h5>
 
-              <div class="row mt-4">
-                <div class="col-md-4">
-                  <label>{{ preguntaTexto5 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta5" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta5" value="No" /> No
-                    </label>
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta5" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta5" value="No" /> No
+                        </label>
+                      </div>
+
+                      <div></div>
+                      <div class="form-group mt-3">
+                        <label for="exampleFormControlTextarea1">Describa</label>
+                        <textarea v-model="descripcionQuestion5" class="form-control" id="exampleFormControlTextarea1"
+                          rows="3"></textarea>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto7 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check" v-for="(respuesta, index) in respuestas3" :key="index">
+                          <input type="radio" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
+                            v-model=respuestaSeleccionada3 />
+                          {{ respuesta.rc_respuesta_comun }}
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto9 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check" v-for="(respuesta, index) in respuestas5" :key="index">
+                          <input type="radio" name="ga" :id="`radioRespuesta${index}`"
+                            :value="respuesta.rc_respuesta_comun" v-model=respuestaSeleccionada5 />
+                          {{ respuesta.rc_respuesta_comun }}
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto11 }}</h5>
+
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta5"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto11"
+                          @change="capturarRespuesta6(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto13 }}</h5>
+
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta7"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto13" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto15 }}</h5>
+
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta9"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto15" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto17 }}</h5>
+
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta11"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto17" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto19 }}</h5>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta19" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta19" value="No" /> No
+                        </label>
+                        <p></p>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto21 }}</h5>
+
+                      <p></p>
+
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta21" value="Si" /> Si
+                        </label>
+                        <label class="form-check">
+                          <input type="radio" v-model="respuestaPregunta21" value="No" /> No
+                        </label>
+                      </div>
+
+                      <h5 class="card-title mt-3">{{ preguntaTexto23 }}</h5>
+
+                      <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta12"
+                        :key="index">
+                        <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
+                          :value="respuesta.rc_respuesta_comun" name="preguntaTexto23" v-model="respuesta.isChecked" />
+                        <label class="form-check-label" :for="`checkbox${index}`">{{
+                          respuesta.rc_respuesta_comun
+                        }}</label>
+                      </div>
+
+                      <div></div>
+
+                      <div class="form-group mt-">
+                        <label for="exampleFormControlTextarea1">Describa</label>
+                        <textarea v-model="descripcionQuestion23" class="form-control" id="exampleFormControlTextarea1"
+                          rows="3"></textarea>
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                <div class="form-group mt-3">
-                  <label for="exampleFormControlTextarea1">Describa</label>
-                  <textarea v-model="descripcionQuestion5" class="form-control" id="exampleFormControlTextarea1"
-                    rows="3"></textarea>
-                </div>
-
-                <div class="col-md-8">
-                  <label>{{ preguntaTexto6 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check" v-for="(respuesta, index) in respuestas2" :key="index">
-                      <input type="radio" name="xd" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
-                        @change="capturarRespuesta2(respuesta.rc_respuesta_comun)" v-model=respuestaSeleccionada2 />
-                      {{ respuesta.rc_respuesta_comun }}
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-10">
-                <label>{{ preguntaTexto7 }}</label>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="form-check" v-for="(respuesta, index) in respuestas3" :key="index">
-                    <input type="radio" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
-                      @change="capturarRespuesta3(respuesta.rc_respuesta_comun)" v-model=respuestaSeleccionada3 />
-                    {{ respuesta.rc_respuesta_comun }}
-                  </label>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-10"></div>
-
-              <div class="mt-3 col-md-13">
-                <label>{{ preguntaTexto8 }}</label>
-                <p></p>
-                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta2" :key="index">
-                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto8"
-                    @change="capturarRespuesta4(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                  <label class="form-check-label" :for="`checkbox${index}`">{{
-                    respuesta.rc_respuesta_comun
-                  }}</label>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-10">
-                <label>{{ preguntaTexto9 }}</label>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="form-check" v-for="(respuesta, index) in respuestas5" :key="index">
-                    <input type="radio" name="ga" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
-                      @change="capturarRespuesta5(respuesta.rc_respuesta_comun)" v-model=respuestaSeleccionada4 />
-                    {{ respuesta.rc_respuesta_comun }}
-                  </label>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-10">
-                <label for="exampleFormControlSelect1">{{ preguntaTexto10 }}</label>
-                <p></p>
-                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta4" :key="index">
-                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto10"
-                    @change="capturarRespuesta6(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                  <label class="form-check-label" :for="`checkbox${index}`">{{
-                    respuesta.rc_respuesta_comun
-                  }}</label>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-10">
-                <label>{{ preguntaTexto11 }}</label>
-                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta5" :key="index">
-                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto11"
-                    @change="capturarRespuesta6(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                  <label class="form-check-label" :for="`checkbox${index}`">{{
-                    respuesta.rc_respuesta_comun
-                  }}</label>
-                </div>
-              </div>
-
-              <div class="row mt-3">
-                <div class="mt-3 col-md-7">
-                  <label>{{ preguntaTexto12 }}</label>
-                  <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta6"
-                    :key="index">
-                    <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                      :value="respuesta.rc_respuesta_comun" name="preguntaTexto12"
-                      @change="capturarRespuesta8(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                    <label class="form-check-label" :for="`checkbox${index}`">{{
-                      respuesta.rc_respuesta_comun
-                    }}</label>
-                  </div>
-                </div>
-
-                <div class="mt-3 col-md-4">
-                  <label>{{ preguntaTexto13 }}</label>
-                  <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta7"
-                    :key="index">
-                    <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                      :value="respuesta.rc_respuesta_comun" name="preguntaTexto13"
-                      @change="capturarRespuesta9(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                    <label class="form-check-label" :for="`checkbox${index}`">{{
-                      respuesta.rc_respuesta_comun
-                    }}</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-5">
-                <label>{{ preguntaTexto14 }}</label>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta14" value="Si" /> Si
-                  </label>
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta14" value="No" /> No
-                  </label>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-9">
-                <label>{{ preguntaTexto15 }}</label>
-                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta9" :key="index">
-                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto15"
-                    @change="capturarRespuesta10(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                  <label class="form-check-label" :for="`checkbox${index}`">{{
-                    respuesta.rc_respuesta_comun
-                  }}</label>
-                </div>
-              </div>
-
-              <div class="row mt-3">
-                <div class="mt-3 col-md-4">
-                  <label>{{ preguntaTexto16 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta16" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta16" value="No" /> No
-                    </label>
-                  </div>
-                </div>
-
-                <div class="mt-3 col-md-4">
-                  <label>{{ preguntaTexto17 }}</label>
-                  <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta11"
-                    :key="index">
-                    <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                      :value="respuesta.rc_respuesta_comun" name="preguntaTexto17"
-                      @change="capturarRespuesta11(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                    <label class="form-check-label" :for="`checkbox${index}`">{{
-                      respuesta.rc_respuesta_comun
-                    }}</label>
-                  </div>
-                </div>
-                <div class="mt-3 col-md-4">
-                  <label>{{ preguntaTexto18 }}</label>
-                  <p></p>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta18" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta18" value="No" /> No
-                    </label>
-                  </div>
-                </div>
-                <div class="mt-3 col-md-4">
-                  <label>{{ preguntaTexto19 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta19" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta19" value="No" /> No
-                    </label>
-                    <p></p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row mt-3">
-                <div class="mt-3 col-md-5">
-                  <label>{{ preguntaTexto20 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta20" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta20" value="No" /> No
-                    </label>
-                  </div>
-                </div>
-                <div class="mt-3 col-md-7">
-                  <label>{{ preguntaTexto21 }}</label>
-                  <p></p>
-
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta21" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta21" value="No" /> No
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row mt-3">
-                <div class="mt-3 col-md-5">
-                  <label>{{ preguntaTexto22 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta22" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta22" value="No" /> No
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-5">
-                <label>{{ preguntaTexto23 }}</label>
-                <div class="form-check form-check-inline" v-for="(respuesta, index) in form.fpre_respuesta12"
-                  :key="index">
-                  <input type="checkbox" class="form-check-input" :id="`checkbox${index}`"
-                    :value="respuesta.rc_respuesta_comun" name="preguntaTexto23"
-                    @change="capturarRespuesta11(respuesta.rc_respuesta_comun)" v-model="respuesta.isChecked" />
-                  <label class="form-check-label" :for="`checkbox${index}`">{{
-                    respuesta.rc_respuesta_comun
-                  }}</label>
-                </div>
-              </div>
-
-              <div class="form-group mt-">
-                <label for="exampleFormControlTextarea1">Describa</label>
-                <textarea v-model="descripcionQuestion23" class="form-control" id="exampleFormControlTextarea1"
-                  rows="3"></textarea>
-              </div>
-
-              <div class="row mt-3">
-                <div class="mt-3 col-md-5">
-                  <label>{{ preguntaTexto24 }}</label>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta24" value="Si" /> Si
-                    </label>
-                    <label class="form-check">
-                      <input type="radio" v-model="respuestaPregunta24" value="No" /> No
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-3 col-md-5">
-                <label>{{ preguntaTexto25 }}</label>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta25" value="Si" /> Si
-                  </label>
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta25" value="No" /> No
-                  </label>
-                </div>
-              </div>
-
-
-              <div class="mt-3 col-md-5">
-                <label>{{ preguntaTexto26 }}</label>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta26" value="Si" /> Si
-                  </label>
-                  <label class="form-check">
-                    <input type="radio" v-model="respuestaPregunta26" value="No" /> No
-                  </label>
                 </div>
               </div>
 
@@ -5637,7 +5891,7 @@ idDistrito.value = distritoId;
               <div v-if="showBlock === 1">
                 <p class="card-text">EN LA ETAPA NIÑO 0-11 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoNinos.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedPersona" @change="updateFields">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoNinos" :key="index" :value="persona.id">
@@ -5645,13 +5899,18 @@ idDistrito.value = distritoId;
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoNinos.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaNinos.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoNinos.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaNinos.edad" />
@@ -5660,7 +5919,7 @@ idDistrito.value = distritoId;
                 </div>
 
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoNinos.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -5825,7 +6084,8 @@ idDistrito.value = distritoId;
                       </div>
                     </div>
                   </div>
-                  <a @click="saveRiesgosNiños" class="btn btn-success mt-4">Guardar</a>
+                  <a v-if="personasEnRangoNinos.length > 0" @click="saveRiesgosNiños"
+                    class="btn btn-success mt-4">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
                 </div>
@@ -5834,7 +6094,7 @@ idDistrito.value = distritoId;
               <div v-if="showBlock === 2">
                 <p class="card-text">EN LA ETAPA ADOLESCENTE 12-17 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedAdolescente" @change="updateFields2">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoAdolescentes" :key="index" :value="persona.id">
@@ -5842,13 +6102,18 @@ idDistrito.value = distritoId;
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaAdolescentes.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaAdolescentes.edad" />
@@ -5856,7 +6121,7 @@ idDistrito.value = distritoId;
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoAdolescentes.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -5996,7 +6261,8 @@ idDistrito.value = distritoId;
                       </div>
                     </div>
                   </div>
-                  <a class="btn btn-success mt-4" @click="saveRiesgosAdolescentes">Guardar</a>
+                  <a v-if="personasEnRangoAdolescentes.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosAdolescentes">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
                 </div>
@@ -6005,7 +6271,7 @@ idDistrito.value = distritoId;
               <div v-if="showBlock === 3">
                 <p class="card-text">EN LA ETAPA JOVEN 18-29 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoJovenes.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedJoven" @change="updateFields3">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoJovenes" :key="index" :value="persona.id">
@@ -6013,13 +6279,18 @@ idDistrito.value = distritoId;
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoJovenes.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaJovenes.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoJovenes.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaJovenes.edad" />
@@ -6027,7 +6298,7 @@ idDistrito.value = distritoId;
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoJovenes.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -6109,7 +6380,8 @@ idDistrito.value = distritoId;
                     </div>
                   </div>
 
-                  <a class="btn btn-success mt-4" @click="saveRiesgosJovenes">Guardar</a>
+                  <a v-if="personasEnRangoJovenes.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosJovenes">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
 
@@ -6119,7 +6391,7 @@ idDistrito.value = distritoId;
               <div v-if="showBlock === 4">
                 <p class="card-text">EN LA ETAPA ADULTO 30-59 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoAdultos.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedAdulto" @change="updateFields4">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoAdultos" :key="index" :value="persona.id">
@@ -6127,13 +6399,18 @@ idDistrito.value = distritoId;
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a la siguiente etapa.</span>
+                  </div>
+                  <div v-if="personasEnRangoAdultos.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaAdultos.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoAdultos.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaAdultos.edad" />
@@ -6141,7 +6418,7 @@ idDistrito.value = distritoId;
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoAdultos.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -6296,7 +6573,8 @@ idDistrito.value = distritoId;
                       </div>
                     </div>
                   </div>
-                  <a class="btn btn-success mt-4" @click="saveRiesgosAdultos">Guardar</a>
+                  <a v-if="personasEnRangoAdultos.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosAdultos">Guardar</a>
 
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Siguiente Etapa</a>
                 </div>
@@ -6305,7 +6583,7 @@ idDistrito.value = distritoId;
               <div v-if="showBlock === 5">
                 <p class="card-text">EN LA ETAPA ADULTO MAYOR 60-110 AÑOS</p>
                 <div class="row">
-                  <div class="form-group col-4">
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="form-group col-4">
                     <select id="inputState" class="form-control" v-model="selectedAdultoMayor" @change="updateFields5">
                       <option selected>Seleccionar nombre</option>
                       <option v-for="(persona, index) in personasEnRangoAdultosMayores" :key="index" :value="persona.id">
@@ -6313,13 +6591,18 @@ idDistrito.value = distritoId;
                       </option>
                     </select>
                   </div>
-                  <div class="col-7">
+                  <div v-else>
+                    <span
+                      style="display: block; background-color: #ffc107; color: #333; padding: 10px; border-radius: 5px; font-weight: bold;">Esta
+                      familia no tiene integrantes en este rango de edad. Por favor, pasar a otros riesgos</span>
+                  </div>
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="col-7">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia" placeholder="Nombre y apellidos"
                         v-model="selectedPersonaAdultosMayores.nombre" />
                     </div>
                   </div>
-                  <div class="col-1">
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="col-1">
                     <div class="form-group">
                       <input disabled type="text" class="form-control" id="nombreFamilia"
                         v-model="selectedPersonaAdultosMayores.edad" />
@@ -6327,7 +6610,7 @@ idDistrito.value = distritoId;
                   </div>
                 </div>
                 <div class="container-fluid">
-                  <div class="row mt-3">
+                  <div v-if="personasEnRangoAdultosMayores.length > 0" class="row mt-3">
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
@@ -6473,7 +6756,8 @@ idDistrito.value = distritoId;
                   </div>
                   <a class="btn btn-success mt-4" @click="mostrarSiguienteBloque">Otros Riesgos</a>
 
-                  <a class="btn btn-success mt-4" @click="saveRiesgosAdultosMayores">Guardar</a>
+                  <a v-if="personasEnRangoAdultosMayores.length > 0" class="btn btn-success mt-4"
+                    @click="saveRiesgosAdultosMayores">Guardar</a>
                 </div>
               </div>
               <div v-if="showBlock === 6">
@@ -6649,7 +6933,7 @@ idDistrito.value = distritoId;
                                     Vigilancia nutricional
                                   </label>
                                   <label class="btn form-check">
-                                    <input type="checkbox" v-model="respuestaPregunta72" name="preguntaTexto73"
+                                    <input type="checkbox" v-model="respuestaPregunta73" name="preguntaTexto73"
                                       value="Con la evaluación bucal" />
                                     Con la evaluación bucal
                                   </label>
@@ -7819,6 +8103,7 @@ idDistrito.value = distritoId;
   height: 194.5px;
 }
 
+
 .wh-ft {
   width: 1270px;
   height: 368px;
@@ -7883,6 +8168,11 @@ idDistrito.value = distritoId;
 .h-scroll-2 {
   height: 260px;
   padding-left: 27px;
+}
+
+.move-up {
+  margin-top: -150px;
+  /* Ajusta este valor según sea necesario */
 }
 
 .h-scroll-3 {
@@ -8093,5 +8383,4 @@ idDistrito.value = distritoId;
   border: 1.7px solid #f8bc02;
   background: transparent;
   color: #f8bc02;
-}
-</style>
+}</style>
