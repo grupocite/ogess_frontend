@@ -8,6 +8,8 @@ import ErrorPage from "@/views/error/Error.vue";
 import DesktopView from "@/views/init/InitView.vue";
 import DashBoardView from "@/views/dashboard/DashboardView.vue";
 import EditFichaTecnica from "@/views/dashboard/EditFichaTecnica.vue";
+import DesktopView2 from '@/views/desktop/DesktopView2.vue';
+import ManteninientoView from '@/views/maintenance/ManteninientoView.vue';
 
 import { useAuth } from '@/stores/auth';
 import EquipoView from '@/views/equipo/EquipoView.vue';
@@ -58,6 +60,20 @@ const router = createRouter({
       meta: { requireAuth: true },
       beforeEnter: requireAuth
     },
+    {
+      path: '/mantenimiento',
+      name: 'mantenimiento',
+      component: ManteninientoView,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
+    {
+      path: '/desktop2',
+      name: 'desktop2',
+      component: DesktopView2,
+      meta: { requireAuth: true },
+      beforeEnter: requireAuth
+    },
 
     {
       path: '/equipo',
@@ -100,6 +116,12 @@ router.beforeEach((to, from, next) => {
       next('/error');
       return;
     }
+
+        // Equipo
+        if (to.path === "/" && hasPermissionTo(['dashboard']) == false) {
+          next('/error');
+          return;
+        }
 
     // Roles
     if (to.path === "/role" && hasPermissionTo(['roles']) == false) {

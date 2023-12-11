@@ -7,7 +7,7 @@ export const useAuth = defineStore({
 	state: () => ({
 		token: localStorage.getItem('token') ?? null,
 		user: JSON.parse(localStorage.getItem('user') ?? 'null'),
-		refreshTokenInterval: 0
+		refreshTokenInterval: 0 as NodeJS.Timeout | number // Cambio en la inicialización del refreshTokenInterval
 	}),
 	getters: {
 		isAuthenticated: (state) => !!state.token,
@@ -39,16 +39,12 @@ export const useAuth = defineStore({
 			if (this.refreshTokenInterval !== 0) {
 				clearInterval(this.refreshTokenInterval);
 			}
-
-			const horas = 5;
-            const segundosEnUnaHora = 3600; // 1 hora = 3600 segundos
-            const duracionEnSegundos = horas * segundosEnUnaHora;
-            const duracionEnMilisegundos = duracionEnSegundos * 1000;
 	  
-            const expiresInMs = duracionEnMilisegundos;
+			const expiresInMs = 3500000; // 3500 segundos en milisegundos
 			this.refreshTokenInterval = setInterval(this.refreshToken, expiresInMs);
 		},
 		async login(email: string, password: string) {
+			
 			const formData = {email: email,password: password};
 			try {
 				const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, formData);
@@ -56,9 +52,20 @@ export const useAuth = defineStore({
 				const user = response.data.user;
 				localStorage.setItem('token', token);
 				localStorage.setItem('user', JSON.stringify(user));
+
+				if (user.status !== 2) {
+					// Si NO es administrador, redirigir a la ruta '/'
+					location.href = '/desktop2';
+					return; // Detener la ejecución aquí para evitar la actualización y el temporizador
+				} else {
+					// Si es administrador, redirigir a otra ruta ('/admin' por ejemplo)
+					location.href = '/';
+					return; // Detener la ejecución aquí para evitar la actualización y el temporizador
+				}
+
+
 				this.$patch({ token, user });
 				this.startRefreshTokenTimer();
-				location.href = '/';
 
 			} catch (error: any) {
 				if (error.response && error.response.status === 422) {

@@ -9,7 +9,7 @@
                 <!-- Primera columna con el campo de búsqueda -->
                 <div class="form-group has-search">
                   <span class="fa fa-search form-control-feedback"></span>
-                  <input type="text" class="form-control" placeholder="Buscar encuestador" v-model="searchText" />
+                  <input type="text" class="form-control" placeholder="Buscar pregunta" v-model="searchText" />
                 </div>
               </div>
 
@@ -19,7 +19,7 @@
                 <div style="text-align: end" id="custom-button-group">
 
                   <button @click.prevent="openModal" type="button" class="btn btn-outline-yellow mr-1 mb-1 mb-md-0">
-                    <i class="fas fa-plus mr-1"></i> Agregar Encuestador
+                    <i class="fas fa-plus mr-1"></i> Agregar Pregunta
                   </button>
 
                 </div>
@@ -31,8 +31,8 @@
                 class="table table-striped table-bordered display dsn-table" />
             </div>
 
-            <EquipoModalView v-if="showModal" :show-modal="showModal" :form-data="formData" @close-modal="closeModal">
-            </EquipoModalView>
+            <MantenimientoModalVue v-if="showModal" :show-modal="showModal" :form-data="formData" @close-modal="closeModal">
+            </MantenimientoModalVue>
           </div>
           <div class="modal" id="modalAnswerFast" tabindex="-1" role="dialog" aria-labelledby="modalAnswerFast">
             <div class="modal-dialog" style="width: 388px;" role="document">
@@ -104,7 +104,7 @@ import DataTable from "datatables.net-vue3";
 import DataTablesCore, { type ConfigColumns } from "datatables.net-bs5";
 import axios from "axios";
 import type { Advisor } from "@/model/Type";
-import EquipoModalView from "./EquipoModalView.vue";
+import MantenimientoModalVue from "./MantenimientoModalVue.vue";
 import { ElMessage } from "element-plus";
 
 DataTable.use(DataTablesCore);
@@ -112,7 +112,7 @@ DataTable.use(DataTablesCore);
 export default defineComponent({
   components: {
     DataTable,
-    EquipoModalView,
+    MantenimientoModalVue,
   },
 
   setup() {
@@ -132,26 +132,11 @@ export default defineComponent({
         render: () => '<input type="checkbox">',
       },
       {
-        data: "name",
-        title: "Nombre Completo",
-        render: (data: string, type: string, row: any) =>
-          `${data} ${row.last_name}`,
+        data: "pre_pregunta",
+        title: "Pregunta"
       },
-      { data: "role", title: "Rol" },
-      { data: "email", title: "E-mail" },
-
-      {
-        data: "password",
-        title: "Contraseña",
-        render: function (data: any, type: string, row: any) {
-          if (type === "display") {
-            return `<input type="password" class="password-input" value="" placeholder="*********" data-user-id="${row.id}">`;
-          }
-          return data;
-        },
-      },
-
-
+      { data: "pre_aplica_para", title: "Aplica para" },
+      { data: "riesgo", title: "Riesgo" },
       {
         title: "Acciones",
         orderable: false,
@@ -169,7 +154,7 @@ export default defineComponent({
       responsive: true,
       autoWidth: false,
       bLengthChange: false,
-      pageLength: 5,
+      pageLength: 15,
       dom: "rtip",
       language: {
         search: "Buscar",
@@ -188,10 +173,10 @@ export default defineComponent({
     const fetchContacts = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/users/records`,
+          `${import.meta.env.VITE_API_URL}/mantenimiento/preguntas/list`,
           headers
         );
-        users.value = response.data.users;
+        users.value = response.data.data;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -209,6 +194,7 @@ export default defineComponent({
           if (userId !== null) {
             const userIdNumber = parseInt(userId);
 
+            console.log(userIdNumber);
             const selectedContact = users.value.find(
               (user) => user.id === userIdNumber
             );
@@ -262,9 +248,9 @@ export default defineComponent({
       const search = searchText.value.toLowerCase();
       return users.value.filter(
         (user) =>
-          user.name.toLowerCase().includes(search) ||
-          user.last_name.toLowerCase().includes(search) ||
-          user.email.includes(search)
+          user.pre_pregunta.toLowerCase().includes(search) ||
+          user.pre_aplica_para.toLowerCase().includes(search) ||
+          user.riesgo.includes(search)
       );
     });
 

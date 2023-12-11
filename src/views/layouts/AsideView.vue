@@ -41,17 +41,26 @@ export default defineComponent({
                 <div class="nk-sidebar-content" data-simplebar>
                     <div class="nk-sidebar-menu">
                         <ul class="nk-menu apps-menu">
-                            <li class="nk-menu-item">
+                            <li class="nk-menu-item"  v-show="hasPermissionTo(['dashboard'])">
                                 <RouterLink to="/" class="nk-menu-link" :class="{ 'active-side-item': $route.path === '/' }"
                                     @click="handleModuleSelect('Visión general')" title="Inicio">
                                     <span class="nk-menu-icon"><em class="icon ni ni-home icon-side"></em></span>
                                 </RouterLink>
                             </li>
+  
                             <li class="nk-menu-item">
                                 <RouterLink to="/desktop" class="nk-menu-link"
                                     :class="{ 'active-side-item': $route.path === '/desktop' }"
                                     @click="handleModuleSelect('Informes')" title="Informes">
                                     <span class="nk-menu-icon"><em class="icon ni ni-file-text icon-side"></em></span>
+                                </RouterLink>
+                            </li>
+
+                            <li class="nk-menu-item">
+                                <RouterLink to="/mantenimiento" class="nk-menu-link"
+                                    :class="{ 'active-side-item': $route.path === '/mantenimiento' }"
+                                    @click="handleModuleSelect('Informes')" title="Informes">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-brick-fill icon-side"></em></span>
                                 </RouterLink>
                             </li>
 
@@ -62,6 +71,8 @@ export default defineComponent({
                                     <span class="nk-menu-icon"><em class="icon ni ni-security icon-side"></em></span>
                                 </RouterLink>
                             </li>
+
+                            
                             
                             <li class="nk-menu-item" v-show="hasPermissionTo(['users'])">
                                 <RouterLink to="/equipo" class="nk-menu-link"

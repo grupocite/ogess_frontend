@@ -241,7 +241,7 @@ export default defineComponent({
         // Configuración del gráfico con ApexCharts
         const options = {
           legend: { show: false },
-          chart: { height: 350, type: 'treemap' },
+          chart: { height: 550, type: 'treemap' },
           title: {
             text: 'Cantidad de Riesgos por Familia',
             align: 'center',
@@ -910,20 +910,24 @@ export default defineComponent({
 
     const renderMyChart2 = async () => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-catorce`, headers);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-riesgos-ninos`, headers);
     const data = response.data;
 
-    const riesgos = Object.keys(data.respuestas_por_riesgo);
+    const riesgos = Object.keys(data.respuestas_por_riesgo_nino);
 
+    // Modificar la estructura de los datos para el gráfico de barras
     const series = riesgos.map((riesgo) => ({
-      name: riesgo,
-      data: [data.respuestas_por_riesgo[riesgo]],
+      x: riesgo, // Definir el eje Y con el nombre del riesgo
+      y: data.respuestas_por_riesgo_nino[riesgo] // Definir el eje X con la cantidad de riesgos
     }));
 
     const options = {
-      series: series,
+      series: [{
+        name: "Total de familias",
+        data: series // Establecer la serie de datos
+      }],
       chart: {
-        type: 'bar',
+        type: 'bar', // Mantener el tipo de gráfico como 'bar' para el gráfico de barras
         height: 600,
         toolbar: {
           show: true,
@@ -934,41 +938,47 @@ export default defineComponent({
       },
       plotOptions: {
         bar: {
-          horizontal: false,
+          horizontal: true, // Cambiar a horizontal para invertir los ejes
+          columnWidth: '50%', // Ancho de las columnas de la barra
           borderRadius: 10,
           dataLabels: {
-            total: {
-              enabled: true,
-              style: {
-                fontSize: '13px',
-                fontWeight: 900,
-              },
-            },
+            position: 'right' // Mostrar etiquetas de datos a la derecha de las barras
+          }
+        }
+      },
+      yaxis: {
+        type: 'category', // Tipo de eje Y como 'category' para mostrar nombres de riesgos
+        categories: riesgos, // Categorías en el eje Y como nombres de riesgos
+        labels: {
+          style: {
+            fontSize: '18px',
           },
+          maxWidth: 400, // Ajustar el ancho máximo del contenedor de las categorías (ajústalo según tu diseño)
+
+        },
+        title: {
+          text: 'Riesgos', // Título del eje Y
+          style: {
+            fontSize: '14px',
+          },
+
         },
       },
       xaxis: {
-        categories: ['Total de Riesgos'],
-        labels: {
-          style: {
-            fontSize: '12px',
-          },
-        },
-      },
-      yaxis: {
         title: {
-          text: 'Cantidad de Riesgos',
+          text: 'Cantidad de Familias', // Título del eje X
           style: {
             fontSize: '14px',
           },
         },
+        min: 0, // Valor mínimo en el eje X
+        max: 15, // Valor máximo en el eje X
       },
       legend: {
-        position: 'right',
-        offsetY: 40,
+        show: false, // No mostrar la leyenda en este caso (opcional)
       },
       title: {
-        text: 'Cantidad de Riesgos por Riesgo',
+        text: 'Cantidad de Familias por Riesgos en la Etapa Niño',
         align: 'center',
         style: {
           fontSize: '20px',
@@ -979,7 +989,7 @@ export default defineComponent({
       },
       tooltip: {
         enabled: true,
-        y: {
+        x: {
           formatter: function (val) {
             return val;
           },
@@ -993,6 +1003,388 @@ export default defineComponent({
     console.error('Hubo un error al obtener los datos:', error);
   }
 };
+
+
+
+const renderMyChart3 = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-riesgos-adolescentes`, headers);
+    const data = response.data;
+
+    const riesgos = Object.keys(data.respuestas_por_riesgo_adolescente);
+
+    // Modificar la estructura de los datos para el gráfico de barras de adolescentes
+    const series = riesgos.map((riesgo) => ({
+      x: riesgo, // Definir el eje Y con el nombre del riesgo
+      y: data.respuestas_por_riesgo_adolescente[riesgo] // Definir el eje X con la cantidad de riesgos
+    }));
+
+    const options = {
+      series: [{
+        name: "Total de Riesgos",
+        data: series // Establecer la serie de datos
+      }],
+      chart: {
+        type: 'bar',
+        height: 600,
+        toolbar: {
+          show: true,
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true, // Cambiar a horizontal para invertir los ejes
+          columnWidth: '50%', // Ancho de las columnas de la barra
+          borderRadius: 10,
+          dataLabels: {
+            position: 'right' // Mostrar etiquetas de datos a la derecha de las barras
+          }
+        }
+      },
+      yaxis: {
+        type: 'category', // Tipo de eje Y como 'category' para mostrar nombres de riesgos
+        categories: riesgos, // Categorías en el eje Y como nombres de riesgos
+        labels: {
+          style: {
+            fontSize: '16px',
+          },
+          maxWidth: 200, // Ajustar el ancho máximo del contenedor de las categorías (ajústalo según tu diseño)
+        },
+        title: {
+          text: 'Riesgos', // Título del eje Y
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      xaxis: {
+        title: {
+          text: 'Cantidad de Riesgos', // Título del eje X
+          style: {
+            fontSize: '14px',
+          },
+        },
+        min: 0, // Valor mínimo en el eje X
+        max: 15, // Valor máximo en el eje X
+      },
+      legend: {
+        show: false, // No mostrar la leyenda en este caso (opcional)
+      },
+      title: {
+        text: 'Cantidad de Riesgos por Etapa Adolescente',
+        align: 'center',
+        style: {
+          fontSize: '20px',
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        enabled: true,
+        x: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+    };
+
+    const chart = new ApexCharts(document.querySelector('#chartSuperGa22'), options);
+    chart.render();
+  } catch (error) {
+    console.error('Hubo un error al obtener los datos:', error);
+  }
+};
+
+const renderMyChart4 = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-riesgos-jovenes`, headers);
+    const data = response.data;
+
+    const riesgos = Object.keys(data.respuestas_por_riesgo_joven);
+
+    // Modificar la estructura de los datos para el gráfico de barras de jóvenes
+    const series = riesgos.map((riesgo) => ({
+      x: riesgo, // Definir el eje Y con el nombre del riesgo
+      y: data.respuestas_por_riesgo_joven[riesgo] // Definir el eje X con la cantidad de riesgos
+    }));
+
+    const options = {
+      series: [{
+        name: "Total de Riesgos",
+        data: series // Establecer la serie de datos
+      }],
+      chart: {
+        type: 'bar',
+        height: 600,
+        toolbar: {
+          show: true,
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true, // Cambiar a horizontal para invertir los ejes
+          columnWidth: '50%', // Ancho de las columnas de la barra
+          borderRadius: 10,
+          dataLabels: {
+            position: 'right' // Mostrar etiquetas de datos a la derecha de las barras
+          }
+        }
+      },
+      yaxis: {
+        type: 'category', // Tipo de eje Y como 'category' para mostrar nombres de riesgos
+        categories: riesgos, // Categorías en el eje Y como nombres de riesgos
+        labels: {
+          style: {
+            fontSize: '16px',
+          },
+          maxWidth: 200, // Ajustar el ancho máximo del contenedor de las categorías (ajústalo según tu diseño)
+        },
+        title: {
+          text: 'Riesgos', // Título del eje Y
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      xaxis: {
+        title: {
+          text: 'Cantidad de Riesgos', // Título del eje X
+          style: {
+            fontSize: '14px',
+          },
+        },
+        min: 0, // Valor mínimo en el eje X
+        max: 15, // Valor máximo en el eje X
+      },
+      legend: {
+        show: false, // No mostrar la leyenda en este caso (opcional)
+      },
+      title: {
+        text: 'Cantidad de Riesgos por Etapa Joven',
+        align: 'center',
+        style: {
+          fontSize: '20px',
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        enabled: true,
+        x: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+    };
+
+    const chart = new ApexCharts(document.querySelector('#chartSuperGa222'), options);
+    chart.render();
+  } catch (error) {
+    console.error('Hubo un error al obtener los datos:', error);
+  }
+};
+
+const renderMyChart5 = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-riesgos-adultos`, headers);
+    const data = response.data;
+
+    const riesgos = Object.keys(data.respuestas_por_riesgo_adulto);
+
+    // Modificar la estructura de los datos para el gráfico de barras de adultos
+    const series = riesgos.map((riesgo) => ({
+      x: riesgo, // Definir el eje Y con el nombre del riesgo
+      y: data.respuestas_por_riesgo_adulto[riesgo] // Definir el eje X con la cantidad de riesgos
+    }));
+
+    const options = {
+      series: [{
+        name: "Total de Riesgos",
+        data: series // Establecer la serie de datos
+      }],
+      chart: {
+        type: 'bar',
+        height: 600,
+        toolbar: {
+          show: true,
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true, // Cambiar a horizontal para invertir los ejes
+          columnWidth: '50%', // Ancho de las columnas de la barra
+          borderRadius: 10,
+          dataLabels: {
+            position: 'right' // Mostrar etiquetas de datos a la derecha de las barras
+          }
+        }
+      },
+      yaxis: {
+        type: 'category', // Tipo de eje Y como 'category' para mostrar nombres de riesgos
+        categories: riesgos, // Categorías en el eje Y como nombres de riesgos
+        labels: {
+          style: {
+            fontSize: '16px',
+          },
+          maxWidth: 200, // Ajustar el ancho máximo del contenedor de las categorías (ajústalo según tu diseño)
+        },
+        title: {
+          text: 'Riesgos', // Título del eje Y
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      xaxis: {
+        title: {
+          text: 'Cantidad de Riesgos', // Título del eje X
+          style: {
+            fontSize: '14px',
+          },
+        },
+        min: 0, // Valor mínimo en el eje X
+        max: 15, // Valor máximo en el eje X
+      },
+      legend: {
+        show: false, // No mostrar la leyenda en este caso (opcional)
+      },
+      title: {
+        text: 'Cantidad de Riesgos por Etapa Adulto',
+        align: 'center',
+        style: {
+          fontSize: '20px',
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        enabled: true,
+        x: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+    };
+
+    const chart = new ApexCharts(document.querySelector('#chartSuperGa2222'), options);
+    chart.render();
+  } catch (error) {
+    console.error('Hubo un error al obtener los datos:', error);
+  }
+};
+
+
+const renderMyChart6 = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard/report-riesgos-adultos-mayores`, headers);
+    const data = response.data;
+
+    const riesgos = Object.keys(data.respuestas_por_riesgo_adulto_mayor);
+
+    // Modificar la estructura de los datos para el gráfico de barras de adultos mayores
+    const series = riesgos.map((riesgo) => ({
+      x: riesgo, // Definir el eje Y con el nombre del riesgo
+      y: data.respuestas_por_riesgo_adulto_mayor[riesgo] // Definir el eje X con la cantidad de riesgos
+    }));
+
+    const options = {
+      series: [{
+        name: "Total de Riesgos",
+        data: series // Establecer la serie de datos
+      }],
+      chart: {
+        type: 'bar',
+        height: 600,
+        toolbar: {
+          show: true,
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true, // Cambiar a horizontal para invertir los ejes
+          columnWidth: '50%', // Ancho de las columnas de la barra
+          borderRadius: 10,
+          dataLabels: {
+            position: 'right' // Mostrar etiquetas de datos a la derecha de las barras
+          }
+        }
+      },
+      yaxis: {
+        type: 'category', // Tipo de eje Y como 'category' para mostrar nombres de riesgos
+        categories: riesgos, // Categorías en el eje Y como nombres de riesgos
+        labels: {
+          style: {
+            fontSize: '16px',
+          },
+          maxWidth: 200, // Ajustar el ancho máximo del contenedor de las categorías (ajústalo según tu diseño)
+        },
+        title: {
+          text: 'Riesgos', // Título del eje Y
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      xaxis: {
+        title: {
+          text: 'Cantidad de Riesgos', // Título del eje X
+          style: {
+            fontSize: '14px',
+          },
+        },
+        min: 0, // Valor mínimo en el eje X
+        max: 20, // Valor máximo en el eje X
+      },
+      legend: {
+        show: false, // No mostrar la leyenda en este caso (opcional)
+      },
+      title: {
+        text: 'Cantidad de Riesgos por Etapa Adulto Mayor',
+        align: 'center',
+        style: {
+          fontSize: '20px',
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        enabled: true,
+        x: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+    };
+
+    const chart = new ApexCharts(document.querySelector('#chartSuperGa22222'), options);
+    chart.render();
+  } catch (error) {
+    console.error('Hubo un error al obtener los datos:', error);
+  }
+};
+
+
+
 
 
 
@@ -1164,6 +1556,10 @@ export default defineComponent({
       renderChartCutr2();
       renderChartCutr();
       renderMyChart2();
+      renderMyChart3();
+      renderMyChart4();
+      renderMyChart5();
+      renderMyChart6();
       renderMyChart();
       renderGraficX2();
       renderChartXd()
@@ -1241,10 +1637,7 @@ export default defineComponent({
           </div> <!-- Nuevo div dentro de la columna -->
         </div>
 
-        <div class="col-md-6"> <!-- Otra nueva columna -->
-          <div id="chartContainerGa">
-          </div> <!-- Nuevo div dentro de la columna -->
-        </div>
+
 
         <div class="col-md-6"> <!-- Otra nueva columna -->
           <div id="RenderizaElGrafico">
@@ -1261,10 +1654,7 @@ export default defineComponent({
           </div> <!-- Nuevo div dentro de la columna -->
         </div>
 
-        <div class="col-md-6"> <!-- Otra nueva columna -->
-          <div id="chartSuperGa">
-          </div> <!-- Nuevo div dentro de la columna -->
-        </div>
+
 
         <div class="col-md-6"> <!-- Otra nueva columna -->
           <div id="chartSuperGa333">
@@ -1275,6 +1665,45 @@ export default defineComponent({
           <div id="chartSuperGa1313">
           </div>
         </div>
+
+
+        <div class="col-md-12"> <!-- Otra nueva columna -->
+          <div id="chartContainerGa">
+          </div> <!-- Nuevo div dentro de la columna -->
+        </div>
+
+        <div class="col-md-12"> <!-- Otra nueva columna -->
+          <div id="chartSuperGa">
+          </div> <!-- Nuevo div dentro de la columna -->
+        </div>
+
+        
+        <div class="col-md-12"> <!-- Otra nueva columna -->
+          <div id="chartSuperGa22">
+          </div> <!-- Nuevo div dentro de la columna -->
+        </div>
+
+
+        
+        <div class="col-md-12"> <!-- Otra nueva columna -->
+          <div id="chartSuperGa222">
+          </div> <!-- Nuevo div dentro de la columna -->
+        </div>
+
+
+        
+        <div class="col-md-12"> <!-- Otra nueva columna -->
+          <div id="chartSuperGa2222">
+          </div> <!-- Nuevo div dentro de la columna -->
+        </div>
+
+        
+        <div class="col-md-12"> <!-- Otra nueva columna -->
+          <div id="chartSuperGa22222">
+          </div> <!-- Nuevo div dentro de la columna -->
+        </div>
+
+
       </div>
 
     </div>

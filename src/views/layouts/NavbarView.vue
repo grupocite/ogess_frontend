@@ -49,61 +49,7 @@ export default defineComponent({
         </div>
         <div class="nk-header-tools">
           <ul class="nk-quick-nav">
-            <li class="dropdown notification-dropdown">
-              <a
-                href="#"
-                class="dropdown-toggle nk-quick-nav-icon"
-                data-bs-toggle="dropdown"
-              >
-                <div
-                  class="icon-status"
-                
-                >
-                  <em class="icon ni ni-bell"></em>
-                </div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end">
-                <div class="dropdown-head" >
-                  <span class="sub-title nk-dropdown-title"
-                    >Notificaciones</span
-                  >
-                </div>
-                <div class="dropdown-body">
-                  <div class="nk-notification">
-                    <div
-                      class="nk-notification-item dropdown-inner"
-                     
-                    >
-                      <div class="nk-notification-content">
-                        <div class="nk-notification-text">
-                          No hay notificaciones
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="nk-notification-item dropdown-inner"
-                     
-                    >
-                      <div class="nk-notification-icon">
-                        <em
-                          class="icon icon-circle bg-primary-dim ni ni-calender-date-fill"
-                        ></em>
-                      </div>
-                      <div class="nk-notification-content">
-                        <div class="nk-notification-text">
-                          <span class="recordatorio-text">RECORDATORIO:</span> Cliente 
-
-                        </div>
-                        <br>
-                        <div class="nk-notification-text dark-text bold-text"> 
-                          <span class="agendado-text">AGENDADO:</span> 
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
+ 
 
             <li class="dropdown list-apps-dropdown d-lg-none">
               <a
@@ -118,7 +64,7 @@ export default defineComponent({
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <div class="dropdown-body">
                   <ul class="list-apps">
-                    <li>
+                    <li v-show="hasPermissionTo(['dashboard'])">
                       <RouterLink
                         to="/"
                         @click="handleModuleSelect('Visión general')"
@@ -174,22 +120,7 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
-                <div class="dropdown-inner">
-                  <ul class="link-list">
-                    <li>
-                      <a href="#"
-                        ><em class="icon ni ni-user-alt"></em
-                        ><span>Perfil</span></a
-                      >
-                    </li>
-                    <li>
-                      <a href="#"
-                        ><em class="icon ni ni-setting-alt"></em
-                        ><span>Configuracion</span></a
-                      >
-                    </li>
-                  </ul>
-                </div>
+   
                 <div class="dropdown-inner">
                   <ul class="link-list">
                     <li>
