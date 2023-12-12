@@ -1135,7 +1135,7 @@ export default defineComponent({
       chart: {
         height: 190,
         type: 'radialBar',
-        offsetY: -15
+        offsetY: -10
       },
       plotOptions: {
         radialBar: {
@@ -4684,19 +4684,19 @@ export default defineComponent({
     })
 
     onMounted(async () => {
-      obtenerFamiliaPorId()
-      obtenerUUIDCenso()
-      fetchEstadoCivil()
-      fetchGradoInstruccion()
-      fetchReligion()
-      getRedesSalud();
-      fetchPreguntas()
-      fetchUniqueRoleData()
-      fetchSeguroSalud()
-      fetchData()
-      fetchPersons()
-      fetchFamilies()
-      fetchPorcentajeAvance()
+      await obtenerFamiliaPorId()
+      await obtenerUUIDCenso()
+      await fetchEstadoCivil()
+      await fetchGradoInstruccion()
+      await fetchReligion()
+      await getRedesSalud();
+      await fetchPreguntas()
+      await fetchUniqueRoleData()
+      await fetchSeguroSalud()
+      await fetchData()
+      await fetchPersons()
+      await fetchFamilies()
+      await fetchPorcentajeAvance()
       console.log(porcentajeAvance.value);
 
     })
@@ -5199,67 +5199,76 @@ export default defineComponent({
 
 <template>
   <div class="container-fluid mt-5">
-    <div class="card mt-5">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-4">
-            <input :value="user.name + ' ' + user.last_name" type="text" class="form-control" placeholder="Encuestador"
-              readonly disabled />
-          </div>
-          <div class="col-md-2">
-            <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
-          </div>
-
-
-          <div class="col-md-1">
-            <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
-          </div>
-          <div class="col-md-1">
-            <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
-          </div>
-
-        </div>
-
-
-
-
-
-        <!-- Movemos los selectores a la misma fila que los botones -->
-        <div class="row mt-3">
-          <div class="col-md-3">
-            <label for="redSalud">Red de salud:</label>
-            <input disabled type="text" class="form-control" v-model="redSalud" id="redSalud">
-          </div>
-          <div class="col-md-3">
-            <label for="microRed">Micro red:</label>
-            <input disabled type="text" class="form-control" v-model="microRed" id="microRed">
-          </div>
-          <div class="col-md-3">
-            <label for="establecimientoSalud">Establecimiento de salud:</label>
-            <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
-          </div>
-        </div>
-
-
-
-
-
-        <div class="row move-up">
-          <div class="col-md-3 order-last">
-            <!-- Movemos el div del gráfico aquí -->
-            <div class="d-flex justify-content-center align-items-center">
-              <div id="chart">
-                <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
-                </apexchart>
+    <div class="row mt-5">
+      <div class="col-sm-9">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-5">
+                <input :value="user.name + ' ' + user.last_name" type="text" class="form-control"
+                  placeholder="Encuestador" readonly disabled />
               </div>
+              <div class="col-md-2">
+                <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
+              </div>
+
+
+              <div class="col-md-2">
+                <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
+              </div>
+              <div class="col-md-2">
+                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
+              </div>
+
+
+
+
+              <!-- Aquí agregamos los botones -->
+
+
+              <div class="col-md-4">
+                <select class="form-select" v-model="selectedRedSalud" @change="getMicroRedes">
+                  <option value="">Selecciona una red de salud</option>
+                  <option v-for="red in redesSalud" :key="red.id" :value="red.id">{{ red.name }}</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" v-model="selectedMicroRed" @change="getEstablecimientosSalud">
+                  <option value="">Selecciona una micro red</option>
+                  <option v-for="microRed in microRedes" :key="microRed.id" :value="microRed.id">{{ microRed.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select class="form-select" v-model="selectedEstablecimiento" @change="getSectores">
+                  <option value="">Selecciona un establecimiento de salud</option>
+                  <option v-for="establecimiento in establecimientos" :key="establecimiento.id"
+                    :value="establecimiento.id">{{
+                      establecimiento.name }}</option>
+                </select>
+              </div>
+
+
+
             </div>
-          </div>
-          <div class="col-md-9 order-first">
-            <!-- Contenido en el lado izquierdo -->
           </div>
         </div>
       </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="">
+                <div id="chart">
+                  <apexchart type="radialBar" height="200" :options="chartOptions" :series="chartOptions.series">
+                  </apexchart>
+                </div>
+              </div>
+            </div>
 
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="card mt-5">
