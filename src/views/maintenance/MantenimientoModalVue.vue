@@ -27,51 +27,76 @@ export default defineComponent({
     const show = toRef(props, "showModal");
 
     const roles = ref<Array<Roles>>([]);
+    const dimentions = ref([]);
 
     const closeModal = () => {
       emit("closeModal");
     };
 
     const getRoles = async () => {
-      const responseRoles = await axios.get(`${import.meta.env.VITE_API_URL}/roles/list`, headers);
+      const responseRoles = await axios.get(`${import.meta.env.VITE_API_URL}/riesgo/list`, headers);
       roles.value = responseRoles.data.data;
     }
 
-    const saveUser = async () => {
-  try {
-    let response;
-    if (props.formData.id) {
-      response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/mantenimiento/preguntas/update/${props.formData.id}`,
-        props.formData,
-        headers
-      );
-    } else {
-      response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/mantenimiento/preguntas/create`,
-        props.formData,
-        headers
-      );
+
+    const getDimenstions = async () => {
+      const responseDimentions = await axios.get(`${import.meta.env.VITE_API_URL}/dimension/list`, headers);
+      dimentions.value = responseDimentions.data.data;
     }
 
-    if (response.status === 201 || response.status === 200) {
-      ElMessage({
-        message: response.data.message,
-        type: "success"
-      });
-      closeModal();
-    } else {
-      console.error("Error al realizar la operación: " + response);
-    }
-  } catch (error) {
-    if (error.response && error.response.status === 422) {
-      const validationErrors = error.response.data.errors;
-      showAlertWithErrors(validationErrors);
-    } else {
-      console.log("Error al editar el usuario", error);
-    }
-  }
-};
+    const saveUser = async () => {
+      try {
+        let formDataToSend = { ...props.formData }; // Crear una copia para modificar los nombres de las propiedades
+
+        // Obtener el ID del riesgo seleccionado
+        const selectedRiesgo = roles.value.find(rol => rol.rgos_riesgo === formDataToSend.riesgo);
+        if (selectedRiesgo) {
+          formDataToSend.riesgo_id = selectedRiesgo.id;
+          delete formDataToSend.riesgo;
+        }
+
+        // Obtener el ID de la dimensión seleccionada
+        const selectedDimension = dimentions.value.find(dim => dim.dim_dimension === formDataToSend.dimension);
+        if (selectedDimension) {
+          formDataToSend.dimension_id = selectedDimension.id;
+          delete formDataToSend.dimension;
+        }
+
+        // Luego, procede a enviar 'formDataToSend' al servidor con los nombres de propiedades correctos
+        let response;
+        if (formDataToSend.id) {
+          response = await axios.put(
+            `${import.meta.env.VITE_API_URL}/mantenimiento/preguntas/update/${formDataToSend.id}`,
+            formDataToSend,
+            headers
+          );
+        } else {
+          response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/mantenimiento/preguntas/create`,
+            formDataToSend,
+            headers
+          );
+        }
+
+        if (response.status === 201 || response.status === 200) {
+          ElMessage({
+            message: response.data.message,
+            type: "success"
+          });
+          closeModal();
+        } else {
+          console.error("Error al realizar la operación: " + response);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 422) {
+          const validationErrors = error.response.data.errors;
+          showAlertWithErrors(validationErrors);
+        } else {
+          console.log("Error al editar el usuario", error);
+        }
+      }
+    };
+
 
 
     const showAlertWithErrors = (errros: Error) => {
@@ -81,6 +106,7 @@ export default defineComponent({
 
     onMounted(() => {
       getRoles();
+      getDimenstions();
     });
 
     return {
@@ -88,7 +114,8 @@ export default defineComponent({
       closeModal,
       saveUser,
       form,
-      roles
+      roles,
+      dimentions
     };
   },
 });
@@ -108,7 +135,8 @@ export default defineComponent({
                 <span v-if="formData.id">Editar pregunta</span>
                 <span v-else>Agregar pregunta</span>
               </h4>
-              <div @click.prevent="closeModal" class="color-y fs-1 poe" aria-label="Cerrar"><em class="icon ni ni-cross-sm"></em>
+              <div @click.prevent="closeModal" class="color-y fs-1 poe" aria-label="Cerrar"><em
+                  class="icon ni ni-cross-sm"></em>
               </div>
             </div>
             <!--  -->
@@ -118,7 +146,8 @@ export default defineComponent({
                   <div class="form-group">
                     <label class="form-label" for="default-01">Pregunta</label>
                     <div class="form-control-wrap">
-                      <textarea v-model="formData.pre_pregunta" type="text" class="input-AB" name="name" placeholder="" ></textarea>
+                      <textarea v-model="formData.pre_pregunta" type="text" class="input-AB" name="name"
+                        placeholder=""></textarea>
                     </div>
                   </div>
                 </div>
@@ -126,14 +155,35 @@ export default defineComponent({
                   <div class="form-group">
                     <label class="form-label" for="default-01">Pregunta aplica para</label>
                     <div class="form-control-wrap">
-                      <input v-model="formData.pre_aplica_para" type="text" class="input-AA" name="last_name" placeholder="" >
+                      <input v-model="formData.pre_aplica_para" type="text" class="input-AA" name="last_name"
+                        placeholder="">
                     </div>
                   </div>
                 </div>
 
+                <div class="col-md-12 mt-2">
+                  <div class="form-group">
+                    <label class="form-label">Riesgo</label>
+                    <div class="form-control-wrap">
+                      <select v-model="formData.riesgo" class="input-AA" name="riesgo" ria-label="Default select example">
+                        <option v-for="rol in roles" :value="rol.rgos_riesgo" :key="rol.id">{{ rol.rgos_riesgo }}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
-
-
+                <div class="col-md-12 mt-2">
+                  <div class="form-group">
+                    <label class="form-label">Dimensión</label>
+                    <div class="form-control-wrap">
+                      <select v-model="formData.dimension" class="input-AA" name="dimension"
+                        ria-label="Default select example">
+                        <option v-for="rol in dimentions" :value="rol.dim_dimension" :key="rol.id">{{ rol.dim_dimension }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
                 <!-- cambiar clases del boton -->
                 <div class="flex justify-center mt-4">
@@ -190,15 +240,21 @@ export default defineComponent({
 
 .input-AB {
   width: 425px;
-    height: 100px; /* Altura ajustable según tus preferencias */
-    border: 1px solid #d2d2d2;
-    border-radius: 10px;
-    outline: none;
-    padding: 10px 12px; /* Puedes ajustar el relleno según lo necesites */
-    resize: vertical; /* Permite redimensionar verticalmente */
-    font-family: Arial, sans-serif; /* Cambia la familia de fuente según lo desees */
-    font-size: 18px; /* Tamaño de fuente ajustable */
-    line-height: 1.5; /* Altura de línea ajustable */
+  height: 100px;
+  /* Altura ajustable según tus preferencias */
+  border: 1px solid #d2d2d2;
+  border-radius: 10px;
+  outline: none;
+  padding: 10px 12px;
+  /* Puedes ajustar el relleno según lo necesites */
+  resize: vertical;
+  /* Permite redimensionar verticalmente */
+  font-family: Arial, sans-serif;
+  /* Cambia la familia de fuente según lo desees */
+  font-size: 18px;
+  /* Tamaño de fuente ajustable */
+  line-height: 1.5;
+  /* Altura de línea ajustable */
 }
 
 .poe {

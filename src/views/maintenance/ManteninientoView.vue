@@ -137,6 +137,7 @@ export default defineComponent({
       },
       { data: "pre_aplica_para", title: "Aplica para" },
       { data: "riesgo", title: "Riesgo" },
+      { data: "dimension", title: "Dimensión" },
       {
         title: "Acciones",
         orderable: false,

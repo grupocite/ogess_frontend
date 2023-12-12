@@ -34,6 +34,9 @@ export default defineComponent({
     const personas = ref([])
     const familias = ref([])
 
+    const mostrarCampo = ref(false); // Variable reactiva para controlar la visibilidad
+    const campoBloqueado = ref(false); // Variable para controlar si el campo está bloqueado
+    const botonDeshabilitado = ref(true); // Variable para controlar si el botón está deshabilitado
 
     const direccionExacta = ref('');
     const referencia = ref('');
@@ -672,7 +675,6 @@ export default defineComponent({
 
     const limpiarCamposPersona = () => {
       // LIMPIAR CAMPOS
-      familia.value = ''
       nombres.value = ''
       apellidos.value = ''
       fechaNacimiento.value = ''
@@ -2970,9 +2972,10 @@ export default defineComponent({
 
         if (response.status === 201) {
           ElMessage.success(response.data.message)
+
           setTimeout(() => {
             window.location.reload();
-          }, 4000);
+          }, 1000);
         } else {
           ElMessage.error('Ocurrió un error inesperado. Inténtalo de nuevo más tarde.')
         }
@@ -3558,7 +3561,12 @@ export default defineComponent({
 
         if (response.status === 200) {
           idFamilia.value = response.data.id_familia;
+          const { fam_nombre_familia } = response.data;
+          familia.value = `Familia: ${fam_nombre_familia}`; // Formatear y asignar el valor
           obtenerInformacionEdad()
+          mostrarCampo.value = true;
+          campoBloqueado.value = true; // Bloquear el campo de entrada
+          botonDeshabilitado.value = false; // Deshabilitar el botón después de obtener el nombre de la familia
           console.log('ID de la familia:', idFamilia.value);
         }
       } catch (error) {
@@ -3635,6 +3643,7 @@ export default defineComponent({
     })
 
     onMounted(async () => {
+      obtenerFamiliaPorUuid()
       capturarValor();
       getRedesSalud();
       getProvincias();
@@ -3645,7 +3654,6 @@ export default defineComponent({
       fetchSeguroSalud()
       fetchData()
       fetchPersons()
-      obtenerFamiliaPorUuid()
       fetchFamilies()
     })
 
@@ -3986,6 +3994,9 @@ export default defineComponent({
       filteredFamilies,
       seguroSalud,
       searchDNI,
+      mostrarCampo,
+      campoBloqueado,
+      botonDeshabilitado,
       valorInput,
       nombreFamilia,
       niños_0_11,
@@ -4134,13 +4145,13 @@ export default defineComponent({
               <div class="row">
                 <div class="col-md-3">
                   <div class="input-group mb-3">
-                    <input v-model="familia" type="text" class="form-control" placeholder="Nueva Familia" />
-                    <button type="button" class="btn btn-primary" @click="saveFamily">
+                    <input v-model="familia" type="text" class="form-control" placeholder="Nueva Familia" :disabled="campoBloqueado"/>
+                    <button v-if="botonDeshabilitado" type="button" class="btn btn-primary" @click="saveFamily" >
                       <i class="fa fa-save"></i> Guardar
                     </button>
                   </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3"  v-if="mostrarCampo">
                   <div class="input-group">
                     <input type="text" class="form-control" placeholder="DNI" v-model="searchDNI" />
                     <div class="input-group-append">
@@ -4152,14 +4163,14 @@ export default defineComponent({
                   </div>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-2" v-if="mostrarCampo">
                   <input type="date" class="form-control" placeholder="Fecha de nacimiento" v-model="fechaNacimiento"
                     @input="calcularEdad" />
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2" v-if="mostrarCampo">
                   <input disabled type="number" class="form-control" placeholder="Edad" v-model="edad" />
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2" v-if="mostrarCampo">
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="gridCheck" v-model="jefeFamilia"
                       @change="onCheckboxChange" />
@@ -4168,16 +4179,14 @@ export default defineComponent({
                 </div>
               </div>
 
-              <div class="row mt-3">
-                <div class="col-md-6">
+              <div class="row mt-3" v-if="mostrarCampo">
+                <div class="col-md-4">
                   <input type="text" class="form-control" placeholder="Nombres" v-model="nombres" />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <input type="text" class="form-control" placeholder="Apellidos" v-model="apellidos" />
                 </div>
-
-                <label>Sexo</label>
-                <div class="col-md-6 mt 3">
+                <div class="col-md-4 mt 3">
                   <div class="custom-control custom-radio custom-control-inline">
                     <input type="radio" id="customRadioInline1" name="selectedSexo" value="Masculino"
                       class="custom-control-input">
@@ -4189,13 +4198,14 @@ export default defineComponent({
                     <label class="custom-control-label" for="customRadioInline2">Femenino</label>
                   </div>
                 </div>
+              
 
 
               </div>
 
-              <div class="row mt-3">
+              <div class="row mt-3" v-if="mostrarCampo">
                 <div class="row">
-                  <div class="form-group col-md-6 mt-3">
+                  <div class="form-group col-md-4 mt-3">
                     <label for="exampleFormControlSelect1">Ocupación</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
@@ -4205,16 +4215,22 @@ export default defineComponent({
                       </div>
                       <input v-model="searchTerm" class="form-control" placeholder="Buscar ocupación" />
                     </div>
-                    <select class="form-select mt-3 ocupacion-select" v-model="selectedOcupacion">
+        
+                  </div>
+                  
+                  <div class="form-group col-md-4 mt-4" v-if="mostrarCampo">
+                    <div class=" mt-3">
+                      <select class="form-select mt-3 ocupacion-select" v-model="selectedOcupacion">
                       <option value="">Selecciona una ocupación</option>
                       <option v-for="occupation in filteredOccupations" :key="occupation.id" :value="occupation.id">
                         {{ occupation.ocup_nombre }}
                       </option>
                     </select>
+                    </div>
                   </div>
 
-                  <div class="form-group col-md-4 mt-3">
-                    <div class="d-flex align-items-center mt-3">
+                  <div class="form-group col-md-4 mt-4" v-if="mostrarCampo">
+                    <div class=" mt-3">
                       <span class="mr-2 ml-3">Crear nuevo</span>
                       <!-- Agregamos ml-3 para margen izquierdo -->
                       <button class="btn btn-primary" @click.prevent="openAddOccupationModal">
@@ -4224,7 +4240,7 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
-                <div class="mt-3 col-md-4">
+                <div class="mt-3 col-md-3">
                   <label for="selectEstadoCivil">Estado</label>
                   <select class="form-select estadoCivil-select" id="selectEstadoCivil" v-model="selectedEstado">
                     <option v-for="estado in estadoCivil.data" :key="estado.id" :value="estado.id">
@@ -4233,7 +4249,7 @@ export default defineComponent({
                   </select>
                 </div>
 
-                <div class="mt-3 col-md-4">
+                <div class="mt-3 col-md-3">
                   <label for="exampleFormControlSelect1">Grado de instrucción</label>
                   <select class="form-select gradoInstruccion-select" id="exampleFormControlSelect1"
                     v-model="selectedGradoInstruccion">
@@ -4242,11 +4258,8 @@ export default defineComponent({
                     </option>
                   </select>
                 </div>
-              </div>
 
-              <div class="form-group"></div>
-              <div class="row mt-3">
-                <div class="mt-3 col-md-4">
+                <div class="mt-3 col-md-3">
                   <label for="exampleFormControlSelect1">Religion</label>
                   <select class="form-select religion-select" id="exampleFormControlSelect1" v-model="selectedReligion">
                     <option v-for="religion2 in religion.data" :key="religion2.id" :value="religion2.id">
@@ -4254,7 +4267,8 @@ export default defineComponent({
                     </option>
                   </select>
                 </div>
-                <div class="mt-3 col-md-4">
+
+                <div class="mt-3 col-md-3">
                   <label for="exampleFormControlSelect1">Seguro</label>
                   <select class="form-select seguroSalud-select" id="exampleFormControlSelect1" v-model="selectedSeguro">
                     <option v-for="estado in seguroSalud.data" :key="estado.id" :value="estado.id">
@@ -4262,12 +4276,14 @@ export default defineComponent({
                     </option>
                   </select>
                 </div>
+
               </div>
+
 
               <div class="mt-3 col-md-4"></div>
 
               <div class="button-container" v-if="!isPersonaEdit">
-                <button class="btn btn-primary" @click.prevent="guardarDatos">
+                <button class="btn btn-primary" v-if="mostrarCampo" @click.prevent="guardarDatos">
                   <i class="fa fa-plus"></i> Nuevo registro
                 </button>
               </div>

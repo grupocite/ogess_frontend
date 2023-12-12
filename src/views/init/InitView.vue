@@ -69,7 +69,6 @@ export default defineComponent({
     const users = ref<Array<Advisor>>([]);
 
     const router = useRouter();
-    const route = router.currentRoute;
 
     const formData = ref({});
 
@@ -327,7 +326,6 @@ export default defineComponent({
       columns,
       agregarCenso,
       searchText,
-      route,
       dataTableOptions,
       filteredData,
       openModal,

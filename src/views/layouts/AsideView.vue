@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/stores/auth';
 import { useNavTitle } from '@/stores/navtitle';
@@ -11,14 +11,28 @@ export default defineComponent({
         const router = useRouter();
         const navTitle = useNavTitle();
 
+
+
         const handleLogout = () => {
             useAuth().logout();
             router.push("/login");
         }
 
         const handleModuleSelect = (name: string) => {
-            navTitle.updateTitle(name);
+            navTitle.updateTitle(name); // Actualiza el título
+
+            
+
+            // Espera un segundo antes de recargar la página
+            setTimeout(() => {
+                window.location.reload();
+            }, 10); // 350 milisegundos
         };
+
+
+
+        onMounted(() => {
+        });
 
         return {
             handleLogout,
@@ -30,6 +44,8 @@ export default defineComponent({
 </script>
 
 <template>
+    <div class="loading-spinner"></div>
+
     <div class="nk-apps-sidebar is-theme">
         <div class="nk-apps-brand">
             <RouterLink to="/" class="logo-link">
@@ -41,13 +57,13 @@ export default defineComponent({
                 <div class="nk-sidebar-content" data-simplebar>
                     <div class="nk-sidebar-menu">
                         <ul class="nk-menu apps-menu">
-                            <li class="nk-menu-item"  v-show="hasPermissionTo(['dashboard'])">
+                            <li class="nk-menu-item" v-show="hasPermissionTo(['dashboard'])">
                                 <RouterLink to="/" class="nk-menu-link" :class="{ 'active-side-item': $route.path === '/' }"
                                     @click="handleModuleSelect('Visión general')" title="Inicio">
                                     <span class="nk-menu-icon"><em class="icon ni ni-home icon-side"></em></span>
                                 </RouterLink>
                             </li>
-  
+
                             <li class="nk-menu-item">
                                 <RouterLink to="/desktop" class="nk-menu-link"
                                     :class="{ 'active-side-item': $route.path === '/desktop' }"
@@ -56,10 +72,10 @@ export default defineComponent({
                                 </RouterLink>
                             </li>
 
-                            <li class="nk-menu-item">
+                            <li class="nk-menu-item" v-show="hasPermissionTo(['reports'])">
                                 <RouterLink to="/mantenimiento" class="nk-menu-link"
                                     :class="{ 'active-side-item': $route.path === '/mantenimiento' }"
-                                    @click="handleModuleSelect('Informes')" title="Informes">
+                                    @click="handleModuleSelect('Mantenimiento')" title="Mantenimiento">
                                     <span class="nk-menu-icon"><em class="icon ni ni-brick-fill icon-side"></em></span>
                                 </RouterLink>
                             </li>
@@ -72,8 +88,8 @@ export default defineComponent({
                                 </RouterLink>
                             </li>
 
-                            
-                            
+
+
                             <li class="nk-menu-item" v-show="hasPermissionTo(['users'])">
                                 <RouterLink to="/equipo" class="nk-menu-link"
                                     :class="{ 'active-side-item': $route.path === '/equipo' }"
@@ -132,4 +148,23 @@ export default defineComponent({
     .nk-apps-sidebar {
         width: 60px;
     }
-}</style>
+}
+
+
+/* Estilos para el contenedor de la animación de carga */
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #000;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+/* Estilos para la animación de rotación */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+</style>
