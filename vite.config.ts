@@ -6,7 +6,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/ogess_frontend/',
+  base: '/',
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
