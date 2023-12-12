@@ -243,7 +243,7 @@ export default defineComponent({
           legend: { show: false },
           chart: { height: 550, type: 'treemap' },
           title: {
-            text: 'Cantidad de Riesgos por Familia',
+            text: 'Cantidad familias por tipo de Riesgo',
             align: 'center',
             style: {
               fontSize: '20px',
@@ -260,7 +260,7 @@ export default defineComponent({
             shared: false,
             y: {
               formatter: function (val) {
-                return "Total Riesgos: " + val;
+                return "Total Familias: " + val;
               },
             },
           },
@@ -1021,7 +1021,7 @@ const renderMyChart3 = async () => {
 
     const options = {
       series: [{
-        name: "Total de Riesgos",
+        name: "Total de Familias",
         data: series // Establecer la serie de datos
       }],
       chart: {
@@ -1074,7 +1074,7 @@ const renderMyChart3 = async () => {
         show: false, // No mostrar la leyenda en este caso (opcional)
       },
       title: {
-        text: 'Cantidad de Riesgos por Etapa Adolescente',
+        text: 'Cantidad de Familias por Riesgos en la Etapa Adolescente',
         align: 'center',
         style: {
           fontSize: '20px',
@@ -1115,7 +1115,7 @@ const renderMyChart4 = async () => {
 
     const options = {
       series: [{
-        name: "Total de Riesgos",
+        name: "Total de Familias",
         data: series // Establecer la serie de datos
       }],
       chart: {
@@ -1168,7 +1168,7 @@ const renderMyChart4 = async () => {
         show: false, // No mostrar la leyenda en este caso (opcional)
       },
       title: {
-        text: 'Cantidad de Riesgos por Etapa Joven',
+        text: 'Cantidad de Familias por Riesgos en la Etapa Joven',
         align: 'center',
         style: {
           fontSize: '20px',
@@ -1209,7 +1209,7 @@ const renderMyChart5 = async () => {
 
     const options = {
       series: [{
-        name: "Total de Riesgos",
+        name: "Total de Familias",
         data: series // Establecer la serie de datos
       }],
       chart: {
@@ -1262,7 +1262,7 @@ const renderMyChart5 = async () => {
         show: false, // No mostrar la leyenda en este caso (opcional)
       },
       title: {
-        text: 'Cantidad de Riesgos por Etapa Adulto',
+        text: 'Cantidad de Familias por Riesgos en la Etapa Adulto',
         align: 'center',
         style: {
           fontSize: '20px',
@@ -1304,7 +1304,7 @@ const renderMyChart6 = async () => {
 
     const options = {
       series: [{
-        name: "Total de Riesgos",
+        name: "Total de Familias",
         data: series // Establecer la serie de datos
       }],
       chart: {
@@ -1357,7 +1357,7 @@ const renderMyChart6 = async () => {
         show: false, // No mostrar la leyenda en este caso (opcional)
       },
       title: {
-        text: 'Cantidad de Riesgos por Etapa Adulto Mayor',
+        text: 'Cantidad de Familias por Riesgos en la Etapa Adulto Mayor',
         align: 'center',
         style: {
           fontSize: '20px',

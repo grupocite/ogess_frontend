@@ -3564,6 +3564,7 @@ export default defineComponent({
           const { fam_nombre_familia } = response.data;
           familia.value = `Familia: ${fam_nombre_familia}`; // Formatear y asignar el valor
           obtenerInformacionEdad()
+          fetchFamilies()
           mostrarCampo.value = true;
           campoBloqueado.value = true; // Bloquear el campo de entrada
           botonDeshabilitado.value = false; // Deshabilitar el botón después de obtener el nombre de la familia
@@ -3639,8 +3640,25 @@ export default defineComponent({
     watch([searchTerm, searchTerm2, searchTerm3], () => {
       fetchData()
       fetchPersons()
-      fetchFamilies()
     })
+
+    watch(nombres, (newValue) => {
+      nombres.value = newValue.toUpperCase();
+    });
+
+    watch(apellidos, (newValue) => {
+      apellidos.value = newValue.toUpperCase();
+    });
+    
+
+    watch(filteredOccupations, () => {
+  if (filteredOccupations.value.length > 0) {
+    // Forzar la actualización del select
+    selectedOcupacion.value = filteredOccupations.value[0].id as string | number;
+  } else {
+    selectedOcupacion.value = ''; // O cualquier valor predeterminado que sea aceptable para tu caso
+  }
+});
 
     onMounted(async () => {
       obtenerFamiliaPorUuid()
@@ -4181,7 +4199,7 @@ export default defineComponent({
 
               <div class="row mt-3" v-if="mostrarCampo">
                 <div class="col-md-4">
-                  <input type="text" class="form-control" placeholder="Nombres" v-model="nombres" />
+                  <input type="text" class="form-control" placeholder="Nombres" v-model="nombres"    />
                 </div>
                 <div class="col-md-4">
                   <input type="text" class="form-control" placeholder="Apellidos" v-model="apellidos" />
@@ -4220,8 +4238,7 @@ export default defineComponent({
                   
                   <div class="form-group col-md-4 mt-4" v-if="mostrarCampo">
                     <div class=" mt-3">
-                      <select class="form-select mt-3 ocupacion-select" v-model="selectedOcupacion">
-                      <option value="">Selecciona una ocupación</option>
+                      <select class="form-select mt-3 ocupacion-select" v-model="selectedOcupacion" disabled>
                       <option v-for="occupation in filteredOccupations" :key="occupation.id" :value="occupation.id">
                         {{ occupation.ocup_nombre }}
                       </option>
@@ -4240,7 +4257,7 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
-                <div class="mt-3 col-md-3">
+                <div class="mt-3 col-md-3" v-if="mostrarCampo">
                   <label for="selectEstadoCivil">Estado</label>
                   <select class="form-select estadoCivil-select" id="selectEstadoCivil" v-model="selectedEstado">
                     <option v-for="estado in estadoCivil.data" :key="estado.id" :value="estado.id">
@@ -4249,7 +4266,7 @@ export default defineComponent({
                   </select>
                 </div>
 
-                <div class="mt-3 col-md-3">
+                <div class="mt-3 col-md-3" v-if="mostrarCampo">
                   <label for="exampleFormControlSelect1">Grado de instrucción</label>
                   <select class="form-select gradoInstruccion-select" id="exampleFormControlSelect1"
                     v-model="selectedGradoInstruccion">
@@ -4259,7 +4276,7 @@ export default defineComponent({
                   </select>
                 </div>
 
-                <div class="mt-3 col-md-3">
+                <div class="mt-3 col-md-3" v-if="mostrarCampo">
                   <label for="exampleFormControlSelect1">Religion</label>
                   <select class="form-select religion-select" id="exampleFormControlSelect1" v-model="selectedReligion">
                     <option v-for="religion2 in religion.data" :key="religion2.id" :value="religion2.id">
@@ -4268,7 +4285,7 @@ export default defineComponent({
                   </select>
                 </div>
 
-                <div class="mt-3 col-md-3">
+                <div class="mt-3 col-md-3" v-if="mostrarCampo">
                   <label for="exampleFormControlSelect1">Seguro</label>
                   <select class="form-select seguroSalud-select" id="exampleFormControlSelect1" v-model="selectedSeguro">
                     <option v-for="estado in seguroSalud.data" :key="estado.id" :value="estado.id">
@@ -4280,9 +4297,7 @@ export default defineComponent({
               </div>
 
 
-              <div class="mt-3 col-md-4"></div>
-
-              <div class="button-container" v-if="!isPersonaEdit">
+              <div class="button-container mt-4" v-if="!isPersonaEdit">
                 <button class="btn btn-primary" v-if="mostrarCampo" @click.prevent="guardarDatos">
                   <i class="fa fa-plus"></i> Nuevo registro
                 </button>
