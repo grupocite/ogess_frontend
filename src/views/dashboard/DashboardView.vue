@@ -342,7 +342,7 @@ export default defineComponent({
     const showBlock = ref(1)
     const valorInput = ref('') // Inicializar la variable con un valor por defecto
 
-    const porcentajeAvance = ref(null);
+    const porcentajeAvance = ref(0);
     const totalPreguntasRespondidas = ref(null);
 
     const getRedesSalud = async () => {
@@ -831,15 +831,15 @@ export default defineComponent({
             },
             '3': {
               respuesta: selectedQuestion2,
-              detalle: selectedQuestion3
+              detalle: selectedQuestion3 ?? null
             },
             '4': {
               respuesta: selectedQuestion4,
-              detalle: detallexQuestion4
+              detalle: detallexQuestion4 ?? null
             },
             '5': {
               respuesta: selectedQuestion5,
-              detalle: detallexQuestion5
+              detalle: detallexQuestion5 ?? null
             },
             '6': {
               respuesta: selectedQuestion6,
@@ -911,7 +911,7 @@ export default defineComponent({
             },
             '23': {
               respuesta: selectedQuestion23,
-              detalle: detallexQuestion23
+              detalle: detallexQuestion23 ?? null
             },
             '24': {
               respuesta: selectedQuestion24,
@@ -3483,7 +3483,7 @@ export default defineComponent({
       chart: {
         height: 190,
         type: 'radialBar',
-        offsetY: -9
+        offsetY: -0
       },
       plotOptions: {
         radialBar: {
@@ -3493,10 +3493,10 @@ export default defineComponent({
             name: {
               fontSize: '16px',
               color: undefined,
-              offsetY: 120
+              offsetY: -70
             },
             value: {
-              offsetY: 76,
+              offsetY: 50,
               fontSize: '22px',
               color: undefined,
               formatter: function (val) {
@@ -3521,8 +3521,8 @@ export default defineComponent({
         dashArray: 4
       },
       labels: ['Porcentaje de avance'],
-      series: [0], // Inicializar con un valor de 0%
-    });
+      series: [0], // Inicializar con un valor de 0%
+    });
 
 
 
@@ -3588,7 +3588,7 @@ export default defineComponent({
         porcentajeAvance.value = data.porcentaje_avance;
         totalPreguntasRespondidas.value = data.totalPreguntasRespondidas;
 
-        chartOptions.value.series = [porcentajeAvance.value];
+        chartOptions.value.series = [porcentajeAvance.value.toFixed(2)];
 
 
         ElMessage.success('Cálculo del porcentaje de avance exitoso');
@@ -3685,6 +3685,7 @@ export default defineComponent({
             ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
           }
         );
+        chartOptions.value.series=[100];
         // Manejo de la respuesta
         console.log(response.data);
 
@@ -3696,7 +3697,7 @@ export default defineComponent({
 
           setTimeout(() => {
             router.push('/desktop'); // Reemplaza '/nueva-ruta' con la ruta a la que quieras redireccionar
-          }, 1000);
+          }, 5000);
 
 
         }
@@ -4058,7 +4059,7 @@ export default defineComponent({
 
 <template>
   <div class="container-fluid mt-5">
-    <div class="row mt-5">
+    <div class="row ">
       <div class="col-sm-9">
         <div class="card">
           <div class="card-body">
@@ -4085,20 +4086,20 @@ export default defineComponent({
               <!-- Aquí agregamos los botones -->
 
 
-              <div class="col-md-4">
+              <div class="col-md-4 mt-3">
                 <select class="form-select" v-model="selectedRedSalud" @change="getMicroRedes">
                   <option value="">Selecciona una red de salud</option>
                   <option v-for="red in redesSalud" :key="red.id" :value="red.id">{{ red.name }}</option>
                 </select>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-3 mt-3">
                 <select class="form-select" v-model="selectedMicroRed" @change="getEstablecimientosSalud">
                   <option value="">Selecciona una micro red</option>
                   <option v-for="microRed in microRedes" :key="microRed.id" :value="microRed.id">{{ microRed.name }}
                   </option>
                 </select>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-4 mt-3">
                 <select class="form-select" v-model="selectedEstablecimiento" @change="getSectores">
                   <option value="">Selecciona un establecimiento de salud</option>
                   <option v-for="establecimiento in establecimientos" :key="establecimiento.id"
@@ -4107,7 +4108,7 @@ export default defineComponent({
                 </select>
               </div>
 
-              <div class="col-md-2 mt-2">
+              <div class="col-md-2 mt-4">
                 <button @click="guardarDetalle" class="btn btn-primary btn-sm mb-3">Guardar Detalle</button>
               </div>
 

@@ -34114,14 +34114,12 @@ body.nav-shown {
     outline: none
 }
 
-.nk-main {
-    position: relative
-}
+
 
 .nk-wrap {
     display: flex;
     flex-direction: column;
-    min-height: 100vh
+    min-height: 80vh
 }
 
 .nk-content {
@@ -34815,7 +34813,7 @@ body.nav-shown {
 }
 
 .has-sidebar .nk-wrap {
-    padding-top: 65px
+    padding-top: 45px
 }
 
 @media(max-width: 991.98px) {

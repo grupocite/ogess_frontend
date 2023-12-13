@@ -15,7 +15,7 @@ const changeTab = (tabId: any) => {
 </script>
 
 <template>
-    <div class="nk-content">
+    <div class="nk-content mt-1">
         <div class="container-fluid">
             <div class="d-flex">
                 <li class="nav-item" :class="{ 'activeTab': activeTab === 'tabItem1' }" @click="changeTab('tabItem1')" v-show="hasPermissionTo(['role.list'])">
