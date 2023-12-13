@@ -3473,7 +3473,6 @@ export default defineComponent({
 
         personasPuerperaOfTheFamily.value = responseFemeninoPuerpera.data.data
 
-        console.log(personasIntegrantesOfTheFamily.value)
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
@@ -5972,13 +5971,7 @@ export default defineComponent({
                                       Alergia a medicamentos
                                     </label>
                                   </div>
-                                  <div class="row justify-content-end mt-3">
-                                    <div class="col-1">
-                                      <button type="button" @click="saveOtrosRiesgos" class="btn btn-success">
-                                        Guardar
-                                      </button>
-                                    </div>
-                                  </div>
+               
                                   <p></p>
 
                                   <div style="text-align: center">
