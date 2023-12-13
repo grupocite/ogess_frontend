@@ -4570,7 +4570,6 @@ export default defineComponent({
 
         personasPuerperaOfTheFamily.value = responseFemeninoPuerpera.data.data
 
-        console.log(personasIntegrantesOfTheFamily.value)
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
