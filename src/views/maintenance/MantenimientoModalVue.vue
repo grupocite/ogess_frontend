@@ -146,37 +146,37 @@ export default defineComponent({
                   <div class="form-group">
                     <label class="form-label" for="default-01">Pregunta</label>
                     <div class="form-control-wrap">
-                      <textarea v-model="formData.pre_pregunta" type="text" class="input-AB" name="name"
+                      <textarea v-model="formData.pre_pregunta" type="text" class="form-control" name="name"
                         placeholder=""></textarea>
                     </div>
                   </div>
-                </div>
-                <div class="col-md-12 mt-4">
-                  <div class="form-group">
-                    <label class="form-label" for="default-01">Pregunta aplica para</label>
-                    <div class="form-control-wrap">
-                      <input v-model="formData.pre_aplica_para" type="text" class="input-AA" name="last_name"
-                        placeholder="">
-                    </div>
-                  </div>
+                 </div>
+                <div class="col-md-12 mt-2">
+                 <div class="form-group">
+                  <label class="form-label" for="default-01">Pregunta aplica para</label>
+               <div class="form-control-wrap">
+                <input v-model="formData.pre_aplica_para" type="text" class="form-control " name="last_name" placeholder="">
+                 </div>
+               </div>
                 </div>
 
+
                 <div class="col-md-12 mt-2">
-                  <div class="form-group">
-                    <label class="form-label">Riesgo</label>
-                    <div class="form-control-wrap">
-                      <select v-model="formData.riesgo" class="input-AA" name="riesgo" ria-label="Default select example">
-                        <option v-for="rol in roles" :value="rol.rgos_riesgo" :key="rol.id">{{ rol.rgos_riesgo }}</option>
-                      </select>
-                    </div>
-                  </div>
+                <div class="form-group">
+                <label class="form-label">Riesgo</label>
+                <div class="form-control-wrap">
+                <select v-model="formData.riesgo" class="form-select form-select" name="riesgo" aria-label="Default select example">
+                <option v-for="rol in roles" :value="rol.rgos_riesgo" :key="rol.id">{{ rol.rgos_riesgo }}</option>
+                 </select>
+                </div>
+                </div>
                 </div>
 
                 <div class="col-md-12 mt-2">
                   <div class="form-group">
                     <label class="form-label">Dimensión</label>
                     <div class="form-control-wrap">
-                      <select v-model="formData.dimension" class="input-AA" name="dimension"
+                      <select v-model="formData.dimension" class="form-select form-select" name="dimension"
                         ria-label="Default select example">
                         <option v-for="rol in dimentions" :value="rol.dim_dimension" :key="rol.id">{{ rol.dim_dimension }}
                         </option>

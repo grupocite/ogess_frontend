@@ -1603,7 +1603,7 @@ const renderMyChart6 = async () => {
 </script>
 
 <template>
-  <div class="nk-content">
+  <div class="nk-content mt-3">
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-6">

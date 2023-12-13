@@ -1,5 +1,5 @@
 <template>
-  <div class="nk-content">
+  <div class="nk-content mt-1">
     <div class="container-fluid">
       <div class="nk-content-inner">
         <div class="nk-content-body">
@@ -77,25 +77,15 @@ export default defineComponent({
 
     const { user } = useAuth();
 
-    function generarCorrelativo(index) {
-      const prefix = 'FF-';
-      const paddedIndex = String(index + 1).padStart(3, '0'); // Se asume que index empieza desde 0
 
-      return prefix + paddedIndex;
-    }
 
 
     const columns: ConfigColumns[] = [
       {
-        data: "censo_id",
-        title: "#",
-        render: function (data, type, row, meta) {
-          if (type === 'display') {
-            const index = meta.row; // Obtiene el índice de la fila
-            return generarCorrelativo(index);
-          }
-          return data;
-        }
+        data: "correlativo",
+        title: "#"
+
+  
       },
       { data: "familia", title: "Familia" },
 
@@ -138,7 +128,7 @@ export default defineComponent({
         data: "porcentaje_avance",
         title: "% de avance",
         render: (data: string, type: string, row: any) => {
-          const porcentaje = parseFloat(data);
+          const porcentaje = parseFloat(data || '0');
           let barraPorcentaje = '';
 
           if (porcentaje === 100) {
@@ -196,6 +186,7 @@ export default defineComponent({
           last: "Último",
         },
       },
+      order: [[3, 'desc']], // Aquí ordenas por la columna 3 (índice 3), que corresponde a cens_fecha_inicio, de manera descendente
     };
 
     const fetchContacts = async () => {
