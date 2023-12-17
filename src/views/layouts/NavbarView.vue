@@ -1,39 +1,37 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuth } from "@/stores/auth";
-import { useNavTitle } from "@/stores/navtitle";
-import { usePermissionsStore } from "@/stores/permissions";
+import { defineComponent, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuth } from '@/stores/auth'
+import { useNavTitle } from '@/stores/navtitle'
+import { usePermissionsStore } from '@/stores/permissions'
 
 export default defineComponent({
   setup() {
-    const hasPermissionTo = usePermissionsStore().hasPermissionTo;
-    const { user } = useAuth();
-    const router = useRouter();
-    const useTitle = useNavTitle();
+    const hasPermissionTo = usePermissionsStore().hasPermissionTo
+    const { user } = useAuth()
+    const router = useRouter()
+    const useTitle = useNavTitle()
 
     const handleLogout = () => {
-      useAuth().logout();
-      router.push("/login");
-    };
+      useAuth().logout()
+      router.push('/login')
+    }
 
     const handleModuleSelect = (name: string) => {
-      useTitle.updateTitle(name);
-    };
+      useTitle.updateTitle(name)
+    }
 
-    onMounted(async () => {
-    
-    });
+    onMounted(async () => {})
     return {
       user,
       handleLogout,
       handleModuleSelect,
       useTitle,
 
-      hasPermissionTo,
-    };
-  },
-});
+      hasPermissionTo
+    }
+  }
+})
 </script>
 
 <template>
@@ -49,58 +47,102 @@ export default defineComponent({
         </div>
         <div class="nk-header-tools">
           <ul class="nk-quick-nav">
- 
-
-            <li class="dropdown list-apps-dropdown d-lg-none">
-              <a
-                href="#"
-                class="dropdown-toggle nk-quick-nav-icon"
-                data-bs-toggle="dropdown"
-              >
+            <li class="dropdown d-lg-none">
+              <a href="#" class="dropdown-toggle nk-quick-nav-icon" data-bs-toggle="dropdown">
                 <div class="icon-status icon-status-na">
                   <em class="icon ni ni-menu-circled"></em>
                 </div>
               </a>
-              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <div class="dropdown-body">
-                  <ul class="list-apps">
-                    <li v-show="hasPermissionTo(['dashboard'])">
-                      <RouterLink
-                        to="/"
-                        @click="handleModuleSelect('Visión general')"
-                      >
-                        <span class="list-apps-media"
-                          ><em class="icon ni ni-home icon-side"></em
-                        ></span>
-                        <span class="list-apps-title"
-                          >Visión general</span
-                        ></RouterLink
-                      >
-                    </li>
 
-      
-                    <li>
-                      <a href="#" v-show="hasPermissionTo(['users'])">
-                        <span class="list-apps-media"
-                          ><em
-                            class="icon ni ni-user-add-fill bg-purple-dim"
-                          ></em
-                        ></span>
-                        <span class="list-apps-title">Equipo</span></a
-                      >
-                    </li>
-
-                  </ul>
-                </div>
+              <div class="dropdown-menu dropdown-menu-lg">
+                <RouterLink
+                  v-if="hasPermissionTo(['dashboard'])"
+                  to="/"
+                  class="dropdown-item d-flex align-items-center justify-content-between"
+                  :class="{ active: $route.path === '/' }"
+                  @click="handleModuleSelect('Visión general')"
+                >
+                  <div class="col-4">
+                    <span class="list-apps-media">
+                      <i class="icon ni ni-home icon-side" />
+                    </span>
+                  </div>
+                  <div class="col-8">
+                    <span class="list-apps-title">Inicio</span>
+                  </div>
+                </RouterLink>
+                <RouterLink
+                  to="/desktop"
+                  class="dropdown-item d-flex align-items-center justify-content-between"
+                  :class="{ active: $route.path === '/desktop' }"
+                  @click="handleModuleSelect('Informes')"
+                  title="Informes"
+                >
+                  <div class="col-4">
+                    <span class="list-apps-media">
+                      <i class="icon ni ni-file-text icon-side" />
+                    </span>
+                  </div>
+                  <div class="col-8 text-left">
+                    <span class="list-apps-title">Informes</span>
+                  </div>
+                </RouterLink>
+                <RouterLink
+                  v-if="hasPermissionTo(['reports'])"
+                  to="/mantenimiento"
+                  class="dropdown-item d-flex align-items-center justify-content-between"
+                  :class="{ active: $route.path === '/mantenimiento' }"
+                  @click="handleModuleSelect('Mantenimiento')"
+                  title="Mantenimiento"
+                >
+                  <div class="col-4">
+                    <span class="list-apps-media">
+                      <i class="icon ni ni-brick-fill" />
+                    </span>
+                  </div>
+                  <div class="col-8 text-le ft">
+                    <span class="list-apps-title">Mantenimiento</span>
+                  </div>
+                </RouterLink>
+                <RouterLink
+                  v-if="hasPermissionTo(['permissions'])"
+                  to="/role"
+                  class="dropdown-item d-flex align-items-center justify-content-between"
+                  :class="{ active: $route.path === '/role' }"
+                  @click="handleModuleSelect('Roles y permisos')"
+                  title="Roles y Permisos"
+                >
+                  <div class="col-4">
+                    <span class="list-apps-media">
+                      <i class="icon ni ni-security" />
+                    </span>
+                  </div>
+                  <div class="col-8 text-le ft">
+                    <span class="list-apps-title">Roles y Permisos </span>
+                  </div>
+                </RouterLink>
+                <RouterLink
+                  v-if="hasPermissionTo(['users'])"
+                  to="/equipo"
+                  class="dropdown-item d-flex align-items-center justify-content-between"
+                  :class="{ active: $route.path === '/equipo' }"
+                  @click="handleModuleSelect('Equipo')"
+                  title="Equipo"
+                >
+                  <div class="col-4">
+                    <span class="list-apps-media">
+                      <i class="icon ni ni-users" />
+                    </span>
+                  </div>
+                  <div class="col-8 text-le ft">
+                    <span class="list-apps-title">Equipo</span>
+                  </div>
+                </RouterLink>
               </div>
             </li>
             <strong>{{ user.email }}</strong>
             <li class="dropdown user-dropdown">
-              <a
-                href="#"
-                class="dropdown-toggle me-n1"
-                data-bs-toggle="dropdown"
-              >
+              <a href="#" class="dropdown-toggle me-n1" data-bs-toggle="dropdown">
                 <div class="user-toggle">
                   <div class="user-avatar sm icon-general">
                     <em class="icon ni ni-user-alt"></em>
@@ -109,9 +151,7 @@ export default defineComponent({
               </a>
 
               <div class="dropdown-menu dropdown-menu-md dropdown-menu-end">
-                <div
-                  class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block"
-                >
+                <div class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
                   <div class="user-card">
                     <div class="user-avatar icon-general"><span>JC</span></div>
                     <div class="user-info">
@@ -120,13 +160,12 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
-   
+
                 <div class="dropdown-inner">
                   <ul class="link-list">
                     <li>
                       <a href="javascript:void(0);" @click="handleLogout"
-                        ><em class="icon ni ni-signout"></em
-                        ><span>Salir</span></a
+                        ><em class="icon ni ni-signout"></em><span>Salir</span></a
                       >
                     </li>
                   </ul>
@@ -152,9 +191,6 @@ export default defineComponent({
 }
 
 .agendado-text {
-  font-weight: bold; 
+  font-weight: bold;
 }
-
-
-
 </style>

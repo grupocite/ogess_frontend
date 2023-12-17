@@ -1,5 +1,5 @@
 <template>
-  <div class="nk-content">
+  <div class="nk-content mt-1">
     <div class="container-fluid">
       <div class="nk-content-inner">
         <div class="nk-content-body">
@@ -137,6 +137,7 @@ export default defineComponent({
       },
       { data: "pre_aplica_para", title: "Aplica para" },
       { data: "riesgo", title: "Riesgo" },
+      { data: "dimension", title: "Dimensión" },
       {
         title: "Acciones",
         orderable: false,

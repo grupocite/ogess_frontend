@@ -33,7 +33,7 @@ export default defineComponent({
     const sectorId = ref(null); // Variable ref para almacenar el id del sector
 
 
-    const porcentajeAvance = ref(null);
+    const porcentajeAvance = ref(0);
     const totalPreguntasRespondidas = ref(null);
     const router = useRouter();
 
@@ -1483,15 +1483,15 @@ export default defineComponent({
             },
             '3': {
               respuesta: selectedQuestion2,
-              detalle: selectedQuestion3
+              detalle: selectedQuestion3 ?? null
             },
             '4': {
               respuesta: selectedQuestion4,
-              detalle: detallexQuestion4
+              detalle: detallexQuestion4 ?? null
             },
             '5': {
               respuesta: selectedQuestion5,
-              detalle: detallexQuestion5
+              detalle: detallexQuestion5 ?? null
             },
             '6': {
               respuesta: selectedQuestion6,
@@ -1563,7 +1563,7 @@ export default defineComponent({
             },
             '23': {
               respuesta: selectedQuestion23,
-              detalle: detallexQuestion23
+              detalle: detallexQuestion23 ?? null
             },
             '24': {
               respuesta: selectedQuestion24,
@@ -1580,7 +1580,7 @@ export default defineComponent({
           },
           familia_id: idFamilia.value,
           censo_uuid: uuidCenso.value
-        }
+        }
 
         console.log(data)
 
@@ -4570,7 +4570,6 @@ export default defineComponent({
 
         personasPuerperaOfTheFamily.value = responseFemeninoPuerpera.data.data
 
-        console.log(personasIntegrantesOfTheFamily.value)
       } catch (error) {
         console.error('Ocurrió un error inesperado:', error)
       }
@@ -4619,7 +4618,7 @@ export default defineComponent({
         porcentajeAvance.value = data.porcentaje_avance;
         totalPreguntasRespondidas.value = data.totalPreguntasRespondidas;
 
-        chartOptions.value.series = [porcentajeAvance.value];
+        chartOptions.value.series = [porcentajeAvance.value.toFixed(2)];
 
         ElMessage.success('Cálculo del porcentaje de avance exitoso');
 
@@ -4684,19 +4683,19 @@ export default defineComponent({
     })
 
     onMounted(async () => {
-      obtenerFamiliaPorId()
-      obtenerUUIDCenso()
-      fetchEstadoCivil()
-      fetchGradoInstruccion()
-      fetchReligion()
-      getRedesSalud();
-      fetchPreguntas()
-      fetchUniqueRoleData()
-      fetchSeguroSalud()
-      fetchData()
-      fetchPersons()
-      fetchFamilies()
-      fetchPorcentajeAvance()
+      await obtenerFamiliaPorId()
+      await obtenerUUIDCenso()
+      await fetchEstadoCivil()
+      await fetchGradoInstruccion()
+      await fetchReligion()
+      await getRedesSalud();
+      await fetchPreguntas()
+      await fetchUniqueRoleData()
+      await fetchSeguroSalud()
+      await fetchData()
+      await fetchPersons()
+      await fetchFamilies()
+      await fetchPorcentajeAvance()
       console.log(porcentajeAvance.value);
 
     })
@@ -4712,6 +4711,8 @@ export default defineComponent({
             ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
           }
         );
+        chartOptions.value.series = [100];
+
         // Manejo de la respuesta
         console.log(response.data);
 
@@ -5201,7 +5202,22 @@ export default defineComponent({
   <div class="container-fluid mt-5">
 
 
+
     <div class="row mt-5">
+      <div class="col-sm-9">
+        <div class="card">
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-md-4 mt-2">
+                <input :value="user.name + ' ' + user.last_name" type="text" class="form-control"
+                  placeholder="Encuestador" readonly disabled />
+              </div>
+              <div class="col-md-2 mt-2">
+                <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
+              </div>
+
+    <div class="row">
       <div class="col-sm-9">
         <div class="card">
           <div class="card-body">
@@ -5226,6 +5242,15 @@ export default defineComponent({
 
 
 
+              <div class="col-md-2 mt-2">
+                <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
+              </div>
+              <div class="col-md-2 mt-2">
+                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
+              </div>
+
+
+
 
 
 
@@ -5243,6 +5268,23 @@ export default defineComponent({
                 <label for="establecimientoSalud">Establecimiento de salud:</label>
                 <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
               </div>
+
+              <!-- Movemos los selectores a la misma fila que los botones -->
+
+
+              <div class="col-md-3 mt-5">
+                <label for="redSalud">Red de salud:</label>
+                <input disabled type="text" class="form-control" v-model="redSalud" id="redSalud">
+              </div>
+              <div class="col-md-3 mt-5">
+                <label for="microRed">Micro red:</label>
+                <input disabled type="text" class="form-control" v-model="microRed" id="microRed">
+              </div>
+              <div class="col-md-3 mt-5">
+                <label for="establecimientoSalud">Establecimiento de salud:</label>
+                <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
+              </div>
+
 
 
             </div>
@@ -5263,6 +5305,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
+
     </div>
 
 
@@ -5277,8 +5320,11 @@ export default defineComponent({
 
 
 
+
+    </div>
+
   </div>
-  <div class="card mt-5">
+  <div class="card ">
     <div class="card-body">
       <ul class="nav nav-tabs">
         <li class="nav-item">
