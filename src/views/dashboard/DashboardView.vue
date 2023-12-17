@@ -3480,7 +3480,7 @@ export default defineComponent({
       chart: {
         height: 190,
         type: 'radialBar',
-        offsetY: -170
+        offsetY: -0
       },
       plotOptions: {
         radialBar: {
@@ -3490,10 +3490,10 @@ export default defineComponent({
             name: {
               fontSize: '16px',
               color: undefined,
-              offsetY: 120
+              offsetY: -70
             },
             value: {
-              offsetY: 76,
+              offsetY: 50,
               fontSize: '22px',
               color: undefined,
               formatter: function (val) {
@@ -4029,84 +4029,86 @@ export default defineComponent({
 
 <template>
   <div class="container-fluid mt-5">
-    <div class="card mt-5">
-      <div class="card-body" style="height: 200px;">
-        <div class="row">
-          <div class="col-md-4">
-            <input :value="user.name + ' ' + user.last_name" type="text" class="form-control" placeholder="Encuestador"
-              readonly disabled />
-          </div>
-          <div class="col-md-2">
-            <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
-          </div>
 
-
-          <div class="col-md-1">
-            <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
-          </div>
-          <div class="col-md-1">
-            <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
-          </div>
-        </div>
-
-        <div class="row mt-6">
-          <!-- Aquí agregamos los botones -->
-
-
-          <div class="col-md-3">
-            <select class="form-select" v-model="selectedRedSalud" @change="getMicroRedes">
-              <option value="">Selecciona una red de salud</option>
-              <option v-for="red in redesSalud" :key="red.id" :value="red.id">{{ red.name }}</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <select class="form-select" v-model="selectedMicroRed" @change="getEstablecimientosSalud">
-              <option value="">Selecciona una micro red</option>
-              <option v-for="microRed in microRedes" :key="microRed.id" :value="microRed.id">{{ microRed.name }}</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <select class="form-select" v-model="selectedEstablecimiento" @change="getSectores">
-              <option value="">Selecciona un establecimiento de salud</option>
-              <option v-for="establecimiento in establecimientos" :key="establecimiento.id" :value="establecimiento.id">{{
-                establecimiento.name }}</option>
-            </select>
-          </div>
-
-          <div class="col-md-1">
-            <button @click="guardarDetalle" class="btn btn-primary btn-sm mb-3">Guardar Detalle</button>
-          </div>
-
-          <!--
-          <div class="col-md-3">
-            <select class="form-select" v-model="selectedSector">
-              <option value="">Selecciona un Sector</option>
-              <option v-for="sector in sectores" :key="sector.id" :value="sector.id">{{
-                sector.name }}</option>
-            </select>
-          </div>-->
-
-
-
-
-        </div>
-
-        <div class="row ">
-          <div class="col-md-3 order-last">
-            <!-- Movemos el div del gráfico aquí -->
-            <div class="d-flex justify-content-center align-items-right">
-              <div id="chart">
-                <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
-                </apexchart>
+    <div class="row mt-5">
+      <div class="col-sm-9">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-5">
+                <input :value="user.name + ' ' + user.last_name" type="text" class="form-control"
+                  placeholder="Encuestador" readonly disabled />
               </div>
+              <div class="col-md-2">
+                <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
+              </div>
+
+
+              <div class="col-md-2">
+                <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
+              </div>
+              <div class="col-md-2">
+                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
+              </div>
+
+
+
+
+              <!-- Aquí agregamos los botones -->
+
+
+              <div class="col-md-4 mt-3">
+                <select class="form-select" v-model="selectedRedSalud" @change="getMicroRedes">
+                  <option value="">Selecciona una red de salud</option>
+                  <option v-for="red in redesSalud" :key="red.id" :value="red.id">{{ red.name }}</option>
+                </select>
+              </div>
+              <div class="col-md-3 mt-3">
+                <select class="form-select" v-model="selectedMicroRed" @change="getEstablecimientosSalud">
+                  <option value="">Selecciona una micro red</option>
+                  <option v-for="microRed in microRedes" :key="microRed.id" :value="microRed.id">{{ microRed.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4 mt-3">
+                <select class="form-select" v-model="selectedEstablecimiento" @change="getSectores">
+                  <option value="">Selecciona un establecimiento de salud</option>
+                  <option v-for="establecimiento in establecimientos" :key="establecimiento.id"
+                    :value="establecimiento.id">{{
+                      establecimiento.name }}</option>
+                </select>
+              </div>
+
+              <div class="col-md-2 mt-4">
+                <button @click="guardarDetalle" class="btn btn-primary btn-sm mb-3">Guardar Detalle</button>
+              </div>
+
             </div>
           </div>
-          <div class="col-md-9 order-first">
-            <!-- Contenido en el lado izquierdo -->
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="">
+                <div id="chart">
+                  <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
+                  </apexchart>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
+
+
+
+
+
+
   </div>
   <div class="card mt-5">
     <div class="card-body">
@@ -4151,7 +4153,6 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
-
                 <div class="col-md-2">
                   <input type="date" class="form-control" placeholder="Fecha de nacimiento" v-model="fechaNacimiento"
                     @input="calcularEdad" />
@@ -4286,43 +4287,47 @@ export default defineComponent({
             </div>
           </div>
 
-          <table class="table mt-5">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Documento de Identidad</th>
-                <th>Estado Civil</th>
-                <th>Grado de Instrucción</th>
-                <th>Ocupación</th>
-                <th>Religión</th>
-                <th>Seguro de Salud</th>
-                <th>Familia</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="persona in familias" :key="persona.id">
-                <td>{{ persona.id }}</td>
-                <td>{{ persona.pers_nombres }}</td>
-                <td>{{ persona.pers_apellidos }}</td>
-                <td>{{ persona.pers_numero_documento_identidad }}</td>
-                <td>{{ persona.esci_nombre }}</td>
-                <td>{{ persona.grain_nombre }}</td>
-                <td>{{ persona.ocup_nombre }}</td>
-                <td>{{ persona.reli_nombre }}</td>
-                <td>{{ persona.sesa_nombre }}</td>
-                <td>{{ persona.fam_nombre_familia }}</td>
-                <td>
-                  <!-- Agregar íconos de editar y eliminar con enlaces o botones -->
-                  <a @click="editarPersona(persona)"><em class="icon ni ni-edit-alt-fill"></em> </a>
-                  <a @click="eliminarPersona(persona.id)"><em class="icon ni ni-delete-fill"></em>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="card mt-5">
+            <div class="">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Documento de Identidad</th>
+                    <th>Estado Civil</th>
+                    <th>Grado de Instrucción</th>
+                    <th>Ocupación</th>
+                    <th>Religión</th>
+                    <th>Seguro de Salud</th>
+                    <th>Familia</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="persona in familias" :key="persona.id">
+                    <td>{{ persona.id }}</td>
+                    <td>{{ persona.pers_nombres }}</td>
+                    <td>{{ persona.pers_apellidos }}</td>
+                    <td>{{ persona.pers_numero_documento_identidad }}</td>
+                    <td>{{ persona.esci_nombre }}</td>
+                    <td>{{ persona.grain_nombre }}</td>
+                    <td>{{ persona.ocup_nombre }}</td>
+                    <td>{{ persona.reli_nombre }}</td>
+                    <td>{{ persona.sesa_nombre }}</td>
+                    <td>{{ persona.fam_nombre_familia }}</td>
+                    <td>
+                      <!-- Agregar íconos de editar y eliminar con enlaces o botones -->
+                      <a @click="editarPersona(persona)"><em class="icon ni ni-edit-alt-fill"></em> </a>
+                      <a @click="eliminarPersona(persona.id)"><em class="icon ni ni-delete-fill"></em>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="tab-pane" id="familia">
@@ -7030,10 +7035,7 @@ export default defineComponent({
   width: 1300px;
 }
 
-.chartBox {
-  width: 338px;
-  padding: 20px;
-}
+
 
 /* Tooltip */
 .tooltip-right {
@@ -7197,4 +7199,5 @@ export default defineComponent({
   border: 1.7px solid #f8bc02;
   background: transparent;
   color: #f8bc02;
-}</style>
+}
+</style>

@@ -1135,7 +1135,7 @@ export default defineComponent({
       chart: {
         height: 190,
         type: 'radialBar',
-        offsetY: -15
+        offsetY: -0
       },
       plotOptions: {
         radialBar: {
@@ -1145,10 +1145,10 @@ export default defineComponent({
             name: {
               fontSize: '16px',
               color: undefined,
-              offsetY: 120
+              offsetY: -70
             },
             value: {
-              offsetY: 76,
+              offsetY: 50,
               fontSize: '22px',
               color: undefined,
               formatter: function (val) {
@@ -1173,8 +1173,8 @@ export default defineComponent({
         dashArray: 4
       },
       labels: ['Porcentaje de avance'],
-      series: [porcentajeAvance.value], // Serie inicial
-    });
+      series: [0], // Inicializar con un valor de 0%
+    });
 
 
 
@@ -5199,68 +5199,84 @@ export default defineComponent({
 
 <template>
   <div class="container-fluid mt-5">
-    <div class="card mt-5">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-4">
-            <input :value="user.name + ' ' + user.last_name" type="text" class="form-control" placeholder="Encuestador"
-              readonly disabled />
-          </div>
-          <div class="col-md-2">
-            <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
-          </div>
 
 
-          <div class="col-md-1">
-            <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
-          </div>
-          <div class="col-md-1">
-            <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
-          </div>
+    <div class="row mt-5">
+      <div class="col-sm-9">
+        <div class="card">
+          <div class="card-body">
 
-        </div>
-
-
-
-
-
-        <!-- Movemos los selectores a la misma fila que los botones -->
-        <div class="row mt-3">
-          <div class="col-md-3">
-            <label for="redSalud">Red de salud:</label>
-            <input disabled type="text" class="form-control" v-model="redSalud" id="redSalud">
-          </div>
-          <div class="col-md-3">
-            <label for="microRed">Micro red:</label>
-            <input disabled type="text" class="form-control" v-model="microRed" id="microRed">
-          </div>
-          <div class="col-md-3">
-            <label for="establecimientoSalud">Establecimiento de salud:</label>
-            <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
-          </div>
-        </div>
-
-
-
-
-
-        <div class="row move-up">
-          <div class="col-md-3 order-last">
-            <!-- Movemos el div del gráfico aquí -->
-            <div class="d-flex justify-content-center align-items-center">
-              <div id="chart">
-                <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
-                </apexchart>
+            <div class="row">
+              <div class="col-md-4 mt-2">
+                <input :value="user.name + ' ' + user.last_name" type="text" class="form-control"
+                  placeholder="Encuestador" readonly disabled />
               </div>
+              <div class="col-md-2 mt-2">
+                <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
+              </div>
+
+
+              <div class="col-md-2 mt-2">
+                <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
+              </div>
+              <div class="col-md-2 mt-2">
+                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
+              </div>
+
+
+
+
+
+
+
+              <!-- Movemos los selectores a la misma fila que los botones -->
+
+              <div class="col-md-3 mt-5">
+                <label for="redSalud">Red de salud:</label>
+                <input disabled type="text" class="form-control" v-model="redSalud" id="redSalud">
+              </div>
+              <div class="col-md-3 mt-5">
+                <label for="microRed">Micro red:</label>
+                <input disabled type="text" class="form-control" v-model="microRed" id="microRed">
+              </div>
+              <div class="col-md-3 mt-5">
+                <label for="establecimientoSalud">Establecimiento de salud:</label>
+                <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
+              </div>
+
+
             </div>
-          </div>
-          <div class="col-md-9 order-first">
-            <!-- Contenido en el lado izquierdo -->
+
+
           </div>
         </div>
       </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <div class="card-body">
 
+            <div id="chart">
+              <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
+              </apexchart>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
   <div class="card mt-5">
     <div class="card-body">
@@ -5501,7 +5517,7 @@ export default defineComponent({
               </div>
 
               <div class="row mt-4">
-      
+
               </div>
 
               <div class="row mt-4">
@@ -8383,4 +8399,5 @@ export default defineComponent({
   border: 1.7px solid #f8bc02;
   background: transparent;
   color: #f8bc02;
-}</style>
+}
+</style>
