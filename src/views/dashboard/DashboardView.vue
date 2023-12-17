@@ -4058,7 +4058,12 @@ export default defineComponent({
 
 <template>
   <div class="container-fluid mt-5">
+
+
+    <div class="row mt-5">
+
     <div class="row ">
+
       <div class="col-sm-9">
         <div class="card">
           <div class="card-body">
@@ -4131,6 +4136,12 @@ export default defineComponent({
         </div>
       </div>
     </div>
+
+
+
+
+
+
   </div>
   <div class="card mt-5">
     <div class="card-body">
@@ -4175,6 +4186,7 @@ export default defineComponent({
                     </div>
                   </div>
                 </div>
+                <div class="col-md-2">
 
                 <div class="col-md-2" v-if="mostrarCampo">
                   <input type="date" class="form-control" placeholder="Fecha de nacimiento" v-model="fechaNacimiento"
@@ -4312,43 +4324,47 @@ export default defineComponent({
             </div>
           </div>
 
-          <table class="table mt-5">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Documento de Identidad</th>
-                <th>Estado Civil</th>
-                <th>Grado de Instrucción</th>
-                <th>Ocupación</th>
-                <th>Religión</th>
-                <th>Seguro de Salud</th>
-                <th>Familia</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="persona in familias" :key="persona.id">
-                <td>{{ persona.id }}</td>
-                <td>{{ persona.pers_nombres }}</td>
-                <td>{{ persona.pers_apellidos }}</td>
-                <td>{{ persona.pers_numero_documento_identidad }}</td>
-                <td>{{ persona.esci_nombre }}</td>
-                <td>{{ persona.grain_nombre }}</td>
-                <td>{{ persona.ocup_nombre }}</td>
-                <td>{{ persona.reli_nombre }}</td>
-                <td>{{ persona.sesa_nombre }}</td>
-                <td>{{ persona.fam_nombre_familia }}</td>
-                <td>
-                  <!-- Agregar íconos de editar y eliminar con enlaces o botones -->
-                  <a @click="editarPersona(persona)"><em class="icon ni ni-edit-alt-fill"></em> </a>
-                  <a @click="eliminarPersona(persona.id)"><em class="icon ni ni-delete-fill"></em>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="card mt-5">
+            <div class="">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Documento de Identidad</th>
+                    <th>Estado Civil</th>
+                    <th>Grado de Instrucción</th>
+                    <th>Ocupación</th>
+                    <th>Religión</th>
+                    <th>Seguro de Salud</th>
+                    <th>Familia</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="persona in familias" :key="persona.id">
+                    <td>{{ persona.id }}</td>
+                    <td>{{ persona.pers_nombres }}</td>
+                    <td>{{ persona.pers_apellidos }}</td>
+                    <td>{{ persona.pers_numero_documento_identidad }}</td>
+                    <td>{{ persona.esci_nombre }}</td>
+                    <td>{{ persona.grain_nombre }}</td>
+                    <td>{{ persona.ocup_nombre }}</td>
+                    <td>{{ persona.reli_nombre }}</td>
+                    <td>{{ persona.sesa_nombre }}</td>
+                    <td>{{ persona.fam_nombre_familia }}</td>
+                    <td>
+                      <!-- Agregar íconos de editar y eliminar con enlaces o botones -->
+                      <a @click="editarPersona(persona)"><em class="icon ni ni-edit-alt-fill"></em> </a>
+                      <a @click="eliminarPersona(persona.id)"><em class="icon ni ni-delete-fill"></em>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="tab-pane" id="familia">
@@ -7050,10 +7066,7 @@ export default defineComponent({
   width: 1300px;
 }
 
-.chartBox {
-  width: 338px;
-  padding: 20px;
-}
+
 
 /* Tooltip */
 .tooltip-right {
@@ -7217,4 +7230,5 @@ export default defineComponent({
   border: 1.7px solid #f8bc02;
   background: transparent;
   color: #f8bc02;
-}</style>
+}
+</style>

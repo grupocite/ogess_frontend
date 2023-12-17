@@ -5200,6 +5200,23 @@ export default defineComponent({
 
 <template>
   <div class="container-fluid mt-5">
+
+
+
+    <div class="row mt-5">
+      <div class="col-sm-9">
+        <div class="card">
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-md-4 mt-2">
+                <input :value="user.name + ' ' + user.last_name" type="text" class="form-control"
+                  placeholder="Encuestador" readonly disabled />
+              </div>
+              <div class="col-md-2 mt-2">
+                <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
+              </div>
+
     <div class="row">
       <div class="col-sm-9">
         <div class="card">
@@ -5225,6 +5242,15 @@ export default defineComponent({
 
 
 
+              <div class="col-md-2 mt-2">
+                <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
+              </div>
+              <div class="col-md-2 mt-2">
+                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
+              </div>
+
+
+
 
 
 
@@ -5242,6 +5268,23 @@ export default defineComponent({
                 <label for="establecimientoSalud">Establecimiento de salud:</label>
                 <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
               </div>
+
+              <!-- Movemos los selectores a la misma fila que los botones -->
+
+
+              <div class="col-md-3 mt-5">
+                <label for="redSalud">Red de salud:</label>
+                <input disabled type="text" class="form-control" v-model="redSalud" id="redSalud">
+              </div>
+              <div class="col-md-3 mt-5">
+                <label for="microRed">Micro red:</label>
+                <input disabled type="text" class="form-control" v-model="microRed" id="microRed">
+              </div>
+              <div class="col-md-3 mt-5">
+                <label for="establecimientoSalud">Establecimiento de salud:</label>
+                <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
+              </div>
+
 
 
             </div>
@@ -5262,7 +5305,24 @@ export default defineComponent({
           </div>
         </div>
       </div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
+
   </div>
   <div class="card ">
     <div class="card-body">
@@ -5503,7 +5563,7 @@ export default defineComponent({
               </div>
 
               <div class="row mt-4">
-      
+
               </div>
 
               <div class="row mt-4">
@@ -8385,4 +8445,5 @@ export default defineComponent({
   border: 1.7px solid #f8bc02;
   background: transparent;
   color: #f8bc02;
-}</style>
+}
+</style>
