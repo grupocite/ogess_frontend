@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="nk-content-inner">
         <div class="nk-content-body">
-          <div class="table-responsive">
+            <div class="table-responsive">
             <div class="row mb-3">
               <div class="col-12 col-md-4 mb-2 mb-md-0">
                 <!-- Primera columna con el campo de búsqueda -->
@@ -15,27 +15,28 @@
 
               <div class="col-12 col-md-2 mb-2 mb-md-0"></div>
 
-              <div class="col-12 col-md-6">
+                  <div class="col-12 col-md-6">
                 <div style="text-align: end" id="custom-button-group">
 
-                  <button type="button" class="btn btn-outline-yellow mr-1 mb-1 mb-md-0" @click="agregarCenso">
+                     <button type="button" class="btn btn-outline-yellow mr-1 mb-1 mb-md-0" @click="agregarCenso">
                     <i class="fas fa-plus mr-1"></i> Agregar Censo
                   </button>
 
 
+                   </div>
+                  </div>
                 </div>
-              </div>
+
+              
+
+              <InitModalView v-if="showModal" :show-modal="showModal" :form-data="formData" @close-modal="closeModal">
+            </InitModalView>
             </div>
 
             <div class="container-table">
               <DataTable :data="filteredData" :columns="columns" :options="dataTableOptions"
                 class="table table-striped table-bordered display dsn-table" />
-            </div>
-
-            <InitModalView v-if="showModal" :show-modal="showModal" :form-data="formData" @close-modal="closeModal">
-            </InitModalView>
-          </div>
-
+              </div>
 
         </div>
       </div>
@@ -171,14 +172,21 @@ export default defineComponent({
     const dataTableOptions = {
       responsive: true,
       autoWidth: false,
+      pagingType: 'full_numbers',
+      lengthMenu: [5, 10, 25, 50],
+
       bLengthChange: false,
       pageLength: 5,
       dom: "rtip",
+      columns: [
+    { width: '30%', targets: '_all' }
+  ],
       language: {
         search: "Buscar",
         zeroRecords: "No hay registros en su búsqueda",
         info: "Mostrando del _START_ a _END_ de _TOTAL_ registros",
         infoFiltered: "(Filtrados de _MAX_ registros)",
+        
         paginate: {
           first: "Primero",
           previous: "Anterior",

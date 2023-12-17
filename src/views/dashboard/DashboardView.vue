@@ -4080,9 +4080,7 @@ export default defineComponent({
               <div class="col-md-2">
                 <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
               </div>
-              <div class="col-md-2">
-                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
-              </div>
+             
 
 
 
@@ -4124,16 +4122,24 @@ export default defineComponent({
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div class="">
+              <div class="col-md-12 text-center">
                 <div id="chart">
                   <apexchart type="radialBar" height="190" :options="chartOptions" :series="chartOptions.series">
                   </apexchart>
+                  
                 </div>
+                 <div class="col-md-12 text-center mt-3">
+                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
               </div>
+              </div>
+              
             </div>
 
           </div>
-        </div>
+
+          
+
+         </div>
       </div>
     </div>
 
@@ -4511,16 +4517,19 @@ export default defineComponent({
                           rows="3"></textarea>
                       </div>
 
-                      <h5 class="card-title mt-3">{{ preguntaTexto6 }}</h5>
+  <div class="card-body">
+    <h5 class="card-title mt-3">{{ preguntaTexto6 }}</h5>
+    <div class="btn-group-toggle" data-toggle="buttons">
+      <label class="form-check d-block" v-for="(respuesta, index) in respuestas2" :key="index">
+        <input type="radio" name="xd" :id="`radioRespuesta${index}`"
+          :value="respuesta.rc_respuesta_comun"
+          @change="capturarRespuesta2(respuesta.rc_respuesta_comun)" />
+        {{ respuesta.rc_respuesta_comun }}
+      </label>
+    </div>
+  </div>
 
-                      <div class="btn-group btn-group-toggle mt-3" data-toggle="buttons">
-                        <label class="form-check" v-for="(respuesta, index) in respuestas2" :key="index">
-                          <input type="radio" name="xd" :id="`radioRespuesta${index}`"
-                            :value="respuesta.rc_respuesta_comun"
-                            @change="capturarRespuesta2(respuesta.rc_respuesta_comun)" />
-                          {{ respuesta.rc_respuesta_comun }}
-                        </label>
-                      </div>
+
 
                       <h5 class="card-title mt-3">{{ preguntaTexto8 }}</h5>
 
@@ -4687,25 +4696,30 @@ export default defineComponent({
                           rows="3"></textarea>
                       </div>
 
-                      <h5 class="card-title mt-3">{{ preguntaTexto7 }}</h5>
+  <div class="card-body">
+    <h6 class="card-title mt-3">{{ preguntaTexto7 }}</h6>
+    <div class="btn-group-toggle" data-toggle="buttons">
+      <label class="form-check d-block" v-for="(respuesta, index) in respuestas3" :key="index">
+        <input type="radio" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
+          @change="capturarRespuesta3(respuesta.rc_respuesta_comun)" />
+        {{ respuesta.rc_respuesta_comun }}
+      </label>
+    </div>
+  </div>
 
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check" v-for="(respuesta, index) in respuestas3" :key="index">
-                          <input type="radio" :id="`radioRespuesta${index}`" :value="respuesta.rc_respuesta_comun"
-                            @change="capturarRespuesta3(respuesta.rc_respuesta_comun)" />
-                          {{ respuesta.rc_respuesta_comun }}
-                        </label>
-                      </div>
+  <div class="card-body">
+    <h5 class="card-title mt-3">{{ preguntaTexto9 }}</h5>
+    <div class="btn-group-toggle" data-toggle="buttons">
+      <label class="form-check d-block" v-for="(respuesta, index) in respuestas5" :key="index">
+        <input type="radio" name="ga" :id="`radioRespuesta${index}`"
+          :value="respuesta.rc_respuesta_comun"
+          @change="capturarRespuesta5(respuesta.rc_respuesta_comun)" />
+        {{ respuesta.rc_respuesta_comun }}
+      </label>
+    </div>
+  </div>
 
-                      <h5 class="card-title mt-3">{{ preguntaTexto9 }}</h5>
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="form-check" v-for="(respuesta, index) in respuestas5" :key="index">
-                          <input type="radio" name="ga" :id="`radioRespuesta${index}`"
-                            :value="respuesta.rc_respuesta_comun"
-                            @change="capturarRespuesta5(respuesta.rc_respuesta_comun)" />
-                          {{ respuesta.rc_respuesta_comun }}
-                        </label>
-                      </div>
+
 
                       <h5 class="card-title mt-3">{{ preguntaTexto11 }}</h5>
 
