@@ -272,7 +272,7 @@ export default defineComponent({
         };
 
         const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/censo/create-cust/`, datosCenso,
+          `${import.meta.env.VITE_API_URL}/censo/create-cust`, datosCenso,
           headers
         );
 
