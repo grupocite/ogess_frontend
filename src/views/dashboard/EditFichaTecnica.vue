@@ -3689,7 +3689,7 @@ export default defineComponent({
           headers
         )
 
-        familias.value = response.data.data
+        familias.value = response.data.data.filter((fam)=>fam.familia_id ===idFamilia.value)
       } catch (error) {
         console.error('Error al obtener datos:', error)
       }
@@ -4700,37 +4700,48 @@ export default defineComponent({
 
     })
 
-
     const terminarCenso = async () => {
       // ... (código para la solicitud axios)
+        Swal.fire({
+          title: "¿Seguro de terminar el censo?",
+          text: "",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si, continuar.",
+          cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+          if (result.isConfirmed) {    
+              try {
+                const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${id}/actualizarFechaFin`,
+                  null,
+                  {
+                    ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
+                  }
+                );
+                chartOptions.value.series = [100];
 
-      try {
-        const response = await axios.put(`${import.meta.env.VITE_API_URL}/censo/${id}/actualizarFechaFin`,
-          null,
-          {
-            ...headers, // Aquí se pasan los headers directamente a la solicitud Axios
+                // Manejo de la respuesta
+                console.log(response.data);
+
+                // Mostrar el mensaje de éxito si la actualización fue exitosa
+                if (response.data.status === 'success') {
+                  ElMessage.success(response.data.message);
+
+
+                  setTimeout(() => {
+                    router.push('/desktop'); // Reemplaza '/nueva-ruta' con la ruta a la que quieras redireccionar
+                  }, 1000);
+
+                }
+              } catch (error) {
+                // Manejo de errores
+                console.error('Error al actualizar el censo:', error);
+                ElMessage.error('Hubo un error al actualizar el censo.');
+              } 
           }
-        );
-        chartOptions.value.series = [100];
-
-        // Manejo de la respuesta
-        console.log(response.data);
-
-        // Mostrar el mensaje de éxito si la actualización fue exitosa
-        if (response.data.status === 'success') {
-          ElMessage.success(response.data.message);
-
-
-          setTimeout(() => {
-            router.push('/desktop'); // Reemplaza '/nueva-ruta' con la ruta a la que quieras redireccionar
-          }, 1000);
-
-        }
-      } catch (error) {
-        // Manejo de errores
-        console.error('Error al actualizar el censo:', error);
-        ElMessage.error('Hubo un error al actualizar el censo.');
-      }
+        });
     };
 
     const fetchDataFromAPI = async () => {
@@ -5200,23 +5211,6 @@ export default defineComponent({
 
 <template>
   <div class="container-fluid mt-5">
-
-
-
-    <div class="row mt-5">
-      <div class="col-sm-9">
-        <div class="card">
-          <div class="card-body">
-
-            <div class="row">
-              <div class="col-md-4 mt-2">
-                <input :value="user.name + ' ' + user.last_name" type="text" class="form-control"
-                  placeholder="Encuestador" readonly disabled />
-              </div>
-              <div class="col-md-2 mt-2">
-                <input :value="todayFormatted" type="text" class="form-control" placeholder="Fecha" disabled />
-              </div>
-
     <div class="row">
       <div class="col-sm-9">
         <div class="card">
@@ -5240,15 +5234,6 @@ export default defineComponent({
 
 
 
-              <div class="col-md-2 mt-2">
-                <button @click="calcularPorcentajeAvance" class="btn btn-success btn-sm mb-3">Guardar Estado</button>
-              </div>
-              <div class="col-md-2 mt-2">
-                <button @click="terminarCenso" class="btn btn-danger btn-sm">Terminar Censo</button>
-              </div>
-
-
-
 
 
 
@@ -5266,23 +5251,6 @@ export default defineComponent({
                 <label for="establecimientoSalud">Establecimiento de salud:</label>
                 <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
               </div>
-
-              <!-- Movemos los selectores a la misma fila que los botones -->
-
-
-              <div class="col-md-3 mt-5">
-                <label for="redSalud">Red de salud:</label>
-                <input disabled type="text" class="form-control" v-model="redSalud" id="redSalud">
-              </div>
-              <div class="col-md-3 mt-5">
-                <label for="microRed">Micro red:</label>
-                <input disabled type="text" class="form-control" v-model="microRed" id="microRed">
-              </div>
-              <div class="col-md-3 mt-5">
-                <label for="establecimientoSalud">Establecimiento de salud:</label>
-                <input disabled type="text" class="form-control" v-model="establecimientoSalud" id="establecimientoSalud">
-              </div>
-
 
 
             </div>
@@ -5312,32 +5280,12 @@ export default defineComponent({
     </div>
 </div>
 </div>
-        </div>
-      </div>
-
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </div>
-
   </div>
   <div class="card ">
     <div class="card-body">
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link " data-bs-toggle="tab" data-bs-target="#persona" disabled>Persona</a>
+          <a class="nav-link " data-bs-toggle="tab" data-bs-target="#persona" >Persona</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#familia">Familia</a>
@@ -5572,7 +5520,7 @@ export default defineComponent({
               </div>
 
               <div class="row mt-4">
-
+      
               </div>
 
               <div class="row mt-4">
@@ -8458,5 +8406,4 @@ export default defineComponent({
   border: 1.7px solid #f8bc02;
   background: transparent;
   color: #f8bc02;
-}
-</style>
+}</style>
