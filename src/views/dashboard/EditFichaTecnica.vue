@@ -610,6 +610,7 @@ export default defineComponent({
 
     const familiaDetailUpdate = ref(null);
     const provincia = ref('');
+    const departamento  = ref('');
     const distrito = ref('');
     const sector = ref('');
     const direccionExacta = ref('');
@@ -3824,7 +3825,7 @@ if (respuestasVacias.length > 0) {
           const dataX = response.data;
 
           familiaDetailUpdate.value = dataX;
-
+          departamento.value = dataX.sectores[0].distrito.provincia.departamento.dep_departamento;
           provincia.value = dataX.sectores[0].distrito.provincia.prov_provincia;
           distrito.value = dataX.sectores[0].distrito.dis_distrito;
           sector.value = dataX.sectores[0].nombre_sector;
@@ -5216,6 +5217,7 @@ if (respuestasVacias.length > 0) {
       fechaNacimiento,
       familiaDetailUpdate,
       provincia,
+      departamento,
       distrito,
       sector,
       direccionExacta,
@@ -5580,6 +5582,9 @@ if (respuestasVacias.length > 0) {
               </div>
 
               <div class="row mt-4">
+                <div class="col-md-2">
+                  <input disabled type="text" class="form-control" v-model="departamento" placeholder="Departamento">
+                </div>
                 <div class="col-md-2">
                   <input disabled type="text" class="form-control" v-model="provincia" placeholder="Provincia">
                 </div>
