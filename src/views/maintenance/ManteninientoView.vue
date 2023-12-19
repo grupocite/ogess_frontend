@@ -125,12 +125,7 @@ export default defineComponent({
     const headers = useAuth().headers();
 
     const columns: ConfigColumns[] = [
-      {
-        data: "select",
-        title: "",
-        orderable: false,
-        render: () => '<input type="checkbox">',
-      },
+ 
       {
         data: "pre_pregunta",
         title: "Pregunta"
@@ -157,6 +152,10 @@ export default defineComponent({
       bLengthChange: false,
       pageLength: 15,
       dom: "rtip",
+      columns: columns,
+      columnDefs: [
+        { targets: '_all', defaultContent: '-' } // Define un valor predeterminado para todas las columnas
+      ],
       language: {
         search: "Buscar",
         zeroRecords: "No hay registros en su búsqueda",

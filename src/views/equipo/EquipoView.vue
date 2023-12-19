@@ -126,11 +126,14 @@ export default defineComponent({
 
     const columns: ConfigColumns[] = [
       {
-        data: "select",
-        title: "",
-        orderable: false,
-        render: () => '<input type="checkbox">',
-      },
+        title: "#",
+    render: function (data: any, type: string, row: any, meta: any) {
+      if (type === "display") {
+        return meta.row + 1;
+      }
+      return '';
+    }
+  },
       {
         data: "name",
         title: "Nombre Completo",
@@ -171,6 +174,10 @@ export default defineComponent({
       bLengthChange: false,
       pageLength: 5,
       dom: "rtip",
+      columns: columns,
+      columnDefs: [
+        { targets: '_all', defaultContent: '-' } // Define un valor predeterminado para todas las columnas
+      ],
       language: {
         search: "Buscar",
         zeroRecords: "No hay registros en su búsqueda",
