@@ -273,6 +273,7 @@ export default defineComponent({
     const selectedSector = ref('');
 
     const selectedProvincia = ref('');
+    const selectedDepartamento = ref('');
     const selectedDistrito = ref('');
 
     const redesSalud = ref([]);
@@ -280,6 +281,7 @@ export default defineComponent({
     const establecimientos = ref([]);
     const sectores = ref([]);
 
+    const departamentos = ref([]);
     const provincias = ref([]);
     const distritos = ref([]);
 
@@ -410,9 +412,22 @@ export default defineComponent({
       }
     };
 
+    const getDepartamentos = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/ubigeo/departamentos`, headers);
+        departamentos.value = response.data.data.map((departamento: any) => ({
+          id: departamento.id,
+          name: departamento.dep_departamento
+        }));
+        console.log(selectedDepartamento.value)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     const getProvincias = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/ubigeo/provincias`, headers);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/ubigeo/departamentos/${selectedDepartamento.value}/provincias`, headers);
         provincias.value = response.data.data.map((provincia: any) => ({
           id: provincia.id,
           name: provincia.prov_provincia
@@ -3692,7 +3707,8 @@ if (respuestasVacias.length > 0) {
       obtenerFamiliaPorUuid()
       capturarValor();
       getRedesSalud();
-      getProvincias();
+      getDepartamentos();
+      
       fetchEstadoCivil()
       fetchGradoInstruccion()
       fetchReligion()
@@ -3962,6 +3978,7 @@ if (respuestasVacias.length > 0) {
       getEstablecimientosSalud,
       getSectores,
       getDistritos,
+      getProvincias,
       getSectoresReal,
       router,
       preguntaTexto62,
@@ -4086,8 +4103,10 @@ if (respuestasVacias.length > 0) {
       openAsignmentPersonAtFamily,
       apellidos,
       provincias,
+      departamentos,
       distritos,
       selectedProvincia,
+      selectedDepartamento,
       selectedDistrito,
       headers,
       user,
@@ -4453,7 +4472,13 @@ if (respuestasVacias.length > 0) {
 
 
               <div class="row mt-4">
-
+                <div class="col-md-2">
+                  <select class="form-select" v-model="selectedDepartamento" @change="getProvincias">
+                    <option value="">Departamento</option>
+                    <option v-for="departamento in departamentos" :key="departamento.id" :value="departamento.id">{{ departamento.name }}
+                    </option>
+                  </select>
+                </div>
                 <div class="col-md-2">
                   <select class="form-select" v-model="selectedProvincia" @change="getDistritos">
                     <option value="">Provincia</option>
@@ -4617,12 +4642,15 @@ if (respuestasVacias.length > 0) {
 
                       <h5 class="card-title mt-3">{{ preguntaTexto16 }}</h5>
 
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
                       <label class="form-check">
                         <input type="radio" v-model="respuestaPregunta16" value="Si" /> Si
                       </label>
                       <label class="form-check">
                         <input type="radio" v-model="respuestaPregunta16" value="No" /> No
                       </label>
+                    </div>
 
                       <h5 class="card-title mt-3">{{ preguntaTexto18 }}</h5>
 
