@@ -51,7 +51,7 @@ import DataTable from "datatables.net-vue3";
 import DataTablesCore, { type ConfigColumns } from "datatables.net-bs5";
 import axios from "axios";
 import InitModalView from "./InitModalView.vue";
-
+import 'datatables.net-responsive-bs4';
 import { useRouter } from 'vue-router';
 
 import { ElMessage } from "element-plus";
@@ -178,9 +178,10 @@ export default defineComponent({
       bLengthChange: false,
       pageLength: 5,
       dom: "rtip",
-      columns: [
-    { width: '30%', targets: '_all' }
-  ],
+      columns: columns,
+      columnDefs: [
+        { targets: '_all', defaultContent: '-' } // Define un valor predeterminado para todas las columnas
+      ],
       language: {
         search: "Buscar",
         zeroRecords: "No hay registros en su búsqueda",

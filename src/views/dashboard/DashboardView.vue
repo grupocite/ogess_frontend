@@ -308,6 +308,9 @@ export default defineComponent({
     const respuestaPregunta25 = ref('')
     const respuestaPregunta26 = ref('')
 
+    const respuestaPregunta1 = ref('');
+
+
     const descripcionCompartidas = ref('') // Para capturar la descripción
     const descripcionQuestion4 = ref('') // Para capturar la descripción
     const descripcionQuestion5 = ref('') // Para capturar la descripción
@@ -935,6 +938,19 @@ export default defineComponent({
           censo_uuid: uuid
         }
 
+       
+const respuestasVacias = Object.values(data.respuestas).filter(pregunta => pregunta.respuesta.length === 0);
+
+if (respuestasVacias.length > 0) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Falta responder preguntas',
+        text: 'Por favor, asegúrate de responder todas las preguntas antes de continuar.',
+        confirmButtonText: 'OK'
+      });
+      return; // Detener la ejecución si faltan preguntas por responder
+    }
+
         console.log(data)
 
         const response = await axios.post(
@@ -1171,6 +1187,18 @@ export default defineComponent({
           familia_id: idFamilia.value,
           censo_uuid: uuid
         }
+        const respuestasVacias = Object.values(data.respuestas).filter(pregunta => pregunta.respuesta.length === 0);
+
+if (respuestasVacias.length > 0) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Falta responder preguntas',
+        text: 'Por favor, asegúrate de responder todas las preguntas antes de continuar.',
+        confirmButtonText: 'OK'
+      });
+      return; // Detener la ejecución si faltan preguntas por responder
+    }
+
 
         console.log(data)
 
@@ -3725,6 +3753,10 @@ export default defineComponent({
         });
     };
 
+    const respuestaPregunta1Si = computed(() => {
+      return respuestaPregunta1.value === 'Si';
+    });
+
     return {
       direccionExacta,
       referencia,
@@ -3735,7 +3767,9 @@ export default defineComponent({
       gradoInstruccion,
       estadoCivil,
       religion,
+      respuestaPregunta1,
       searchTerm,
+      respuestaPregunta1Si,
       searchTerm2,
       searchTerm3,
       guardarDatos,
@@ -4335,6 +4369,7 @@ export default defineComponent({
               </div>
             </div>
           </div>
+          <div class="table-responsive">
 
           <table class="table mt-5">
             <thead>
@@ -4373,6 +4408,8 @@ export default defineComponent({
               </tr>
             </tbody>
           </table>
+                            </div>
+
         </div>
 
         <div class="tab-pane" id="familia">
@@ -4869,17 +4906,17 @@ export default defineComponent({
                       <div class="card">
                         <div class="card-body">
                           <h5 class="card-title">{{ preguntaTexto27 }}</h5>
-                          <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1" value="Si" />
-                            <label class="form-check-label" for="inlineRadio1">Si</label>
-                          </div>
-                          <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1" value="No" />
-                            <label class="form-check-label" for="inlineRadio2">No</label>
-                          </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1Si" value="Si" v-model="respuestaPregunta1" />
+      <label class="form-check-label" for="pregunta1Si">Si</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1No" value="No" v-model="respuestaPregunta1" />
+      <label class="form-check-label" for="pregunta1No">No</label>
+    </div>
 
-                          <h5 class="card-title mt-4">{{ preguntaTexto29 }}</h5>
-                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          <h5 v-if="respuestaPregunta1 === 'Si'" class="card-title mt-4">{{ preguntaTexto29 }}</h5>
+                          <div v-if="respuestaPregunta1 === 'Si'" class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn form-check">
                               <input type="radio" name="preguntaTexto29" value="Domicilio del Sector" />
                               Domicilio del Sector
@@ -5433,26 +5470,27 @@ export default defineComponent({
 
                           <div>
                             <h5 class="card-title mt-3">
-                              {{ preguntaTexto59 }}
-                            </h5>
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Colesterol" />
-                                Colesterol
-                              </label>
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Trigleceridos" />
-                                Trigleceridos
-                              </label>
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Diarreas" />
-                                Diarreas
-                              </label>
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto59" value="Fiebres" />
-                                Fiebres
-                              </label>
-                            </div>
+  {{ preguntaTexto59 }}
+</h5>
+<div class="btn-group-toggle" data-toggle="buttons">
+  <label class="btn form-check">
+    <input type="checkbox" name="preguntaTexto59" value="Colesterol" />
+    Colesterol
+  </label>
+  <label class="btn form-check">
+    <input type="checkbox" name="preguntaTexto59" value="Trigleceridos" />
+    Trigleceridos
+  </label>
+  <label class="btn form-check">
+    <input type="checkbox" name="preguntaTexto59" value="Diarreas" />
+    Diarreas
+  </label>
+  <label class="btn form-check">
+    <input type="checkbox" name="preguntaTexto59" value="Fiebres" />
+    Fiebres
+  </label>
+</div>
+
 
                             <h5 class="card-title mt-3">
                               {{ preguntaTexto60 }}
@@ -5608,52 +5646,50 @@ export default defineComponent({
                       </div>
                     </div>
 
+       
                     <div class="col-sm-6">
                       <div class="card">
                         <div class="card-body">
                           <h5 class="card-title mt-3">{{ preguntaTexto67 }}</h5>
-                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Colesterol" />
-                              Colesterol
-                            </label>
-                            <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Trigleceridos" />
-                              Trigleceridos
-                            </label>
-                            <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Diarreas" />
-                              Diarreas
-                            </label>
-                            <label class="btn form-check">
-                              <input type="checkbox" name="preguntaTexto67" value="Fiebres" />
-                              Fiebres
-                            </label>
-                          </div>
+                          <div class="card-body">
+      <div class="btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto67" value="Colesterol" class="form-check-input" /> Colesterol
+        </label>
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto67" value="Trigliceridos" class="form-check-input" /> Trigliceridos
+        </label>
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto67" value="Diarreas" class="form-check-input" /> Diarreas
+        </label>
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto67" value="Fiebres" class="form-check-input" /> Fiebres
+        </label>
+      </div>
+      </div>
+    
                           <div>
-                            <h5 class="card-title mt-3">
-                              {{ preguntaTexto68 }}
-                            </h5>
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="COVID" />
-                                COVID
-                              </label>
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="Influenza" />
-                                Influenza
-                              </label>
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="Hepatitis B" />
-                                Hepatitis B
-                              </label>
-                              <label class="btn form-check">
-                                <input type="checkbox" name="preguntaTexto68" value="Tetano" />
-                                Tetano
-                              </label>
-                            </div>
+
+                            <h5 class="card-title mt-3">{{ preguntaTexto68 }}</h5>
+                            <div class="card-body">
+
+      <div class="btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto68" value="COVID" class="form-check-input" /> COVID
+        </label>
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto68" value="Influenza" class="form-check-input" /> Influenza
+        </label>
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto68" value="Hepatitis B" class="form-check-input" /> Hepatitis B
+        </label>
+        <label class="btn form-check mb-2 mr-2">
+          <input type="checkbox" name="preguntaTexto68" value="Tetano" class="form-check-input" /> Tetano
+        </label>
+      </div>
                             <textarea v-model="descripcionpreguntaTexto68" class="form-control" id="otros" name="Otros"
                               placeholder="Otros"></textarea>
+                              </div>
                           </div>
                           <h5 class="card-title mt-3">{{ preguntaTexto69 }}</h5>
                           <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -5692,17 +5728,15 @@ export default defineComponent({
                   </div>
                   <div class="row mt-3">
 
-                    <div class="form-group col-4">
+                    <div class="form-group col-sm-6 col-md-4">
+  <select id="inputState" class="form-control" v-model="selectedDiscapacidad" @change="updateFields6">
+    <option selected>Seleccionar nombre</option>
+    <option v-for="(persona, index) in personasIntegrantesOfTheFamily" :key="index" :value="persona.id">
+      {{ persona.nombreCompleto }}
+    </option>
+  </select>
+</div>
 
-                      <select id="inputState" class="form-control" v-model="selectedDiscapacidad" @change="updateFields6">
-
-                        <option selected>Seleccionar nombre</option>
-                        <option v-for="(persona, index) in personasIntegrantesOfTheFamily" :key="index"
-                          :value="persona.id">
-                          {{ persona.nombreCompleto }}
-                        </option>
-                      </select>
-                    </div>
                     <div class="col-7">
                       <div class="form-group">
                         <input disabled type="text" class="form-control" id="nombreFamilia"
@@ -5723,58 +5757,60 @@ export default defineComponent({
                           <div class="col-sm-6">
                             <div class="card">
                               <div class="card-body">
-                                <h5 class="card-title">{{ preguntaTexto70 }}</h5>
-                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                  <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Para caminar" />
-                                    Para caminar
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Problemas de entendimiento" />
-                                    Problemas de entendimiento
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Lenguaje" />
-                                    Lenguaje
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Acidente" />
-                                    Acidente
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto70" value="Otro" /> Otro
-                                  </label>
-                                </div>
-                              </div>
+  <h5 class="card-title">{{ preguntaTexto70 }}</h5>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="preguntaTexto70" value="Para caminar">
+    <label class="form-check-label">Para caminar</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="preguntaTexto70" value="Problemas de entendimiento">
+    <label class="form-check-label">Problemas de entendimiento</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="preguntaTexto70" value="Lenguaje">
+    <label class="form-check-label">Lenguaje</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="preguntaTexto70" value="Acidente">
+    <label class="form-check-label">Acidente</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="preguntaTexto70" value="Otro">
+    <label class="form-check-label">Otro</label>
+  </div>
+</div>
+
                             </div>
                           </div>
                           <div class="col-sm-6">
                             <div class="card">
                               <div class="card-body">
-                                <h5 class="card-title">{{ preguntaTexto71 }}</h5>
-                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                  <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto71" value="Enfermedad Laboral" />
-                                    Enfermedad Laboral
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="radio" name="preguntaTexto71" value="Genetico/congenito/nacimienoto" />
-                                    Genetico/congenito/nacimienoto
-                                  </label>
-                                </div>
-                              </div>
+  <h5 class="card-title">{{ preguntaTexto71 }}</h5>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="preguntaTexto71" value="Enfermedad Laboral">
+    <label class="form-check-label small">Enfermedad Laboral</label>
+  </div>
+  <div class="form-check form-check-inline" style="max-width: 150px;">
+    <input class="form-check-input" type="radio" name="preguntaTexto71" value="Genetico/congenito/nacimienoto">
+    <label class="form-check-label small">Genetico/congenito/nacimienoto</label>
+  </div>
+</div>
+
+
+
+                              
                             </div>
                           </div>
                         </div>
                       </div>
                       <!-- Preguntas de esta columna -->
-                      <div class="row justify-content-end mt-3">
-                        <div class="col-1">
-                          <button type="button" @click="saveRiesgosDiscapacidad" class="btn btn-success">
-                            Guardar
-                          </button>
-                        </div>
-                      </div>
+                      <div class="row justify-content-center mt-3">
+  <div class="col-sm-6 col-md-3 text-center"> <!-- Utilizamos col-md-6 para hacerlo responsive -->
+    <button type="button" @click="saveRiesgosDiscapacidad" class="btn btn-success btn-block">
+      Guardar
+    </button>
+  </div>
+</div>
                     </div>
 
                     <p></p>
@@ -5786,17 +5822,15 @@ export default defineComponent({
                     </div>
                     <div class="row mt-3">
 
-                      <div class="form-group col-4">
+                      <div class="form-group">
+  <select id="inputState" class="form-control" v-model="selectedGestante" @change="updateFields7">
+    <option selected>Seleccionar nombre</option>
+    <option v-for="(persona, index) in personasGestanteOfTheFamily" :key="index" :value="persona.id">
+      {{ persona.nombreCompleto }}
+    </option>
+  </select>
+</div>
 
-                        <select id="inputState" class="form-control" v-model="selectedGestante" @change="updateFields7">
-
-                          <option selected>Seleccionar nombre</option>
-                          <option v-for="(persona, index) in personasGestanteOfTheFamily" :key="index"
-                            :value="persona.id">
-                            {{ persona.nombreCompleto }}
-                          </option>
-                        </select>
-                      </div>
                       <div class="col-7">
                         <div class="form-group">
                           <input disabled type="text" class="form-control" id="nombreFamilia"
@@ -5832,38 +5866,40 @@ export default defineComponent({
                           <div class="col-sm-6">
                             <div class="card">
                               <div class="card-body">
-                                <h5 class="card-title">{{ preguntaTexto73 }}</h5>
-                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Vacunas" />
-                                    Vacunas
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Psicoprofilaxis" />
-                                    Psicoprofilaxis
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Vigilancia nutricional" />
-                                    Vigilancia nutricional
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto73" value="Con la evaluación bucal" />
-                                    Con la evaluación bucal
-                                  </label>
-                                </div>
-                              </div>
+  <h5 class="card-title">{{ preguntaTexto73 }}</h5>
+  <div class="d-flex flex-column">
+    <label class="form-check">
+      <input type="checkbox" name="preguntaTexto73" value="Vacunas">
+      Vacunas
+    </label>
+    <label class="form-check">
+      <input type="checkbox" name="preguntaTexto73" value="Psicoprofilaxis">
+      Psicoprofilaxis
+    </label>
+    <label class="form-check">
+      <input type="checkbox" name="preguntaTexto73" value="Vigilancia nutricional">
+      Vigilancia nutricional
+    </label>
+    <label class="form-check">
+      <input type="checkbox" name="preguntaTexto73" value="Con la evaluación bucal">
+      Con la evaluación bucal
+    </label>
+  </div>
+</div>
+
+
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      <div class="row justify-content-end mt-3">
-                        <div class="col-1">
-                          <button type="button" @click="saveRiesgosGestante" class="btn btn-success">
-                            Guardar
-                          </button>
-                        </div>
-                      </div>
+                      <div class="row justify-content-center mt-3">
+  <div class="col-sm-6 col-md-3 text-center"> <!-- Utilizamos col-md-6 para hacerlo responsive -->
+    <button type="button" @click="saveRiesgosGestante" class="btn btn-success btn-block">
+      Guardar
+    </button>
+  </div>
+</div>
                     </div>
 
                     <p></p>
@@ -5876,17 +5912,15 @@ export default defineComponent({
 
                     <div class="row mt-3">
 
-                      <div class="form-group col-4">
+                      <div class="form-group">
+  <select id="inputState" class="form-control" v-model="selectedPuerpera" @change="updateFields8">
+    <option selected>Seleccionar nombre</option>
+    <option v-for="(persona, index) in personasPuerperaOfTheFamily" :key="index" :value="persona.id">
+      {{ persona.nombreCompleto }}
+    </option>
+  </select>
+</div>
 
-                        <select id="inputState" class="form-control" v-model="selectedPuerpera" @change="updateFields8">
-
-                          <option selected>Seleccionar nombre</option>
-                          <option v-for="(persona, index) in personasPuerperaOfTheFamily" :key="index"
-                            :value="persona.id">
-                            {{ persona.nombreCompleto }}
-                          </option>
-                        </select>
-                      </div>
                       <div class="col-7">
                         <div class="form-group">
                           <input disabled type="text" class="form-control" id="nombreFamilia"
@@ -5918,34 +5952,36 @@ export default defineComponent({
                                   </label>
                                 </div>
 
-                                <h5 class="card-title">{{ preguntaTexto75 }}</h5>
-                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Sangrado vaginal" />
-                                    Sangrado vaginal
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Sangrado vaginal con Olor" />
-                                    Sangrado vaginal con Olor
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Fiebres / escalofríos" />
-                                    Fiebres / escalofríos
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Tos y Flema más de 14 días" />
-                                    Tos y Flema más de 14 días
-                                  </label>
+                                <div class="card-body">
+  <h5 class="card-title">{{ preguntaTexto75 }}</h5>
+  <div class="d-flex flex-wrap">
+    <label class="form-check-inline">
+      <input type="checkbox" name="preguntaTexto75" value="Sangrado vaginal">
+      Sangrado vaginal
+    </label>
+    <label class="form-check-inline">
+      <input type="checkbox" name="preguntaTexto75" value="Sangrado vaginal con Olor">
+      Sangrado vaginal con Olor
+    </label>
+    <label class="form-check-inline">
+      <input type="checkbox" name="preguntaTexto75" value="Fiebres / escalofríos">
+      Fiebres / escalofríos
+    </label>
+    <label class="form-check-inline">
+      <input type="checkbox" name="preguntaTexto75" value="Tos y Flema más de 14 días">
+      Tos y Flema más de 14 días
+    </label>
+    <label class="form-check-inline">
+      <input type="checkbox" name="preguntaTexto75" value="Riesgo Sedentarismo">
+      Riesgo Sedentarismo
+    </label>
+    <label class="form-check-inline">
+      <input type="checkbox" name="preguntaTexto75" value="Alergia a medicamentos">
+      Alergia a medicamentos
+    </label>
+  </div>
+</div>
 
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Riesgo Sedentarismo" />
-                                    Riesgo Sedentarismo
-                                  </label>
-                                  <label class="btn form-check">
-                                    <input type="checkbox" name="preguntaTexto75" value="Alergia a medicamentos" />
-                                    Alergia a medicamentos
-                                  </label>
-                                </div>
                                 <div>
                                   <p></p>
                                 </div>
@@ -5954,13 +5990,13 @@ export default defineComponent({
                           </div>
                         </div>
                       </div>
-                      <div class="row justify-content-end mt-3">
-                        <div class="col-1">
-                          <button type="button" @click="saveRiesgosPuerpera" class="btn btn-success">
-                            Guardar
-                          </button>
-                        </div>
-                      </div>
+                      <div class="row justify-content-center mt-3">
+  <div class="col-sm-6 col-md-3 text-center"> <!-- Utilizamos col-md-6 para hacerlo responsive -->
+    <button type="button" @click="saveRiesgosPuerpera" class="btn btn-success btn-block">
+      Guardar
+    </button>
+  </div>
+  </div>
                     </div>
                     <p></p>
                     <div style="text-align: center">
@@ -5976,33 +6012,30 @@ export default defineComponent({
                               <div class="card-body">
                                 <div>
                                   <h5 class="card-title">{{ preguntaTexto76 }}</h5>
-                                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                    <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Riesgo de exposicion" />
-                                      Riesgo de exposicion
-                                    </label>
-                                    <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value=" Riesgo en el Trabajo" />
-                                      Riesgo en el Trabajo
-                                    </label>
-                                    <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Riesgo del consumo tabaco" />
-                                      Riesgo del consumo tabaco
-                                    </label>
-                                    <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Otro" />
-                                      Otro
-                                    </label>
-
-                                    <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Riesgo Sedentarismo" />
-                                      Riesgo Sedentarismo
-                                    </label>
-                                    <label class="btn form-check">
-                                      <input type="checkbox" name="preguntaTexto76" value="Alergia a medicamentos" />
-                                      Alergia a medicamentos
-                                    </label>
-                                  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="riesgoExposicion" name="preguntaTexto76" value="Riesgo de exposicion">
+    <label class="form-check-label" for="riesgoExposicion">Riesgo de exposicion</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="riesgoTrabajo" name="preguntaTexto76" value="Riesgo en el Trabajo">
+    <label class="form-check-label" for="riesgoTrabajo">Riesgo en el Trabajo</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="riesgoConsumoTabaco" name="preguntaTexto76" value="Riesgo del consumo tabaco">
+    <label class="form-check-label" for="riesgoConsumoTabaco">Riesgo del consumo tabaco</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="otro" name="preguntaTexto76" value="Otro">
+    <label class="form-check-label" for="otro">Otro</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="riesgoSedentarismo" name="preguntaTexto76" value="Riesgo Sedentarismo">
+    <label class="form-check-label" for="riesgoSedentarismo">Riesgo Sedentarismo</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" id="alergiaMedicamentos" name="preguntaTexto76" value="Alergia a medicamentos">
+    <label class="form-check-label" for="alergiaMedicamentos">Alergia a medicamentos</label>
+  </div>
                
                                   <p></p>
 
@@ -6125,13 +6158,13 @@ export default defineComponent({
                                   </div>
 
                                   <p></p>
-                                  <div class="row justify-content-end mt-3">
-                                    <div class="col-1">
-                                      <button type="button" @click="saveRiesgosFamilia" class="btn btn-success">
-                                        Guardar
-                                      </button>
-                                    </div>
-                                  </div>
+                                  <div class="row justify-content-center mt-3">
+  <div class="col-sm-6 col-md-3 text-center"> <!-- Utilizamos col-md-6 para hacerlo responsive -->
+    <button type="button" @click="saveRiesgosFamilia" class="btn btn-success btn-block">
+      Guardar
+    </button>
+  </div>
+</div>
                                 </div>
                               </div>
                             </div>
@@ -6407,26 +6440,31 @@ export default defineComponent({
             <div class="col-sm-6">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">{{ preguntaTexto94 }}</h5>
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="de 10-300" /> de 10-300
-                    </label>
-                    <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="400-800" /> 400-800
-                    </label>
-                    <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="801-1200" /> 801-1200
-                    </label>
-                    <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="1201-1600" /> 1201-1600
-                    </label>
-                    <label class="btn form-check">
-                      <input type="radio" name="preguntaTexto94" value="1201-1600" /> 1601-2010
-                    </label>
-                  </div>
-                </div>
-              </div>
+      <h5 class="card-title">{{ preguntaTexto94 }}</h5>
+      <div class="d-flex flex-wrap justify-content-between align-items-start flex-column flex-sm-row">
+        <div class="form-check mb-2">
+          <input type="radio" id="radio1" name="preguntaTexto94" value="de 10-300" class="form-check-input" />
+          <label for="radio1" class="form-check-label mr-3">de 10-300</label>
+        </div>
+        <div class="form-check mb-2">
+          <input type="radio" id="radio2" name="preguntaTexto94" value="400-800" class="form-check-input" />
+          <label for="radio2" class="form-check-label mr-3">400-800</label>
+        </div>
+        <div class="form-check mb-2">
+          <input type="radio" id="radio3" name="preguntaTexto94" value="801-1200" class="form-check-input" />
+          <label for="radio3" class="form-check-label mr-3">801-1200</label>
+        </div>
+        <div class="form-check mb-2">
+          <input type="radio" id="radio4" name="preguntaTexto94" value="1201-1600" class="form-check-input" />
+          <label for="radio4" class="form-check-label mr-3">1201-1600</label>
+        </div>
+        <div class="form-check mb-2">
+          <input type="radio" id="radio5" name="preguntaTexto94" value="1601-2010" class="form-check-input" />
+          <label for="radio5" class="form-check-label mr-3">1601-2010</label>
+        </div>
+      </div>
+      </div>
+      </div>
             </div>
           </div>
 
@@ -6515,22 +6553,20 @@ export default defineComponent({
                         <input type="radio" name="preguntaTexto100" value="No" /> No
                       </label>
                     </div>
-                    <h5 class="card-title mt-3">
-                      {{ preguntaTexto101 }}
-                    </h5>
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                      <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto101" value="Personal" /> Personal
-                      </label>
-                      <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto101" value="Delincuencial" />
-                        Delincuencial
-                      </label>
-                      <label class="btn form-check">
-                        <input type="radio" name="preguntaTexto101" value="Psicologica" />
-                        Psicologica
-                      </label>
-                    </div>
+                    <h5 class="card-title mt-3">{{ preguntaTexto101 }}</h5>
+                    <div class="card-body">
+      <div class="btn-group btn-group-toggle d-flex flex-wrap justify-content-between align-items-start flex-column flex-sm-row" data-toggle="buttons">
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto101" value="Personal" class="form-check-input" />Personal
+        </label>
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto101" value="Delincuencial" class="form-check-input" />Delincuencial
+        </label>
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto101" value="Psicologica" class="form-check-input" />Psicologica
+        </label>
+      </div>
+    </div>
                     <textarea v-model="descripcionpreguntaTexto101" class="form-control" id="diga" name="diga"
                       placeholder="Otro"></textarea>
                     <p></p>
@@ -6553,27 +6589,21 @@ export default defineComponent({
                     <div class="col-sm-8">
                       <div class="card text-center">
                         <div class="card-body">
-                          <h5 class="card-title">
-                            {{ preguntaTexto102 }}
-                          </h5>
-                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value="Denuncié al TG" />
-                              Denuncié al TG
-                            </label>
-                            <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value=" Denuncié en la Policía" />
-                              Denuncié en la Policía
-                            </label>
-                            <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value="Hice justicia solo" />
-                              Hice justicia solo
-                            </label>
-                            <label class="btn form-check">
-                              <input type="radio" name="preguntaTexto102" value="No hice nada" /> No
-                              hice nada
-                            </label>
-                          </div>
+                          <h5 class="card-title">{{ preguntaTexto102 }}</h5>
+      <div class="btn-group btn-group-toggle d-flex flex-wrap justify-content-between align-items-start flex-column flex-sm-row" data-toggle="buttons">
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto102" value="Denuncié al TG" class="form-check-input mr-2" /> Denuncié al TG
+        </label>
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto102" value="Denuncié en la Policía" class="form-check-input mr-2" /> Denuncié en la Policía
+        </label>
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto102" value="Hice justicia solo" class="form-check-input mr-2" /> Hice justicia solo
+        </label>
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto102" value="No hice nada" class="form-check-input mr-2" /> No hice nada
+        </label>
+      </div>
                         </div>
                       </div>
                     </div>
@@ -6686,23 +6716,18 @@ export default defineComponent({
                       <div class="col-sm-6">
                         <div class="card">
                           <div class="card-body">
-                            <h5 class="card-title mt-3">
-                              {{ preguntaTexto108 }}
-                            </h5>
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                              <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto108" value="Gestion Financiera" />
-                                Gestion Financiera
-                              </label>
-                              <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto108" value="Planes de Trabajo" />
-                                Planes de Trabajo
-                              </label>
-                              <label class="btn form-check">
-                                <input type="radio" name="preguntaTexto108" value="Acuerdos" />
-                                Acuerdos
-                              </label>
-                            </div>
+                            <h5 class="card-title mt-3">{{ preguntaTexto108 }}</h5>
+      <div class="btn-group btn-group-toggle d-flex flex-wrap justify-content-between align-items-start flex-column flex-sm-row" data-toggle="buttons">
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto108" value="Gestion Financiera" class="form-check-input mr-2" /> Gestion Financiera
+        </label>
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto108" value="Planes de Trabajo" class="form-check-input mr-2" /> Planes de Trabajo
+        </label>
+        <label class="btn form-check mb-2">
+          <input type="radio" name="preguntaTexto108" value="Acuerdos" class="form-check-input mr-2" /> Acuerdos
+        </label>
+      </div>
                             <textarea v-model="descripcionpreguntaTexto108" class="form-control" id="diga" name="gt2"
                               placeholder="Otro"></textarea>
                             <p></p>
