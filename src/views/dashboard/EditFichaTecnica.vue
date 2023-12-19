@@ -1235,7 +1235,9 @@ export default defineComponent({
     const { fetchCurrentCenso, censo } = useCensoDetails()
     const isPersonaEdit = ref(false)
     const personaEditID = ref<number | string>('')
-
+    const selectedSexo = ref('')   
+    const jefeFamilia = ref(false)
+    
     const editarPersona = (persona: Persona) => {
       // CAMBIAR EL FORMULARIO A EDIT PARA ESCONDER Y MOSTRAR BOTONES
       isPersonaEdit.value = true
@@ -1253,6 +1255,8 @@ export default defineComponent({
       selectedReligion.value = persona.religion_id
       selectedSeguro.value = persona.seguro_salud_id
       selectedEstado.value = persona.estado_civil_id
+      selectedSexo.value = persona.sexo
+      jefeFamilia.value = persona.jefe_familia
 
       // Otras lógicas para llenar el formulario de edición, si es necesario
     }
@@ -1272,7 +1276,9 @@ export default defineComponent({
         seguro_salud_id: selectedSeguro.value,
         estado_civil_id: selectedEstado.value,
         pers_numero_documento_identidad: searchDNI.value,
-        documento_identidad_id: 1
+        documento_identidad_id: 1,
+        sexo: selectedSexo.value,
+        jefe_familia:jefeFamilia.value
       }
 
       await axios
@@ -1336,6 +1342,8 @@ export default defineComponent({
       selectedEstado.value = 1
       selectedSeguro.value = 1
       personaEditID.value = ''
+      selectedSexo.value = ''
+      jefeFamilia.value = false
     }
 
     const eliminarPersona = async (id: number) => {
@@ -3228,7 +3236,9 @@ export default defineComponent({
             estado_civil_id: selectedEstadoCivilId,
             ocupacion_id: selectedOcupacionId,
             pers_numero_documento_identidad: searchDNI.value,
-            documento_identidad_id: 1
+            documento_identidad_id: 1,
+            sexo: selectedSexo.value,
+            jefe_familia: jefeFamilia.value,
           }
 
           const response = await axios.post(
@@ -5203,7 +5213,9 @@ export default defineComponent({
       updatePersona,
       eliminarPersona,
       chartOptions,
-      terminarCenso
+      terminarCenso,
+      jefeFamilia,
+      selectedSexo
     }
   }
 })
@@ -5334,19 +5346,32 @@ export default defineComponent({
                 </div>
                 <div class="col-md-2">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck" />
-                    <label class="form-check-label" for="gridCheck"> Jefe de familia </label>
+                    <input class="form-check-input" type="checkbox" id="gridCheck" v-model="jefeFamilia" />
+                    <label class="form-check-label" for="gridCheck" > Jefe de familia </label>
                   </div>
                 </div>
               </div>
 
               <div class="row mt-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <input type="text" class="form-control" placeholder="Nombres" v-model="nombres" />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <input type="text" class="form-control" placeholder="Apellidos" v-model="apellidos" />
                 </div>
+                <div class="col-md-4 mt 3">
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline1" name="selectedSexo" value="Masculino"
+                      class="custom-control-input" v-model="selectedSexo">
+                    <label class="custom-control-label" for="customRadioInline1">Masculino</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline2" name="selectedSexo" value="Femenino"
+                      class="custom-control-input" v-model="selectedSexo">
+                    <label class="custom-control-label" for="customRadioInline2">Femenino</label>
+                  </div>
+                </div>
+              
               </div>
 
               <div class="row mt-3">

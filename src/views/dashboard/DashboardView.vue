@@ -604,7 +604,8 @@ export default defineComponent({
       selectedReligion.value = persona.religion_id
       selectedSeguro.value = persona.seguro_salud_id
       selectedEstado.value = persona.estado_civil_id
-
+      jefeFamilia.value = persona.jefe_familia
+      selectedSexo.value = persona.sexo
       // Otras lógicas para llenar el formulario de edición, si es necesario
     }
 
@@ -623,7 +624,9 @@ export default defineComponent({
         seguro_salud_id: selectedSeguro.value,
         estado_civil_id: selectedEstado.value,
         pers_numero_documento_identidad: searchDNI.value,
-        documento_identidad_id: 1
+        documento_identidad_id: 1,
+        jefe_familia: jefeFamilia.value,
+        sexo: selectedSexo.value
       }
 
       await axios
@@ -686,6 +689,8 @@ export default defineComponent({
       selectedEstado.value = 1
       selectedSeguro.value = 1
       personaEditID.value = ''
+      jefeFamilia.value = false
+      selectedSexo.value = ''
     }
 
     const eliminarPersona = async (id: number) => {
@@ -2557,17 +2562,12 @@ export default defineComponent({
           'select.gradoInstruccion-select'
         ) as HTMLSelectElement
 
-        const selectedSexo = document.querySelector('input[name="selectedSexo"]:checked');
-
-        const selectedSexoValue = selectedSexo.value;
-
 
         console.log(ocupacionSelectElement)
         console.log(estadoCivilSelectElemente)
         console.log(seguroSaludSelectElement)
         console.log(religionSelectElement)
         console.log(gradoInstruccionSelectElement)
-        console.log(selectedSexoValue)
 
         if (
           ocupacionSelectElement &&
@@ -2585,7 +2585,7 @@ export default defineComponent({
           const formData = {
             pers_nombres: nombres.value,
             pers_apellidos: apellidos.value,
-            sexo: selectedSexoValue,
+            sexo: selectedSexo.value,
             pers_fecha_nacimiento: fechaNacimiento.value,
             edad: edad.value,
             religion_id: selectedReligionId,
@@ -2641,6 +2641,7 @@ export default defineComponent({
           //
         }
       } catch (error: any) {
+        console.log(error);
         if (error.response) {
           if (error.response.status === 422) {
             if (error.response.data && error.response.data.errors) {
@@ -4225,12 +4226,12 @@ export default defineComponent({
                 <div class="col-md-4 mt 3">
                   <div class="custom-control custom-radio custom-control-inline">
                     <input type="radio" id="customRadioInline1" name="selectedSexo" value="Masculino"
-                      class="custom-control-input">
+                      class="custom-control-input" v-model="selectedSexo">
                     <label class="custom-control-label" for="customRadioInline1">Masculino</label>
                   </div>
                   <div class="custom-control custom-radio custom-control-inline">
                     <input type="radio" id="customRadioInline2" name="selectedSexo" value="Femenino"
-                      class="custom-control-input">
+                      class="custom-control-input" v-model="selectedSexo">
                     <label class="custom-control-label" for="customRadioInline2">Femenino</label>
                   </div>
                 </div>
